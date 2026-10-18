@@ -126,7 +126,7 @@
 %% Interruptores de capitulos: true = incluir, false = omitir
 %% ----------------------------------------------------------------------------
 \newif\ifcapOrdenUno      \capOrdenUnofalse      % requiere los .tex de primer orden
-\newif\ifcapOrdenDos      \capOrdenDosfalse      % requiere la carpeta Capitulo_2/
+\newif\ifcapOrdenDos      \capOrdenDostrue       % requiere los .tex de segundo orden
 \newif\ifcapSistemas      \capSistemastrue
 \newif\ifincluirpractica  \incluirpracticatrue   % practica y respuestas de sistemas
 
@@ -341,7 +341,7 @@ Cada ejercicio de las secciones de pr\'actica indica su dificultad con estrellas
 \newpage
 
 \section{Pr\'actica}
-\input{Capitulo_2/orden_2_problemas_V2}
+\input{orden_2_problemas_V2}
 \fi
 
 % ==================================================
