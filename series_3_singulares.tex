@@ -1,44 +1,141 @@
-
-La técnica de series de potencias para resolver
-\begin{equation} \tag{4.4.1}
-y'' + P(x)y' + Q(x)y = 0
-\end{equation}
-desarrollada en la sección anterior es directamente aplicable solo en puntos ordinarios, es decir, puntos donde $P$ y $Q$ son \textit{ambas} analíticas. De acuerdo con la Definición 4.2.1, cualquier punto en el que $P$ o $Q$ dejen de ser analíticas se llama \textbf{punto singular} de la Ecuación (4.4.1), y el análisis general del comportamiento de las soluciones a la Ecuación (4.4.1) en la vecindad de un punto singular es bastante complicado. Sin embargo, los puntos singulares a menudo resultan ser los puntos de mayor interés en un problema aplicado, y por lo tanto es de cierta importancia que persigamos este análisis.\\
+%% series_3_singulares.tex -- version ampliada de series_3 (puntos singulares regulares, metodo de Frobenius)
+%% Agregados: diagrama de clasificacion, tabla de Cauchy-Euler y grafico de x^r, formula general
+%% de recurrencia F(r+n)a_n=-sum[...], receta de Frobenius en pasos, tabla de coeficientes con
+%% grafico de y1,y2, forma cerrada de y1=(1-x)e^{-x}/x, ejemplo nuevo con solucion cerrada
+%% (cos y sin de sqrt(2x)), resumen y ejercicios.
+%% Correcciones respecto del original: recurrencia de b_n del Ej. de 2x^2y''+... (signo) y
+%% linea truncada de a_4.
+%% Requiere en el preambulo del documento principal:
+%%   \usepackage{pgfplots}  \pgfplotsset{compat=1.18}
+%% Convenciones de notacion del capitulo: en la forma estandar y''+P(x)y'+Q(x)y=0
+%% los coeficientes se llaman P y Q; en la forma de Frobenius
+%% x^2 y''+x p(x) y'+q(x) y=0 se usan p=(x-x0)P y q=(x-x0)^2 Q (minusculas).
  
- En las próximas dos secciones mostraremos que, siempre que las funciones $P$ y $Q$ no se comporten demasiado mal en un punto singular, la técnica de series de potencias se puede extender para obtener soluciones de las ecuaciones diferenciales correspondientes que sean válidas en la vecindad del punto singular. Restringiremos nuestra atención a las ecuaciones diferenciales cuyos puntos singulares satisfacen la siguiente definición.
-
+%% --- Correccion de \ref a cajas numeradas (ver sistemas_2.tex) --------------
+\makeatletter
+\ifdefined\bbereffixdone\else
+  \def\bbereffixdone{}
+  \tcbset{before upper={%
+    \ifx\thetcbcounter\@empty\else
+      \protected@edef\@currentlabel{\thetcbcounter}%
+      \ifdefined\phantomsection\phantomsection\fi
+    \fi}}
+\fi
+\makeatother
+ 
+%% --- Estilo comun de los graficos de este capitulo --------------------------
+\pgfplotsset{
+  bbeserie/.style={width=.94\linewidth, height=6.2cm, axis lines=middle,
+    xlabel=$x$, ylabel=$y$, tick label style={font=\small}, label style={font=\small},
+    legend style={font=\footnotesize, draw=bbe!40, fill=white, fill opacity=.9, text opacity=1},
+    grid=major, grid style={draw=bbe!12}, clip=true,
+    every axis plot/.append style={thick}},
+  bbeosc/.style={bbeserie, axis lines=left}
+}
+\providecommand{\bbezero}[2]{\addplot[bbegray!70, thin, forget plot] coordinates {(#1,0) (#2,0)};}
+\tikzset{
+  bbecaja/.style={draw=bbe, fill=bbe!8, rounded corners=2pt, text=black, align=center,
+    font=\small\sffamily, inner sep=4pt, text width=3.6cm, minimum height=1.1cm},
+  bbeflujo/.style={-{Stealth[length=5pt]}, thick}
+}
+ 
+ 
+La técnica de series de potencias para resolver
+\begin{equation}
+y'' + P(x)y' + Q(x)y = 0
+\label{eq:s3-estandar}
+\end{equation}
+desarrollada en la sección anterior es directamente aplicable solo en puntos ordinarios, es decir, puntos donde $P$ y $Q$ son \textit{ambas} analíticas. De acuerdo con la definición de punto ordinario, cualquier punto en el que $P$ o $Q$ dejen de ser analíticas se llama \textbf{punto singular} de la Ecuación \eqref{eq:s3-estandar}, y el análisis general del comportamiento de las soluciones en la vecindad de un punto singular es bastante complicado. Sin embargo, los puntos singulares a menudo resultan ser los puntos de mayor interés en un problema aplicado, y por lo tanto es de cierta importancia que persigamos este análisis.
+ 
+En las próximas dos secciones mostraremos que, siempre que las funciones $P$ y $Q$ no se comporten demasiado mal en un punto singular, la técnica de series de potencias se puede extender para obtener soluciones de las ecuaciones diferenciales correspondientes que sean válidas en la vecindad del punto singular. Restringiremos nuestra atención a las ecuaciones diferenciales cuyos puntos singulares satisfacen la siguiente definición.
+ 
 \begin{definition}
-    El punto $x = x_0$ se llama un \textbf{punto singular regular} de la ecuación diferencial (4.4.1) si y solo si se satisfacen las dos condiciones siguientes:
+    El punto $x = x_0$ se llama un \textbf{punto singular regular} de la ecuación diferencial \eqref{eq:s3-estandar} si y solo si se satisfacen las dos condiciones siguientes:
 \begin{enumerate}
-    \item $x_0$ es un punto singular de la Ecuación (4.4.1).
+    \item $x_0$ es un punto singular de la Ecuación \eqref{eq:s3-estandar}.
     \item \textit{Ambas} funciones
     \[ p(x) = (x - x_0)P(x) \quad \text{y} \quad q(x) = (x - x_0)^2Q(x) \]
     son analíticas en $x = x_0$.
 \end{enumerate}
-Un punto singular de la Ecuación (4.4.1) que no satisface la condición (2) se llama un \textbf{punto singular irregular}.
-
+Un punto singular de la Ecuación \eqref{eq:s3-estandar} que no satisface la condición (2) se llama un \textbf{punto singular irregular}.
 \end{definition}
-
+ 
+La Figura~\ref{fig:s3-clasificacion} resume el procedimiento para clasificar un punto.
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=.7cm and 1.2cm,
+   dec/.style={bbecaja, fill=bbeamber!18, draw=bbeamber, text width=4.2cm},
+   res/.style={bbecaja, text width=3.0cm, minimum height=.9cm, font=\small\bfseries\sffamily}]
+  \node[bbecaja, text width=5.2cm] (s0) {Escribir la ecuación en forma estándar $y''+Py'+Qy=0$};
+  \node[dec, below=of s0] (s1) {¿$P$ y $Q$ son analíticas en $x_0$?};
+  \node[res, right=of s1, fill=bbegreen!15, draw=bbegreen] (o) {$x_0$ \textbf{ordinario}};
+  \node[dec, below=of s1] (s2) {Calcular $p=(x-x_0)P$ y $q=(x-x_0)^2Q$.\\ ¿Ambas analíticas en $x_0$?};
+  \node[res, right=of s2, fill=bbeblue!15, draw=bbeblue] (r) {$x_0$ singular \textbf{regular}};
+  \node[res, below=of s2, fill=bbered!12, draw=bbered] (i) {$x_0$ singular \textbf{irregular}};
+  \draw[bbeflujo] (s0) -- (s1);
+  \draw[bbeflujo] (s1) -- node[above, text=black, font=\footnotesize] {sí} (o);
+  \draw[bbeflujo] (s1) -- node[left, text=black, font=\footnotesize] {no} (s2);
+  \draw[bbeflujo] (s2) -- node[above, text=black, font=\footnotesize] {sí} (r);
+  \draw[bbeflujo] (s2) -- node[left, text=black, font=\footnotesize] {no} (i);
+\end{tikzpicture}
+\caption{Clasificación de un punto $x_0$ de $y''+P(x)y'+Q(x)y=0$.}
+\label{fig:s3-clasificacion}
+\end{figure}
+ 
 \begin{example}
     Determine los puntos ordinarios, los puntos singulares regulares y los puntos singulares irregulares de la ecuación diferencial
-\begin{equation} \tag{4.4.2}
+\begin{equation}
 y'' + \frac{1}{x(x - 1)^2}y' + \frac{x + 1}{x(x - 1)^3}y = 0.
+\label{eq:s3-clasif}
 \end{equation}
-
+ 
 \noindent \textbf{Solución:} \quad En este caso, tenemos
 \[ P(x) = \frac{1}{x(x - 1)^2} \quad \text{y} \quad Q(x) = \frac{x + 1}{x(x - 1)^3}, \]
-y, por inspección, $P$ y $Q$ son analíticas en todos los puntos excepto en $x = 0$ y $x = 1$. Por lo tanto, los únicos puntos singulares de la Ecuación (9.4.2) son $x = 0$ y $x = 1$. En consecuencia, todo $x$ con $x \neq 0$ y $x \neq 1$ es un punto ordinario de la ecuación diferencial. Ahora determinamos si los puntos singulares $x = 0$ y $x = 1$ son regulares o irregulares.
-
-Considere el punto singular $x = 0$. Las funciones
+y, por inspección, $P$ y $Q$ son analíticas en todos los puntos excepto en $x = 0$ y $x = 1$. Por lo tanto, los únicos puntos singulares de la Ecuación \eqref{eq:s3-clasif} son $x = 0$ y $x = 1$. En consecuencia, todo $x$ con $x \neq 0$ y $x \neq 1$ es un punto ordinario de la ecuación diferencial. Ahora determinamos si los puntos singulares $x = 0$ y $x = 1$ son regulares o irregulares.
+ 
+Consideremos el punto singular $x = 0$. Las funciones
 \[ p(x) = xP(x) = \frac{1}{(x - 1)^2} \quad \text{y} \quad q(x) = x^2Q(x) = \frac{x(x + 1)}{(x - 1)^3} \]
-son ambas analíticas en $x = 0$, de modo que $x = 0$ es un \textit{punto singular regular} de la Ecuación (4.4.2).
-
-Ahora considere el punto singular $x = 1$. Dado que
+son ambas analíticas en $x = 0$, de modo que $x = 0$ es un \textit{punto singular regular} de la Ecuación \eqref{eq:s3-clasif}.
+ 
+Ahora consideremos el punto singular $x = 1$. Dado que
 \[ p(x) = (x - 1)P(x) = \frac{1}{x(x - 1)} \]
-es no analítica en $x = 1$, se deduce que $x = 1$ es un \textit{punto singular irregular} de la Ecuación (4.4.2). \hfill $\square$
-
+es no analítica en $x = 1$, se deduce que $x = 1$ es un \textit{punto singular irregular} de la Ecuación \eqref{eq:s3-clasif}. \hfill $\square$
 \end{example}
-
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Clasificación de los puntos de \eqref{eq:s3-clasif}: orden del polo de $P$ y de $Q$ en cada punto.}
+\label{tab:s3-clasif}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{bbe!15}\textbf{Punto} & \textbf{Polo de $P$} & \textbf{Polo de $Q$} & \textbf{¿$p$ y $q$ analíticas?} & \textbf{Clasificación} \\ \hline
+$x\ne 0,1$ & ninguno & ninguno & --- & ordinario \\ \hline
+$x=0$ & orden $1$ & orden $1$ & sí & singular regular \\ \hline
+$x=1$ & orden $2$ & orden $3$ & no ($p$ tiene un polo) & singular irregular \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{remark}
+\textbf{Atajo para funciones racionales.} Si $P$ y $Q$ son racionales, $x_0$ es un punto singular \emph{regular} cuando $P$ tiene en $x_0$ un polo de orden $\le 1$ y $Q$ un polo de orden $\le 2$ (multiplicar por $x-x_0$ y $(x-x_0)^2$ elimina justo esos polos). Basta contar órdenes, como en la Tabla~\ref{tab:s3-clasif}.
+\end{remark}
+ 
+\begin{activity}[Clasifica]
+Clasifica el punto indicado de cada ecuación (ordinario, singular regular o singular irregular):
+\begin{enumerate}
+\item $x^2y''+y'+y=0$, en $x=0$.
+\item $xy''+2y'+y=0$, en $x=0$.
+\item $(1-x^2)y''-2xy'+6y=0$ (Legendre), en $x=1$.
+\end{enumerate}
+\end{activity}
+ 
+\begin{solution}
+(1) Forma estándar: $P=1/x^2$, $Q=1/x^2$. $P$ tiene un polo de orden $2>1$, de modo que $p=xP=1/x$ no es analítica: \textbf{irregular}. \;
+(2) $P=2/x$, $Q=1/x$: polos de orden $1$ y $1$; $p=2$, $q=x$ analíticas: \textbf{regular}. \;
+(3) $P=\dfrac{-2x}{1-x^2}$ y $Q=\dfrac{6}{1-x^2}$ tienen polos simples en $x=1$; $(x-1)P=\dfrac{2x}{x+1}$ y $(x-1)^2Q=\dfrac{-6(x-1)}{x+1}$ son analíticas: \textbf{regular}.
+\end{solution}
+ 
 \begin{remark}
     Ahora suponga que $x = x_0$ es un punto singular regular de la ecuación diferencial
 \[ y'' + P(x)y' + Q(x)y = 0. \]
@@ -48,187 +145,272 @@ que podemos escribir como
 \[ (x - x_0)^2 y'' + (x - x_0)p(x)y' + q(x)y = 0, \]
 donde
 \[ p(x) = (x - x_0)P(x) \quad \text{y} \quad q(x) = (x - x_0)^2 Q(x). \]
-
+ 
 Dado que, por suposición, $x = x_0$ es un punto singular regular, se deduce que las funciones $p$ y $q$ son analíticas en $x = x_0$. Mediante el cambio de variables $z = x - x_0$, siempre podemos transformar un punto singular regular a $x = 0$, por lo que restringiremos nuestra atención a las ecuaciones diferenciales que se pueden escribir en la forma
-\begin{equation} \tag{4.4.3}
+\begin{equation}
 \boxed{ x^2 y'' + xp(x)y' + q(x)y = 0, }
+\label{eq:s3-frobenius-forma}
 \end{equation}
 donde $p$ y $q$ son analíticas en $x = 0$. \textit{Esta es la forma estándar de cualquier ecuación diferencial que tiene un punto singular regular en $x = 0$.} El tipo más simple de ecuación que entra en esta categoría es la ecuación de Cauchy-Euler de segundo orden
-\begin{equation} \tag{9.4.4}
+\begin{equation}
 x^2 y'' + p_0 x y' + q_0 y = 0,
+\label{eq:s3-euler}
 \end{equation}
-donde $p_0$ y $q_0$ son constantes. Las técnicas de solución que desarrollaremos para resolver la Ecuación (4.4.3) estarán motivadas por las soluciones a la Ecuación (4.4.4). Recordemos que la ecuaci\'on (4.4.4) tiene soluciones en el intervalo $(0, \infty)$ de la forma $y(x) = x^r$, donde $r$ es una raíz de la ecuación indicial
+donde $p_0$ y $q_0$ son constantes. Las técnicas de solución que desarrollaremos para resolver la Ecuación \eqref{eq:s3-frobenius-forma} estarán motivadas por las soluciones a la Ecuación \eqref{eq:s3-euler}. Recordemos que la ecuación \eqref{eq:s3-euler} tiene soluciones en el intervalo $(0, \infty)$ de la forma $y(x) = x^r$, donde $r$ es una raíz de la ecuación indicial
 \[ r(r - 1) + p_0 r + q_0 = 0. \]
 \end{remark}
-
-Ahora considere la Ecuación (4.4.3). Dado que, por suposición, $p$ y $q$ son analíticas en $x = 0$, podemos escribir
-\begin{equation} \tag{4.4.5}
+ 
+La Tabla~\ref{tab:s3-euler} recuerda cómo son las soluciones de Cauchy-Euler según las raíces, y la Figura~\ref{fig:s3-potencias} muestra qué hace $x^r$ cerca del punto singular $x=0$. El valor de $r$ decide si la solución se anula, se mantiene finita o explota en $x=0$.
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Soluciones de $x^2y''+p_0xy'+q_0y=0$ en $x>0$ según las raíces de la ecuación indicial.}
+\label{tab:s3-euler}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{bbe!15}\textbf{Raíces} & \textbf{Dos soluciones linealmente independientes} \\ \hline
+$r_1\neq r_2$ reales & $x^{r_1},\ x^{r_2}$ \\ \hline
+$r_1=r_2=r$ & $x^{r},\ x^{r}\ln x$ \\ \hline
+$r=\alpha\pm i\beta$ & $x^{\alpha}\cos(\beta\ln x),\ x^{\alpha}\sin(\beta\ln x)$ \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, width=.84\linewidth, height=6cm, xmin=0, xmax=2, ymin=0, ymax=3, restrict y to domain=0:6,
+  legend pos=outer north east, samples=100, xlabel=$x$, ylabel={$x^r$}]
+\addplot[bbered, domain=0.02:2] {x^(-1)};
+\addplot[bbeviolet, domain=0.01:2] {x^(-0.5)};
+\addplot[black, domain=0:2] {1};
+\addplot[bbeamber, domain=0:2] {x^(0.5)};
+\addplot[bbegreen, domain=0:2] {x^1};
+\addplot[bbeblue, domain=0:2] {x^2};
+\legend{$r=-1$, $r=-\tfrac12$, $r=0$, $r=\tfrac12$, $r=1$, $r=2$}
+\end{axis}
+\end{tikzpicture}
+\caption{Comportamiento de $x^r$ cerca de $x=0$: explota si $r<0$, se mantiene finita si $r=0$ y se anula si $r>0$.}
+\label{fig:s3-potencias}
+\end{figure}
+ 
+Ahora considere la Ecuación \eqref{eq:s3-frobenius-forma}. Dado que, por suposición, $p$ y $q$ son analíticas en $x = 0$, podemos escribir
+\begin{equation}
 p(x) = p_0 + p_1 x + p_2 x^2 + \dots, \qquad q(x) = q_0 + q_1 x + q_2 x^2 + \dots,
+\label{eq:s3-desarrollo-pq}
 \end{equation}
-
-para $x$ en algún intervalo de la forma $(-R, R)$. Se deduce que la Ecuación (4.4.3) puede escribirse como
+para $x$ en algún intervalo de la forma $(-R, R)$. Se deduce que la Ecuación \eqref{eq:s3-frobenius-forma} puede escribirse como
 \[ x^2 y'' + x(p_0 + p_1 x + p_2 x^2 + \dots)y' + (q_0 + q_1 x + q_2 x^2 + \dots)y = 0. \]
-
-Si $|x| \ll 1$, esto es aproximadamente la ecuación de Cauchy-Euler (4.4.4), por lo que es razonable \textit{esperar} que para $x$ en el intervalo $(0, R)$, la Ecuación (4.4.3) tenga soluciones de la forma
-\begin{equation} \tag{4.4.6}
+ 
+Si $|x| \ll 1$, esto es aproximadamente la ecuación de Cauchy-Euler \eqref{eq:s3-euler}, por lo que es razonable \textit{esperar} que para $x$ en el intervalo $(0, R)$, la Ecuación \eqref{eq:s3-frobenius-forma} tenga soluciones de la forma
+\begin{equation}
 y(x) = x^r \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0,
+\label{eq:s3-frobenius-serie}
 \end{equation}
 donde $r$ es una raíz de la \textbf{ecuación indicial}
-\begin{equation} \tag{4.4.7}
-r(r - 1) + p_0 r + q_0 = 0.
+\begin{equation}
+F(r):=r(r - 1) + p_0 r + q_0 = 0.
+\label{eq:s3-indicial}
 \end{equation}
-
-Una serie de la forma (4.4.6) se llama \textbf{serie de Frobenius}. Podemos suponer sin pérdida de generalidad que $a_0 \neq 0$, ya que si este no fuera el caso, siempre podríamos factorizar la potencia principal de $x$ fuera de la serie y combinarla en $x^r$.
-El siguiente teorema confirma nuestras \textit{mejores} expectativas:
-
-\begin{theorem}
+ 
+Una serie de la forma \eqref{eq:s3-frobenius-serie} se llama \textbf{serie de Frobenius}. Podemos suponer sin pérdida de generalidad que $a_0 \neq 0$, ya que si este no fuera el caso, siempre podríamos factorizar la potencia principal de $x$ fuera de la serie y combinarla en $x^r$.
+ 
+\begin{theorem}[Frobenius]\label{thm:s3-frobenius}
     Considere la ecuación diferencial
-\begin{equation} \tag{4.4.8}
+\begin{equation}
 x^2 y'' + xp(x)y' + q(x)y = 0, \qquad x > 0,
+\label{eq:s3-teorema}
 \end{equation}
 donde $p$ y $q$ son analíticas en $x = 0$. Suponga que
 \[ p(x) = \sum_{n=0}^{\infty} p_n x^n, \qquad q(x) = \sum_{n=0}^{\infty} q_n x^n, \]
 para $|x| < R$. Sean $r_1$ y $r_2$ las raíces de la ecuación indicial
 \[ r(r - 1) + p_0 r + q_0 = 0, \]
-y asuma que $r_1 \ge r_2$ si estas raíces son reales. Entonces la Ecuación (4.4.8) tiene una solución de la forma
+y asuma que $r_1 \ge r_2$ si estas raíces son reales. Entonces la Ecuación \eqref{eq:s3-teorema} tiene una solución de la forma
 \[ y_1(x) = x^{r_1} \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0. \]
-Esta solución es válida (al menos) para $0 < x < R$. Además, siempre que $r_1$ y $r_2$ sean distintas y no difieran en un entero, entonces existe una segunda solución de (4.4.8) que es válida (al menos) para $0 < x < R$ de la forma
+Esta solución es válida (al menos) para $0 < x < R$. Además, siempre que $r_1$ y $r_2$ sean distintas y no difieran en un entero, entonces existe una segunda solución de \eqref{eq:s3-teorema} que es válida (al menos) para $0 < x < R$ de la forma
 \[ y_2(x) = x^{r_2} \sum_{n=0}^{\infty} b_n x^n, \qquad b_0 \neq 0. \]
 Las soluciones $y_1$ y $y_2$ son linealmente independientes en sus intervalos de existencia.
 \end{theorem}
-
+ 
 \begin{remark}
-    Usando la fórmula para la expansión de Maclaurin de $p$ y $q$, se deduce que las constantes $p_0$ y $q_0$ que aparecen en (4.4.5) están dadas por
+    Usando la fórmula para la expansión de Maclaurin de $p$ y $q$, se deduce que las constantes $p_0$ y $q_0$ que aparecen en \eqref{eq:s3-desarrollo-pq} están dadas por
 \[ p_0 = p(0) \quad \text{y} \quad q_0 = q(0). \]
-En consecuencia, la ecuación indicial (4.4.7) para
-\[ x^2 y'' + xp(x)y' + q(x)y = 0 \]
-se puede escribir directamente como
+En consecuencia, la ecuación indicial para $x^2 y'' + xp(x)y' + q(x)y = 0$ se puede escribir directamente como
 \[ r(r - 1) + p(0)r + q(0) = 0. \]
 \end{remark}
-A continuaci\'on revisemos algunos ejemplos sobre como aplicar el teorema anterior, en la pr\'actica: 
-
-\begin{example}
+ 
+\subsubsection*{La recurrencia general}
+ 
+Todo el método de Frobenius descansa en una sola fórmula. Sustituyendo $y=\sum a_nx^{r+n}$ en \eqref{eq:s3-teorema}, multiplicando las series de $p$ y $q$ por la de $y'$ e $y$ y recogiendo el coeficiente de $x^{r+n}$, se obtiene
+\begin{equation}
+\boxed{\; F(r+n)\,a_n=-\sum_{k=0}^{n-1}\bigl[(r+k)\,p_{n-k}+q_{n-k}\bigr]a_k,\qquad n=1,2,\dots\;}
+\label{eq:s3-recgen}
+\end{equation}
+(el caso $n=0$ es $F(r)a_0=0$: la ecuación indicial). Si $p$ y $q$ son polinomios de grado bajo, la suma tiene pocos términos y la recurrencia es sencilla. Mientras $F(r+n)\neq 0$ para $n\ge1$, \eqref{eq:s3-recgen} determina todos los $a_n$ a partir de $a_0$; cuando $F(r+n)=0$ para algún $n\ge 1$ aparecen los problemas que estudiaremos en la sección siguiente.
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Método de Frobenius en cinco pasos.}
+\label{tab:s3-pasos}
+\begin{tabular}{|c|p{5.2cm}|p{7.3cm}|}
+\hline
+\rowcolor{bbe!15}\textbf{Paso} & \textbf{Qué hacer} & \textbf{Resultado} \\ \hline
+1 & Llevar la ecuación a la forma $x^2y''+xp\,y'+q\,y=0$ & identificar $p(x)$ y $q(x)$ \\ \hline
+2 & Calcular $p_0=p(0)$ y $q_0=q(0)$ & ecuación indicial $F(r)=r(r-1)+p_0r+q_0=0$ y sus raíces $r_1\ge r_2$ \\ \hline
+3 & Mirar $r_1-r_2$ & si no es un entero, hay dos series de Frobenius; en otro caso, ver la sección siguiente \\ \hline
+4 & Para cada raíz $r$, usar \eqref{eq:s3-recgen} (o sustituir directamente) & relación de recurrencia para $a_n$ con $a_0=1$ \\ \hline
+5 & Resolver la recurrencia (patrón general) & $y=x^r\sum a_nx^n$, válida al menos en $0<x<R$ \\ \hline
+\end{tabular}
+\end{table}
+ 
+A continuación revisemos algunos ejemplos sobre cómo aplicar el teorema anterior en la práctica:
+ 
+\begin{example}\label{ex:s3-e2x}
      Muestre que la ecuación diferencial
 \[ x^2 y'' + x e^{2x} y' - 2(\cos x)y = 0, \qquad x > 0 \]
 tiene dos soluciones en serie de Frobenius linealmente independientes, y determine el intervalo en el que estas soluciones son válidas.
-
-\noindent \textbf{Solución:} \quad Comparando la ecuación diferencial dada con la forma estándar (4.4.3), vemos que
+ 
+\noindent \textbf{Solución:} \quad Comparando la ecuación diferencial dada con la forma estándar \eqref{eq:s3-frobenius-forma}, vemos que
 \[ p(x) = e^{2x} \quad \text{y} \quad q(x) = -2\cos x. \]
-En consecuencia,
-\[ p(0) = 1 \quad \text{y} \quad q(0) = -2, \]
-y por lo tanto la ecuación indicial es
-\[ r(r - 1) + r - 2 = 0. \]
-Es decir,
-\[ r^2 - 2 = 0. \]
-Así, las raíces de la ecuación indicial son $r_1 = \sqrt{2}$ y $r_2 = -\sqrt{2}$. Dado que $r_1$ y $r_2$ son distintas y no difieren en un entero, se deduce del Teorema 4.4.3 que la ecuación diferencial dada tiene dos soluciones en serie de Frobenius de la forma
+En consecuencia, $p(0) = 1$ y $q(0) = -2$, y por lo tanto la ecuación indicial es
+\[ r(r - 1) + r - 2 = r^2 - 2 = 0. \]
+Así, las raíces de la ecuación indicial son $r_1 = \sqrt{2}$ y $r_2 = -\sqrt{2}$. Dado que $r_1$ y $r_2$ son distintas y no difieren en un entero ($r_1-r_2=2\sqrt2$ es irracional), se deduce del Teorema~\ref{thm:s3-frobenius} que la ecuación diferencial dada tiene dos soluciones en serie de Frobenius de la forma
 \[ y_1(x) = x^{\sqrt{2}} \sum_{n=0}^{\infty} a_n x^n, \qquad y_2(x) = x^{-\sqrt{2}} \sum_{n=0}^{\infty} b_n x^n. \]
-Además, dado que las expansiones en serie de potencias de $p$ y $q$ alrededor de $x = 0$ son válidas para todo $x$, las soluciones anteriores estarán definidas y serán linealmente independientes en $(0, \infty)$. \hfill $\square$
-
+Además, dado que las expansiones en serie de potencias de $p$ y $q$ alrededor de $x = 0$ son válidas para todo $x$, las soluciones anteriores estarán definidas y serán linealmente independientes en $(0, \infty)$.
+ 
+\vspace{.2cm}
+\noindent\textit{Un coeficiente con \eqref{eq:s3-recgen}.} Aquí $p_1=2$ y $q_1=0$ (pues $-2\cos x=-2+x^2-\cdots$), así que para $n=1$:
+\[ F(r+1)\,a_1=-\bigl[r\,p_1+q_1\bigr]a_0=-2r\,a_0,\qquad F(r+1)=(r+1)^2-2=2r+1 \ \ (\text{usando } r^2=2). \]
+Luego $a_1=-\dfrac{2r}{2r+1}a_0$, que vale $\approx-0{,}739\,a_0$ para $r=\sqrt2$ y $\approx-1{,}547\,b_0$ para $r=-\sqrt2$. \hfill $\square$
 \end{example}
-
-\begin{example}
+ 
+\begin{example}\label{ex:s3-dos}
     Encuentre la solución general a
-\begin{equation} \tag{4.4.9}
+\begin{equation}
 2x^2 y'' + xy' - (1 + x)y = 0, \qquad x > 0.
+\label{eq:s3-ej2}
 \end{equation}
-
-\noindent \textbf{Solución:} \quad En este caso, $p(x) = \frac{1}{2}$ y $q(x) = -\frac{1}{2}(1 + x)$, ambas analíticas en $x = 0$. Así, $x = 0$ es un punto singular regular de la Ecuación (4.4.9). La ecuación indicial $r(r - 1) + \frac{1}{2}r - \frac{1}{2} = 0$ se puede escribir como $2r^2 - r - 1 = 0$, que se factoriza como $(2r - 1)(r + 1) = 0$. Por lo tanto, las raíces de la ecuación indicial son
-\begin{equation} \tag{4.4.10}
+ 
+\noindent \textbf{Solución:} \quad En este caso, $p(x) = \frac{1}{2}$ y $q(x) = -\frac{1}{2}(1 + x)$, ambas analíticas en $x = 0$. Así, $x = 0$ es un punto singular regular de la Ecuación \eqref{eq:s3-ej2}. La ecuación indicial $r(r - 1) + \frac{1}{2}r - \frac{1}{2} = 0$ se puede escribir como $2r^2 - r - 1 = 0$, que se factoriza como $(2r - 1)(r + 1) = 0$. Por lo tanto, las raíces de la ecuación indicial son
+\begin{equation}
 r_1 = 1 \quad \text{y} \quad r_2 = -\frac{1}{2}.
+\label{eq:s3-raices-2}
 \end{equation}
-Dado que estas raíces son distintas y no difieren en un entero, se deduce del Teorema 4.4.3 que la ecuación diferencial dada tiene dos soluciones en serie de Frobenius de la forma
+Dado que estas raíces son distintas y no difieren en un entero ($r_1-r_2=\tfrac32$), se deduce del Teorema~\ref{thm:s3-frobenius} que la ecuación diferencial dada tiene dos soluciones en serie de Frobenius de la forma
 \[ y_1(x) = x \sum_{n=0}^{\infty} a_n x^n, \qquad y_2(x) = x^{-1/2} \sum_{n=0}^{\infty} b_n x^n. \]
-
+ 
 Ahora deseamos determinar los coeficientes $a_n$ y $b_n$. Para hacer esto, sea
 \[ y(x) = x^r \sum_{n=0}^{\infty} a_n x^n = \sum_{n=0}^{\infty} a_n x^{r+n}, \qquad a_0 \neq 0, \]
 de modo que
 \[ y'(x) = \sum_{n=0}^{\infty} (r+n)a_n x^{r+n-1}, \qquad y''(x) = \sum_{n=0}^{\infty} (r+n)(r+n-1)a_n x^{r+n-2}. \]
-Sustituyendo en (4.4.9) produce
+Sustituyendo en \eqref{eq:s3-ej2} produce
 \[ \sum_{n=0}^{\infty} 2(r+n)(r+n-1)a_n x^{r+n} + \sum_{n=0}^{\infty} (r+n)a_n x^{r+n} - \sum_{n=0}^{\infty} a_n x^{r+n} - \sum_{n=0}^{\infty} a_n x^{r+n+1} = 0. \]
 Es decir, combinando los primeros tres términos y reemplazando $n$ con $n - 1$ en la cuarta suma,
-\begin{equation} \tag{4.4.11}
+\begin{equation}
 \sum_{n=0}^{\infty} [2(r+n)(r+n-1) + (r+n) - 1]a_n x^n - \sum_{n=1}^{\infty} a_{n-1} x^n = 0.
+\label{eq:s3-suma-2}
 \end{equation}
-
-Así, los coeficientes de $x^n$ deben anularse para $n = 0, 1, 2, \dots$. El término constante en (4.4.11), correspondiente a $n = 0$, conduce directamente a la ecuación indicial y las raíces dadas en (4.4.10). Por otro lado, cuando $n = 1, 2, \dots$, en (4.4.11), obtenemos la relación de recurrencia
-\begin{equation} \tag{4.4.12}
+Así, los coeficientes de $x^n$ deben anularse para $n = 0, 1, 2, \dots$. El término constante en \eqref{eq:s3-suma-2}, correspondiente a $n = 0$, conduce directamente a la ecuación indicial y las raíces dadas en \eqref{eq:s3-raices-2}. Por otro lado, como $2s(s-1)+s-1=(2s+1)(s-1)$ con $s=r+n$, para $n = 1, 2, \dots$ obtenemos la relación de recurrencia
+\begin{equation}
 (r+n-1)(2r+2n+1)a_n - a_{n-1} = 0.
+\label{eq:s3-rec-2}
 \end{equation}
-
-Ahora sustituimos los valores de $r$ obtenidos en (4.4.10) en (4.4.12) para determinar las correspondientes soluciones en serie de Frobenius. \\
-\underline{Sea $r = 1$}: Sustituir en la relación de recurrencia (4.4.12) produce
+ 
+Ahora sustituimos los valores de $r$ obtenidos en \eqref{eq:s3-raices-2} para determinar las correspondientes soluciones en serie de Frobenius.
+ 
+\noindent \underline{Sea $r = 1$}: Sustituir en la relación de recurrencia \eqref{eq:s3-rec-2} produce
 \[ a_n = \frac{1}{n(2n+3)}a_{n-1}, \qquad n = 1, 2, 3, \dots \]
 Así,
 \begin{align*}
 n &= 1: & a_1 &= \frac{1}{1 \cdot 5}a_0, \\
 n &= 2: & a_2 &= \frac{1}{2 \cdot 7}a_1 = \frac{1}{(2!)(5 \cdot 7)}a_0, \\
 n &= 3: & a_3 &= \frac{1}{3 \cdot 9}a_2 = \frac{1}{(3!)(5 \cdot 7 \cdot 9)}a_0, \\
-n &= 4: & a_4 &= \frac{1}{4 \cdot 11}
+n &= 4: & a_4 &= \frac{1}{4 \cdot 11}a_3 = \frac{1}{(4!)(5 \cdot 7 \cdot 9 \cdot 11)}a_0.
 \end{align*}
 Se deduce que, en general,
 \[ a_n = \frac{1}{(n!)[5 \cdot 7 \cdot 9 \cdots (2n + 3)]}a_0, \qquad n = 1, 2, 3, \dots, \]
-de modo que la solución en serie de Frobenius correspondiente es
-\[ y_1(x) = x \left\{ 1 + \frac{1}{5}x + \frac{1}{(2!)(5 \cdot 7)}x^2 + \dots + \frac{1}{(n!)[5 \cdot 7 \cdot 9 \cdots (2n + 3)]}x^n + \dots \right\}, \]
-donde hemos establecido $a_0 = 1$. Podemos escribir esta solución como
+de modo que, con $a_0=1$, la solución en serie de Frobenius correspondiente es
 \[ y_1(x) = x \left\{ 1 + \sum_{n=1}^{\infty} \frac{1}{(n!)[5 \cdot 7 \cdot 9 \cdots (2n + 3)]}x^n \right\}, \qquad x > 0. \]
-
-Sea $r = -\frac{1}{2}$: Para la segunda solución en serie de Frobenius, reemplazamos los coeficientes $a_i$ en el trabajo anterior por $b_i$. En este caso, la relación de recurrencia (4.4.12) se reduce a
-\[ b_n = -\frac{1}{n(2n - 3)}b_{n-1}, \qquad n = 1, 2, \dots \]
-Por lo tanto, obtenemos
+ 
+\noindent \underline{Sea $r = -\frac{1}{2}$}: Para la segunda solución en serie de Frobenius, reemplazamos los coeficientes $a_i$ en el trabajo anterior por $b_i$. En este caso, la relación de recurrencia \eqref{eq:s3-rec-2} se reduce a
+\[ b_n = \frac{1}{n(2n - 3)}b_{n-1}, \qquad n = 1, 2, \dots \]
+(nótese que para $n=1$ el factor $2n-3=-1$ es negativo; de ahí el signo de $b_1$). Por lo tanto, obtenemos
 \begin{align*}
 n &= 1: & b_1 &= -b_0, \\
-n &= 2: & b_2 &= -\frac{1}{2 \cdot 1}b_1 = -\frac{1}{2!}b_0, \\
-n &= 3: & b_3 &= -\frac{1}{3 \cdot 3}b_2 = -\frac{1}{(3!)(1 \cdot 3)}b_0, \\
-n &= 4: & b_4 &= -\frac{1}{4 \cdot 5}b_3 = -\frac{1}{(4!)(1 \cdot 3 \cdot 5)}b_0.
+n &= 2: & b_2 &= \frac{1}{2 \cdot 1}b_1 = -\frac{1}{2!}b_0, \\
+n &= 3: & b_3 &= \frac{1}{3 \cdot 3}b_2 = -\frac{1}{(3!)(1 \cdot 3)}b_0, \\
+n &= 4: & b_4 &= \frac{1}{4 \cdot 5}b_3 = -\frac{1}{(4!)(1 \cdot 3 \cdot 5)}b_0.
 \end{align*}
 En general, tenemos
 \[ b_n = -\frac{1}{(n!)[1 \cdot 3 \cdot 5 \cdots (2n - 3)]}b_0, \qquad n = 1, 2, 3, \dots \]
-Se deduce que una segunda solución en serie de Frobenius linealmente independiente para la ecuación diferencial (4.4.9) en $(0, \infty)$ es
-\begin{align*}
-y_2(x) &= x^{-1/2} \left\{ 1 - x - \frac{1}{2!}x^2 - \frac{1}{(3!)(1 \cdot 3)}x^3 - \dots \right. \\
-&\qquad \left. - \frac{1}{(n!)[1 \cdot 3 \cdots (2n - 3)]}x^n - \dots \right\},
-\end{align*}
-donde hemos establecido $b_0 = 1$. Esto se puede escribir como
+Se deduce que una segunda solución en serie de Frobenius linealmente independiente para la ecuación diferencial \eqref{eq:s3-ej2} en $(0, \infty)$ es, con $b_0=1$,
 \[ y_2(x) = x^{-1/2} \left\{ 1 - \sum_{n=1}^{\infty} \frac{1}{(n!)[1 \cdot 3 \cdot 5 \cdots (2n - 3)]}x^n \right\}, \qquad x > 0. \]
-En consecuencia, la solución general a la ecuación diferencial (4.4.9) en $(0, \infty)$ es
-\[ y(x) = c_1 y_1(x) + c_2 y_2(x).  \]
-
+(el producto $1\cdot3\cdots(2n-3)$ se interpreta como $1$ cuando $n=1$). En consecuencia, la solución general a la ecuación diferencial \eqref{eq:s3-ej2} en $(0, \infty)$ es
+\[ y(x) = c_1 y_1(x) + c_2 y_2(x). \tag*{$\square$} \]
 \end{example}
-
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Primeros coeficientes de las dos soluciones de \eqref{eq:s3-ej2} (con $a_0=b_0=1$).}
+\label{tab:s3-coef}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{bbe!15}$n$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ \\ \hline
+$a_n$ (con $r=1$) & $1$ & $\frac15$ & $\frac1{70}$ & $\frac1{1890}$ & $\frac1{83160}$ & $\frac1{5405400}$ \\ \hline
+$b_n$ (con $r=-\frac12$) & $1$ & $-1$ & $-\frac12$ & $-\frac1{18}$ & $-\frac1{360}$ & $-\frac1{12600}$ \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, height=6cm, xmin=0, xmax=3, ymin=-4, ymax=6, restrict y to domain=-12:12,
+  legend pos=north east, samples=100]
+\addplot[bbeblue, very thick, smooth] coordinates {(0.05,0.0505) (0.1,0.1020) (0.15,0.1545) (0.2,0.2081) (0.25,0.2627) (0.3,0.3184) (0.35,0.3751) (0.4,0.4329) (0.45,0.4918) (0.5,0.5518) (0.55,0.6129) (0.6,0.6752) (0.65,0.7385) (0.7,0.8030) (0.75,0.8687) (0.8,0.9355) (0.85,1.0036) (0.9,1.0728) (0.95,1.1432) (1,1.2148) (1.05,1.2877) (1.1,1.3618) (1.15,1.4372) (1.2,1.5138) (1.25,1.5917) (1.3,1.6709) (1.35,1.7515) (1.4,1.8333) (1.45,1.9165) (1.5,2.0010) (1.55,2.0869) (1.6,2.1741) (1.65,2.2627) (1.7,2.3528) (1.75,2.4442) (1.8,2.5371) (1.85,2.6314) (1.9,2.7272) (1.95,2.8244) (2,2.9231) (2.05,3.0234) (2.1,3.1251) (2.15,3.2284) (2.2,3.3332) (2.25,3.4395) (2.3,3.5474) (2.35,3.6569) (2.4,3.7680) (2.45,3.8808) (2.5,3.9951) (2.55,4.1111) (2.6,4.2288) (2.65,4.3481) (2.7,4.4691) (2.75,4.5918) (2.8,4.7163) (2.85,4.8425) (2.9,4.9704) (2.95,5.1001) (3,5.2316)};
+\addplot[bbered, very thick, smooth] coordinates {(0.05,4.2429) (0.1,2.8301) (0.15,2.1652) (0.2,1.7431) (0.25,1.4357) (0.3,1.1931) (0.35,0.9911) (0.4,0.8165) (0.45,0.6612) (0.5,0.5203) (0.55,0.3900) (0.6,0.2681) (0.65,0.1525) (0.7,0.0421) (0.75,-0.0642) (0.8,-0.1673) (0.85,-0.2678) (0.9,-0.3662) (0.95,-0.4629) (1,-0.5584) (1.05,-0.6529) (1.1,-0.7467) (1.15,-0.8400) (1.2,-0.9329) (1.25,-1.0257) (1.3,-1.1185) (1.35,-1.2114) (1.4,-1.3045) (1.45,-1.3980) (1.5,-1.4919) (1.55,-1.5863) (1.6,-1.6812) (1.65,-1.7768) (1.7,-1.8732) (1.75,-1.9702) (1.8,-2.0681) (1.85,-2.1669) (1.9,-2.2666) (1.95,-2.3672) (2,-2.4689) (2.05,-2.5716) (2.1,-2.6753) (2.15,-2.7802) (2.2,-2.8862) (2.25,-2.9934) (2.3,-3.1017) (2.35,-3.2113) (2.4,-3.3222) (2.45,-3.4344) (2.5,-3.5479) (2.55,-3.6627) (2.6,-3.7789) (2.65,-3.8965) (2.7,-4.0155) (2.75,-4.1359) (2.8,-4.2578) (2.85,-4.3812) (2.9,-4.5061) (2.95,-4.6325) (3,-4.7605)};
+\legend{$y_1=x(1+\frac15x+\cdots)$, $y_2=x^{-1/2}(1-x-\cdots)$}
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:s3-dos}: $y_1\to0$ cuando $x\to0^+$ (como $x^{1}$), mientras que $y_2\to+\infty$ (como $x^{-1/2}$). Es la firma de los dos exponentes $r_1=1$ y $r_2=-\tfrac12$.}
+\label{fig:s3-dos}
+\end{figure}
+ 
 La ecuación diferencial en el ejemplo anterior tenía dos soluciones en serie de Frobenius linealmente independientes, y por lo tanto pudimos determinar su solución general. En el siguiente ejemplo, solo hay una solución en \textit{serie de Frobenius} linealmente independiente.
-
-\begin{example}
+ 
+\begin{example}\label{ex:s3-una}
     Determine una solución en serie de Frobenius para
-\begin{equation} \tag{4.4.13}
+\begin{equation}
 x^2 y'' + x(3 + x)y' + (1 + 3x)y = 0, \qquad x > 0.
+\label{eq:s3-ej3}
 \end{equation}
-
-\noindent \textbf{Solución:} \quad Por inspección, vemos que $x = 0$ es un punto singular regular de la ecuación diferencial (4.4.13), y por lo tanto, a partir del Teorema 4.4.3, la ecuación diferencial tiene al menos una solución en serie de Frobenius. Además, dado que $p(x) = 3 + x$ y $q(x) = 1 + 3x$ son ambos polinomios, sus expansiones en serie de potencias alrededor de $x = 0$ son válidas para todo $x$. Se deduce que cualquier solución en serie de Frobenius será válida para $0 < x < \infty$. Para determinar una solución, sea
+ 
+\noindent \textbf{Solución:} \quad Por inspección, vemos que $x = 0$ es un punto singular regular de la ecuación diferencial \eqref{eq:s3-ej3}, y por lo tanto, a partir del Teorema~\ref{thm:s3-frobenius}, la ecuación diferencial tiene al menos una solución en serie de Frobenius. Además, dado que $p(x) = 3 + x$ y $q(x) = 1 + 3x$ son ambos polinomios, sus expansiones en serie de potencias alrededor de $x = 0$ son válidas para todo $x$. Se deduce que cualquier solución en serie de Frobenius será válida para $0 < x < \infty$. Para determinar una solución, sea
 \[ y(x) = x^r \sum_{n=0}^{\infty} a_n x^n = \sum_{n=0}^{\infty} a_n x^{r+n}. \]
 Derivando dos veces con respecto a $x$ produce
 \[ y'(x) = \sum_{n=0}^{\infty} (r + n)a_n x^{r+n-1}, \qquad y''(x) = \sum_{n=0}^{\infty} (r + n)(r + n - 1)a_n x^{r+n-2}, \]
-de modo que $y$ es una solución a (4.4.13) siempre que $a_n$ y $r$ satisfagan
+de modo que $y$ es una solución a \eqref{eq:s3-ej3} siempre que $a_n$ y $r$ satisfagan
 \begin{align*}
 \sum_{n=0}^{\infty} (r + n)(r + n - 1)a_n x^{r+n} + 3\sum_{n=0}^{\infty} (r + n)a_n x^{r+n} &+ \sum_{n=0}^{\infty} (r + n)a_n x^{r+n+1} \\
 + \sum_{n=0}^{\infty} a_n x^{r+n} + 3\sum_{n=0}^{\infty} a_n x^{r+n+1} &= 0.
 \end{align*}
 Dividir por $x^r$ y reemplazar $n$ por $n - 1$ en la tercera y quinta sumas produce
-\begin{equation} \tag{9.4.14}
+\begin{equation}
 \sum_{n=0}^{\infty} [(r + n)(r + n - 1) + 3(r + n) + 1]a_n x^n + \sum_{n=1}^{\infty} (r + n + 2)a_{n-1}x^n = 0.
+\label{eq:s3-suma-3}
 \end{equation}
 Esto implica que los coeficientes de $x^n$ deben anularse para $n = 0, 1, 2, \dots$. Cuando $n = 0$, obtenemos la ecuación indicial
-\[ r(r - 1) + 3r + 1 = 0. \]
-Es decir,
-\[ (r + 1)^2 = 0. \]
+\[ r(r - 1) + 3r + 1 = (r + 1)^2 = 0. \]
 Así, el único valor de $r$ para el cual existe una solución en serie de Frobenius es
 \[ r = -1. \]
-Para $n \ge 1$, (4.4.14) produce la relación de recurrencia
+Para $n \ge 1$, \eqref{eq:s3-suma-3} produce la relación de recurrencia
 \[ [(r + n)(r + n - 1) + 3(r + n) + 1]a_n + (r + n + 2)a_{n-1} = 0. \]
 Estableciendo $r = -1$, obtenemos
 \[ [(n - 1)(n - 2) + 3(n - 1) + 1]a_n + (n + 1)a_{n-1} = 0, \]
 que se puede escribir como
 \[ a_n = -\frac{n + 1}{n^2}a_{n-1}, \qquad n = 1, 2, \dots \]
-
+ 
 Resolviendo esta relación de recurrencia, tenemos
 \begin{align*}
 n &= 1: & a_1 &= -2a_0, \\
@@ -236,14 +418,79 @@ n &= 2: & a_2 &= -\frac{3}{4}a_1 = \frac{3 \cdot 2}{4}a_0, \\
 n &= 3: & a_3 &= -\frac{4}{9}a_2 = -\frac{4!}{4 \cdot 9}a_0.
 \end{align*}
 El término general es
-\[ a_n = (-1)^n \frac{(n + 1)!}{2^2 \cdot 3^2 \dots n^2}a_0, \qquad n = 1, 2, 3, \dots, \]
-que se puede escribir como
-\[ a_n = (-1)^n \frac{(n + 1)!}{(n!)^2}a_0. \]
-Es decir,
-\[ a_n = (-1)^n \frac{n + 1}{n!}a_0, \qquad n = 1, 2, 3, \dots \]
+\[ a_n = (-1)^n \frac{(n + 1)!}{2^2 \cdot 3^2 \cdots n^2}a_0 = (-1)^n \frac{(n + 1)!}{(n!)^2}a_0 = (-1)^n \frac{n + 1}{n!}a_0, \qquad n = 1, 2, 3, \dots \]
 En consecuencia, la solución en serie de Frobenius correspondiente es
 \[ y(x) = x^{-1} \left[ 1 + \sum_{n=1}^{\infty} (-1)^n \frac{n + 1}{n!} x^n \right], \qquad x > 0, \]
-donde establecemos $a_0 = 1$. \hfill $\square$
-
-Note que en este problema, solo hay una solución en serie de Frobenius linealmente independiente para la ecuación diferencial dada. Para determinar una segunda solución linealmente independiente, podríamos, por ejemplo, usar el método de reducción de orden.
+donde establecemos $a_0 = 1$.
+ 
+\vspace{.15cm}
+\noindent\textbf{¿Qué función es?} Como $\sum_{n\ge0} n\,t^n/n!=t\,e^t$, se tiene $\sum_{n\ge0}(n+1)t^n/n!=(1+t)e^t$, y con $t=-x$:
+\[ y_1(x)=\frac{(1-x)\,e^{-x}}{x}. \]
+(Se puede verificar directamente que satisface \eqref{eq:s3-ej3}.) \hfill $\square$
+ 
+Note que en este problema, solo hay una solución en serie de Frobenius linealmente independiente para la ecuación diferencial dada. Para determinar una segunda solución linealmente independiente, podríamos, por ejemplo, usar el método de reducción de orden, que desarrollaremos en la sección siguiente.
 \end{example}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, height=5.6cm, xmin=0, xmax=4, ymin=-1, ymax=6, restrict y to domain=-5:12,
+  samples=150]
+\addplot[bbeblue, very thick, domain=0.12:4] {(1-x)*exp(-x)/x};
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:s3-una}: $y_1(x)=(1-x)e^{-x}/x\sim 1/x$ cerca de $x=0$ (exponente $r=-1$) y cruza el eje en $x=1$.}
+\label{fig:s3-una}
+\end{figure}
+ 
+\begin{example}\label{ex:s3-cos}
+\textbf{(Una solución cerrada inesperada.)} Resuelva $2xy''+y'+y=0$, $x>0$.
+ 
+\noindent \textbf{Solución:} \quad Multiplicamos por $x$ y dividimos por $2$: $x^2y''+x\bigl(\tfrac12\bigr)y'+\tfrac{x}{2}\,y=0$. Aquí $p\equiv\frac12$ y $q(x)=\frac x2$ (así $p_0=\tfrac12$, $q_0=0$, $q_1=\tfrac12$), y la ecuación indicial es
+\[ F(r)=r(r-1)+\tfrac12 r=r\bigl(r-\tfrac12\bigr)=0,\qquad r_1=\tfrac12,\ r_2=0, \]
+que difieren en $\tfrac12$ (no es entero): hay dos series de Frobenius. La fórmula \eqref{eq:s3-recgen} solo tiene el término $k=n-1$ con $q_1$:
+\[ F(r+n)\,a_n=-\tfrac12\,a_{n-1},\qquad F(r+n)=(r+n)\bigl(r+n-\tfrac12\bigr). \]
+\begin{itemize}
+\item $r=0$: $n(2n-1)\,a_n=-a_{n-1}$, luego $a_n=\dfrac{(-1)^n}{n!\,(2n-1)!!}=\dfrac{(-2)^n}{(2n)!}$ y $y_1(x)=\displaystyle\sum_{n\ge0}\frac{(-1)^n(2x)^n}{(2n)!}=\cos\sqrt{2x}$.
+\item $r=\tfrac12$: $n(2n+1)\,a_n=-a_{n-1}$, luego $a_n=\dfrac{(-2)^n}{(2n+1)!}$ y $y_2(x)=\sqrt x\displaystyle\sum_{n\ge0}\frac{(-2x)^n}{(2n+1)!}=\dfrac{\sin\sqrt{2x}}{\sqrt2}$.
+\end{itemize}
+La solución general es $y=c_1\cos\sqrt{2x}+c_2\sin\sqrt{2x}$ (con ambas series convergentes para todo $x\ge0$). \hfill $\square$
+\end{example}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeosc, height=5.6cm, xmin=0, xmax=12, ymin=-1.3, ymax=1.3, samples=200, legend pos=outer north east, width=.8\linewidth]
+\bbezero{0}{12}
+\addplot[bbeblue, very thick, domain=0:12] {cos(deg(sqrt(2*x)))};
+\addplot[bbered, very thick, domain=0:12] {sin(deg(sqrt(2*x)))/sqrt(2)};
+\legend{$y_1=\cos\sqrt{2x}$, $y_2=\sin\sqrt{2x}/\sqrt2$}
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:s3-cos}: aunque $x=0$ es singular, ambas soluciones están acotadas; oscilan cada vez más despacio al crecer $x$.}
+\label{fig:s3-cos}
+\end{figure}
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Resumen de los ejemplos: exponentes y soluciones de Frobenius.}
+\label{tab:s3-resumen}
+\begin{tabular}{|p{4.7cm}|c|c|p{4.6cm}|}
+\hline
+\rowcolor{bbe!15}\textbf{Ecuación} & \textbf{Raíces} & $r_1-r_2$ & \textbf{Soluciones de Frobenius} \\ \hline
+$x^2y''+xe^{2x}y'-2\cos x\,y=0$ & $\pm\sqrt2$ & $2\sqrt2$ & dos \\ \hline
+$2x^2y''+xy'-(1+x)y=0$ & $1,\ -\frac12$ & $\frac32$ & dos: $y_1\to0$, $y_2\to\infty$ \\ \hline
+$x^2y''+x(3+x)y'+(1+3x)y=0$ & $-1$ (doble) & $0$ & \textbf{una}: $y_1=\frac{(1-x)e^{-x}}{x}$ \\ \hline
+$2xy''+y'+y=0$ & $\frac12,\ 0$ & $\frac12$ & dos: $\cos\sqrt{2x}$, $\sin\sqrt{2x}$ \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{exercise}[Para llevar]
+Escribe la ecuación indicial y sus raíces, y di cuántas soluciones de Frobenius garantiza el teorema:
+\begin{enumerate}
+\item $x^2y''+3xy'+(1+x)y=0$.
+\item $x^2y''+xy'+\bigl(x-\tfrac19\bigr)y=0$. Calcula además $a_1$ para cada raíz.
+\end{enumerate}
+\emph{Respuestas:} (1) $F(r)=r^2+2r+1=(r+1)^2$, raíz doble $r=-1$: solo una solución de Frobenius garantizada. \; (2) $F(r)=r^2-\frac19$, raíces $r=\pm\frac13$ (difieren en $\frac23$): dos soluciones de Frobenius en $(0,\infty)$. Con $F(r+1)a_1=-q_1a_0=-a_0$: para $r=\frac13$, $a_1=-\frac35a_0$; para $r=-\frac13$, $a_1=-3a_0$.
+\end{exercise}
