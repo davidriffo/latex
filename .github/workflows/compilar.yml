@@ -16,7 +16,7 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Debug: contenido del repositorio antes de compilar
+      - name: "Debug: contenido del repositorio antes de compilar"
         run: |
           echo "PWD: $(pwd)"
           echo "Listando archivos en la raíz:"
