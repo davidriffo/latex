@@ -1,0 +1,203 @@
+Una de las ecuaciones diferenciales más importantes en matemáticas aplicadas y física matemática es la \textbf{ecuación de Bessel de orden $p$}, definida por
+\begin{equation} \tag{4.6.1}
+x^2 y'' + xy' + (x^2 - p^2)y = 0,
+\end{equation}
+donde $p$ es una constante \textit{no negativa}. En general, no es posible obtener soluciones de forma cerrada para esta ecuación. Sin embargo, dado que $x = 0$ es un punto singular regular, podemos aplicar la técnica de series de Frobenius para obtener soluciones en serie. Asumiremos que $x > 0$.
+La ecuación indicial para (4.6.1) es
+\[ r(r - 1) + r - p^2 = 0 \]
+con raíces
+\[ r = \pm p. \]
+En consecuencia, siempre que $2p$ no sea un número entero, existirán dos soluciones en serie de Frobenius linealmente independientes. Para obtener estas soluciones, sea
+\begin{equation} \tag{4.6.2}
+y(x) = x^r \sum_{n=0}^{\infty} a_n x^n
+\end{equation}
+de modo que
+\[ y'(x) = \sum_{n=0}^{\infty} (r + n)a_n x^{r+n-1}, \qquad y''(x) = \sum_{n=0}^{\infty} (r + n)(r + n - 1)a_n x^{r+n-2}. \]
+Sustituir en (4.6.1) y reordenar produce
+\begin{equation} \tag{4.6.3}
+\sum_{n=0}^{\infty} [(r + n)^2 - p^2]a_n x^{r+n} + \sum_{n=2}^{\infty} a_{n-2} x^{r+n} = 0.
+\end{equation}
+Cuando $n = 0$, obtenemos la ecuación indicial cuyas raíces son, como hemos visto antes,
+\[ r = \pm p. \]
+Cuando $n = 1$, (4.6.3) implica que
+\begin{equation} \tag{4.6.4}
+[(r + 1)^2 - p^2]a_1 = 0
+\end{equation}
+y para $n \ge 2$, obtenemos la relación de recurrencia general
+\begin{equation} \tag{4.6.5}
+[(r + n)^2 - p^2]a_n = -a_{n-2}, \qquad n = 2, 3, \dots
+\end{equation}
+Considere la raíz $r = p$. En este caso, (4.6.4) se reduce a
+\[ (2p + 1)a_1 = 0 \]
+de modo que, dado que $p \ge 0$,
+\begin{equation} \tag{4.6.6}
+a_1 = 0.
+\end{equation}
+Establecer $r = p$ en (4.6.5) produce
+\begin{equation} \tag{4.6.7}
+a_n = -\frac{1}{n(2p + n)}a_{n-2}, \qquad n = 2, 3, \dots
+\end{equation}
+Se deduce de (4.6.6) y (4.6.7) que todos los coeficientes impares son cero; es decir,
+\begin{equation} \tag{4.6.8}
+a_{2k+1} = 0, \qquad k = 0, 1, 2, \dots
+\end{equation}
+Ahora considere los coeficientes pares. De (4.6.7), obtenemos
+\[ a_2 = -\frac{1}{2(2p + 2)}a_0, \qquad a_4 = -\frac{1}{4(2p + 4)}a_2 = \frac{1}{2 \cdot 4(2p + 4)(2p + 2)}a_0, \]
+y así sucesivamente. El coeficiente par general es
+\[ a_{2k} = \frac{(-1)^k}{2 \cdot 4 \cdots (2k)(2p + 2)(2p + 4) \cdots (2p + 2k)}a_0, \qquad k = 1, 2, \dots, \]
+que se puede escribir como
+\[ a_{2k} = \frac{(-1)^k}{2^{2k}k!(p + 1)(p + 2) \cdots (p + k)}a_0, \qquad k = 1, 2, 3, \dots \]
+\begin{remark}
+En consecuencia, la solución en serie de Frobenius correspondiente a la ecuación de Bessel es
+\begin{equation} \tag{4.6.9}
+y_1(x) = a_0 x^p \left[ 1 + \sum_{k=1}^{\infty} \frac{(-1)^k}{2^{2k}k!(p + 1)(p + 2) \cdots (p + k)}x^{2k} \right].
+\end{equation}
+Esta solución es válida para todo $x > 0$.
+\end{remark}
+
+\subsection{Funciones de Bessel}
+  
+Para estudiar las soluciones de la ecuación de Bessel obtenidas anteriormente, es conveniente primero reescribir (4.6.9) en una forma diferente, pero equivalente. El análisis se divide en dos casos:
+
+\vspace{0.3cm}
+\noindent \textbf{Caso 1: $p = N$, un entero no negativo:} \quad En este caso, la solución (4.6.9) se puede escribir como
+\begin{equation} \tag{9.6.10}
+y_1(x) = a_0 x^N \left[ 1 + \sum_{k=1}^{\infty} \frac{(-1)^k}{2^{2k}k!(N + 1)(N + 2) \cdots (N + k)}x^{2k} \right],
+\end{equation}
+donde la constante $a_0$ se puede elegir arbitrariamente. Es conveniente hacer la elección
+\[ a_0 = \frac{1}{N!2^N}. \]
+
+\begin{definition}
+La solución correspondiente de la ecuación de Bessel se denota $J_N(x)$ y se llama la \textbf{función de Bessel de primera especie de orden entero $N$}. Sustituyendo $a_0$ en (4.6.10), obtenemos
+\begin{equation} \tag{4.6.11}
+J_N(x) = \sum_{k=0}^{\infty} \frac{(-1)^k}{k!(N + k)!} \left(\frac{x}{2}\right)^{2k+N}.
+\end{equation}
+\end{definition}
+
+\begin{remark}
+    Las funciones de Bessel de orden entero más importantes son $J_0(x)$ y $J_1(x)$, ya que, como veremos en breve, todas las demás funciones de Bessel de primera especie de orden entero se pueden expresar en términos de estas dos. Escribir los primeros términos en (4.6.11) cuando $N = 0, 1$ produce, respectivamente,
+\begin{align*}
+J_0(x) &= 1 - \frac{1}{4}x^2 + \frac{1}{64}x^4 - \dots \\
+J_1(x) &= \frac{1}{2}x \left( 1 - \frac{1}{8}x^2 + \frac{1}{192}x^4 - \dots \right).
+\end{align*}
+
+\end{remark}
+
+Un análisis de estas funciones muestra que ambas oscilan con amplitud decreciente. Además, cada una tiene un número infinito de ceros no negativos. 
+
+\vspace{0.3cm}
+\noindent \textbf{Caso 2: $p$ un número no entero:} \quad Para obtener una fórmula análoga a (4.6.11) para la solución en serie de Frobenius (4.6.9) cuando $p$ no es un entero, necesitamos introducir la \textit{función gamma}. Esta función se puede considerar como la generalización de la función factorial al caso de los números reales no enteros.
+
+\begin{definition}
+    La función gamma, $\Gamma$, se define por
+\[ \Gamma(p) = \int_0^{\infty} t^{p-1} e^{-t} \, dt, \qquad p > 0. \]
+
+\end{definition}
+
+Ahora considere determinar la solución general de la ecuación de Bessel. Para todo $p \ge 0$, hemos demostrado anteriormente que una solución a la ecuación de Bessel en $(0, \infty)$ está dada en (4.6.16). Por lo tanto, requerimos una segunda solución linealmente independiente. Dado que las raíces de la ecuación indicial son $r = \pm p$, se deduce de nuestra teoría general de Frobenius que, siempre que $2p$ no sea igual a un número entero, existirá una segunda solución en serie de Frobenius linealmente independiente correspondiente a la raíz $r = -p$. No es demasiado difícil ver que esta solución se puede obtener reemplazando $p$ por $-p$ en (4.6.16). Así, obtenemos
+\begin{equation} \tag{9.6.17}
+J_{-p}(x) = \sum_{k=0}^{\infty} \frac{(-1)^k}{\Gamma(k + 1)\Gamma(k - p + 1)} \left(\frac{x}{2}\right)^{2k-p}.
+\end{equation}
+
+\begin{remark}
+En consecuencia, la solución general a la ecuación de Bessel de orden $p$ cuando $2p$ no es igual a un entero es
+\begin{equation} \tag{9.6.18}
+y(x) = c_1 J_p(x) + c_2 J_{-p}(x).
+\end{equation}
+\end{remark}
+
+Cuando $2p$ es igual a un entero, surgen dos subcasos dependiendo de si $p$ es en sí mismo un entero o un semi-entero (es decir, $\frac{1}{2}, \frac{3}{2}, \dots$). En el último caso, con $p$ de la forma $(2j + 1)/2$ ($j$ un entero no negativo), un análisis directo de la relación de recurrencia (4.6.5) con $r = -p$ muestra que también existe una segunda serie de Frobenius en este caso, y está, de hecho, dada por (9.6.17). Así, (4.6.18) representa la solución general de la ecuación de Bessel, siempre que $p$ no sea igual a un número entero. En la práctica, en lugar de usar $J_{-p}$ como la segunda solución linealmente independiente de la ecuación de Bessel, es usual usar la siguiente combinación lineal de estas dos soluciones:
+\begin{equation} \tag{9.6.19}
+Y_p(x) = \frac{J_p(x) \cos p\pi - J_{-p}(x)}{\sin p\pi}.
+\end{equation}
+
+La función definida en (4.6.19) se llama la \textbf{función de Bessel de segunda especie de orden $p$}. Usando $Y_p$, podemos por lo tanto escribir la solución general de la ecuación de Bessel, cuando $p$ no es igual a un entero positivo, en la forma
+\begin{equation} \tag{9.6.20}
+y(x) = c_1 J_p(x) + c_2 Y_p(x).
+\end{equation}
+
+La determinación de una segunda solución linealmente independiente para la ecuación de Bessel cuando $p$ es un entero positivo, $n$, es un poco más complicada. De nuestra teoría general de Frobenius, ciertamente conocemos la forma de la segunda solución linealmente independiente, a saber,
+\[ y_2(x) = A J_n(x) \ln x + x^{-n} \sum_{k=0}^{\infty} b_k x^k \]
+y los coeficientes $A, b_n$ podrían determinarse por sustitución directa en (4.6.1). 
+
+\begin{definition}
+Extendemos la definición de la función de Bessel de segunda especie al caso de enteros positivos mediante
+\begin{equation} \tag{4.6.21}
+Y_n(x) = \lim_{p \to n} \left[ \frac{J_p(x) \cos p\pi - J_{-p}(x)}{\sin p\pi} \right],
+\end{equation}
+\end{definition}
+
+Se puede demostrar que el límite anterior existe y que la función resultante es, de hecho, una segunda solución linealmente independiente de la ecuación de Bessel. Podríamos derivar la representación en serie de (4.6.21) evaluando el límite explícitamente. Los cálculos son largos y tediosos, por lo que los omitimos. El resultado de estos cálculos es
+\begin{align*}
+Y_n(x) &= \frac{2}{\pi} J_n(x) \left[ \ln \left( \frac{x}{2} \right) + \gamma \right] - \frac{1}{\pi} \left[ \sum_{k=0}^{n-1} \frac{(n - k - 1)!}{k!} \left( \frac{x}{2} \right)^{2k-n} + \frac{s_n}{n!} \left( \frac{x}{2} \right)^n \right. \\
+&\quad \left. + \sum_{k=1}^{\infty} (-1)^k \frac{s_k + s_{n+k}}{k!(n + k)!} \left( \frac{x}{2} \right)^{2k+n} \right],
+\end{align*}
+donde
+\[ s_k = 1 + \frac{1}{2} + \frac{1}{3} + \dots + \frac{1}{k} \]
+y
+\[ \gamma = \lim_{k \to \infty} (s_k - \ln k) \approx 0.577215664\dots \]
+El valor $\gamma$ se llama \textit{constante de Euler}.
+Así, (4.6.20) representa la solución general de la ecuación de Bessel de orden arbitrario $p$.
+
+\vspace{0.8cm}
+
+En la práctica, usualmente estamos interesados en soluciones de la ecuación de Bessel que están acotadas en $x = 0$. Sin embargo, las funciones de Bessel de segunda especie siempre están no acotadas en $x = 0$. (Cuando $p$ no es un entero, esto se deduce del hecho de que $x^{-p}$ tiene un exponente negativo, y cuando $p$ es un entero, se debe al segundo término en la expansión de $Y_n$ dada anteriormente). Por lo tanto, usualmente requerimos solo las funciones de Bessel de primera especie. En esta sección, enumeramos varias propiedades de las funciones de Bessel de primera especie que ayudan ya sea a tabular valores de las funciones o a trabajar con las funciones mismas.
+
+Primero recordamos de (4.6.16) la definición de las funciones de Bessel de primera especie de orden $p$, a saber
+\begin{equation} \tag{4.6.22}
+J_p(x) = \sum_{k=0}^{\infty} \frac{(-1)^k}{\Gamma(k + 1)\Gamma(p + k + 1)} \left( \frac{x}{2} \right)^{2k+p}.
+\end{equation}
+
+\vspace{0.5cm}
+\begin{theorem}
+\noindent \textbf{Propiedad 1:}
+\begin{equation} \tag{4.6.23}
+\frac{d}{dx} [x^p J_p(x)] = x^p J_{p-1}(x).
+\end{equation}
+\end{theorem}
+
+\vspace{0.5cm}
+\begin{theorem}
+\noindent \textbf{Propiedad 2:}
+\begin{equation} \tag{4.6.24}
+\frac{d}{dx} [x^{-p} J_p(x)] = -x^{-p} J_{p+1}(x).
+\end{equation}
+\end{theorem}
+
+
+Ahora derivamos dos identidades satisfechas por las derivadas de $J_p$. Expandir las derivadas en los lados derechos de (4.6.23) y (4.6.24) y dividir las ecuaciones resultantes por $x^p$ y $x^{-p}$ respectivamente produce
+\begin{align}
+J_p'(x) + x^{-1}p J_p(x) &= J_{p-1}(x) \tag{4.6.25} \\
+J_p'(x) - x^{-1}p J_p(x) &= -J_{p+1}(x). \tag{4.6.26}
+\end{align}
+Restando (4.6.26) de (4.6.25) y reordenando los términos, obtenemos:
+
+\begin{theorem}
+\vspace{0.5cm}
+\noindent \textbf{Propiedad 3:}
+\begin{equation} \tag{4.6.27}
+J_{p+1}(x) = 2x^{-1}p J_p(x) - J_{p-1}(x).
+\end{equation}
+\end{theorem}
+
+De manera similar, sumar (4.6.25) y (4.6.26) y reordenar produce:
+
+\begin{theorem}
+\vspace{0.5cm}
+\noindent \textbf{Propiedad 4:}
+\begin{equation} \tag{4.6.28}
+J_p'(x) = \frac{1}{2} [J_{p-1}(x) - J_{p+1}(x)].
+\end{equation}
+\end{theorem}
+
+Estas fórmulas nos permiten expresar funciones de Bessel de orden superior y sus derivadas en términos de funciones de orden inferior. Por ejemplo, todas las funciones de Bessel de orden entero se pueden expresar en términos de $J_0(x)$ y $J_1(x)$.
+
+\vspace{0.5cm}
+\begin{example}
+\noindent  Exprese $J_2(x)$ y $J_3(x)$ en términos de $J_0(x)$ y $J_1(x)$.
+
+\noindent \textbf{Solución:} \quad Aplicando (4.6.27) con $p = 1$, obtenemos
+\[ J_2(x) = 2x^{-1}J_1(x) - J_0(x). \]
+De manera similar, cuando $p = 2$,
+\[ J_3(x) = 4x^{-1}J_2(x) - J_1(x) = x^{-2}(8 - x^2)J_1(x) - 4x^{-1}J_0(x). \tag*{$\square$} \]
+\end{example}

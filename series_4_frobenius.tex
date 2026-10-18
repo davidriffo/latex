@@ -1,0 +1,268 @@
+
+En la sección anterior vimos cómo se pueden obtener soluciones en serie de Frobenius para la ecuación diferencial
+\begin{equation} \tag{4.5.1}
+x^2 y'' + xp(x)y' + q(x)y = 0, \qquad x > 0.
+\end{equation}
+
+En esta sección damos alguna justificación para el Teorema 4.4.3 y extendemos este teorema al caso cuando las raíces de la ecuación indicial para (4.5.1) difieren por un número entero. Primero asumiremos que $x > 0$, ya que nuestros resultados pueden extenderse fácilmente a $x < 0$. Comenzamos estableciendo la existencia de al menos una solución en serie de Frobenius.
+
+
+\begin{remark}
+    Asumiendo que $x = 0$ es un punto singular regular de (9.5.1), se deduce que $p$ y $q$ son analíticas en $x = 0$, por lo tanto podemos escribir
+\[ p(x) = \sum_{n=0}^{\infty} p_n x^n, \qquad q(x) = \sum_{n=0}^{\infty} q_n x^n, \]
+para $|x| < R$. En consecuencia, (9.5.1) se puede escribir como
+\begin{equation} \tag{9.5.2}
+x^2 y'' + x \sum_{n=0}^{\infty} p_n x^n y' + \sum_{n=0}^{\infty} q_n x^n y = 0.
+\end{equation}
+
+Intentamos una solución en serie de Frobenius y, por lo tanto, sea
+\[ y(x) = x^r \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0, \]
+donde $r$ y $a_n$ son constantes por determinar.\\
+Sabemos que la ecuaci\'on indicial emerge de manera natural, 
+\begin{equation} \tag{4.5.4}
+r(r - 1) + p_0 r + q_0 = 0,
+\end{equation}
+
+La cual nos entrega tres casos familiares siguientes:
+
+\begin{enumerate}
+    \item $r_1$ y $r_2$ son reales y distintos.
+    \item $r_1$ y $r_2$ son reales y coincidentes.
+    \item $r_1$ y $r_2$ son conjugados complejos.
+\end{enumerate}
+\end{remark}
+
+Enunciaremos el resultado general en tres partes, una para cada caso, recuerden que el problema que estamos tratando es el de encontrar una segunda soluci\'on L.I.
+
+\begin{theorem}
+    \textbf{Caso 1: $r_1$ y $r_2$ son reales y distintos.} \quad Establecer $r = r_2$ en (4.5.6) produce
+\begin{equation} \tag{4.5.9}
+F(r_2 + n)a_n = -\sum_{k=0}^{n-1} [p_{n-k}(k + r_2) + q_{n-k}] a_k.
+\end{equation}
+Así, siempre que $F(r_2 + n) \neq 0$ para cualquier entero positivo $n$, el mismo procedimiento que usamos cuando $r = r_1$ producirá una segunda solución en serie de Frobenius. Pero, dado que $r_1$ y $r_2$ son los únicos ceros de $F$, se deduce que $F(r_2 + n) = 0$ si y solo si existe un entero positivo $n$ tal que $r_2 + n = r_1$. En consecuencia, siempre que $r_1 - r_2$ \textit{no} sea un entero positivo, existe una segunda solución en serie de Frobenius de la forma
+\[ y_2(x) = x^{r_2} \left[ 1 + \sum_{n=1}^{\infty} a_n(r_2)x^n \right], \]
+donde $a_n(r_2)$ denota los valores de los coeficientes obtenidos de (4.5.6) cuando $r = r_2$, y una vez más hemos establecido $a_0 = 1$. Dado que $r_1 \neq r_2$, se deduce que las soluciones en serie de Frobenius $y_1$ y $y_2$ son linealmente independientes en (al menos) $0 < x < R$.
+
+Ahora suponga que $r_1 - r_2 = N$, donde $N$ es un entero positivo. Entonces, sustituyendo $r_2 = r_1 - N$ en (4.5.9), obtenemos
+\[ F(r_1 + (n - N))a_n = -\sum_{k=0}^{n-1} [p_{n-k}(k + r_2) + q_{n-k}] a_k, \qquad n = 1, 2, \dots, \]
+lo cual, cuando $n = N$, conduce a la condición de consistencia
+\begin{equation} \tag{4.5.10}
+0 \cdot a_N = -\sum_{k=0}^{N-1} [p_{N-k}(k + r_2) + q_{N+k}] a_k.
+\end{equation}
+Dado que todos los coeficientes $a_1, a_2, \dots, a_{N-1}$ ya se habrán determinado en términos de $a_0$, (4.5.10) será de la forma
+\begin{equation} \tag{4.5.11}
+0 \cdot a_N = \alpha a_0,
+\end{equation}
+donde $\alpha$ es una constante. Por suposición, $a_0$ es distinto de cero, y por lo tanto surgen dos posibilidades. (Note que (4.5.11) \textit{no} es una ecuación para determinar $\alpha$; más bien, es una condición de consistencia para la validez de la relación de recurrencia.)
+
+\begin{enumerate}
+    \item[\textbf{(a)}] Primero puede ocurrir que $\alpha = 0$. Si esto ocurre, entonces de (4.5.11), $a_N$ puede especificarse arbitrariamente, y (4.5.9) determina todos los coeficientes de Frobenius restantes. Por lo tanto, \textit{sí} obtenemos una segunda solución en serie de Frobenius linealmente independiente.
+    \item[\textbf{(b)}] En el caso más general, $\alpha$ será distinto de cero. Entonces, dado que $a_0 \neq 0$ (por suposición), (4.5.11) \textit{no se puede} satisfacer, y por lo tanto no podemos calcular los coeficientes de Frobenius. Por lo tanto, \textit{no existe} una solución en serie de Frobenius correspondiente a $r = r_2$. La técnica de reducción de orden puede usarse, sin embargo, para probar que existe una segunda solución linealmente independiente a (4.5.1) en $(0, R)$, de la forma
+    \[ y_2(x) = A y_1(x) \ln x + x^{r_2} \sum_{n=0}^{\infty} b_n x^n, \]
+    donde las constantes $A$ y $b_n$ pueden determinarse por sustitución directa en la ecuación diferencial (4.5.1). La derivación es directa, pero bastante larga, por lo que los detalles se han relegado al Apéndice D. Note que la forma anterior incluye el caso (a), que surge cuando $A = 0$.
+\end{enumerate}
+
+\end{theorem}
+
+\begin{theorem}
+    \textbf{Caso 2: $r_1 = r_2$.} \quad En este caso, ciertamente \textit{no puede} existir una segunda solución en \textit{serie de Frobenius} linealmente independiente. Sin embargo, una vez más la técnica de reducción de orden se puede usar para establecer la existencia de una segunda solución linealmente independiente de la forma
+\[ y_2(x) = y_1(x) \ln x + x^{r_1} \sum_{n=1}^{\infty} b_n x^n \]
+válida para (al menos) $0 < x < R$.  Los coeficientes $b_n$ pueden obtenerse sustituyendo esta expresión para $y_2$ en la ecuación diferencial (4.5.1).
+
+\end{theorem}
+
+\begin{theorem}
+    \textbf{Caso 3: $r_1$ y $r_2$ son conjugados complejos.} \quad En este caso, la solución recién obtenida cuando $r = r_1$ será una solución de valor complejo. Debido a la linealidad de la ecuación diferencial, se deduce que las partes real e imaginaria de esta solución de valor complejo serán por sí mismas soluciones de valor real. Se puede demostrar que estas soluciones de valor real son linealmente independientes en sus intervalos de existencia. Por lo tanto, siempre podemos, en teoría, obtener la solución general en este caso.
+
+\end{theorem}
+
+A modo de resumen:
+
+\begin{remark}
+
+  Considere la ecuación diferencial
+\begin{equation} \tag{4.5.12}
+x^2 y'' + xp(x)y' + q(x)y = 0,
+\end{equation}
+donde $p$ y $q$ son analíticas en $x = 0$. Suponga que
+\[ p(x) = \sum_{n=0}^{\infty} p_n x^n, \qquad q(x) = \sum_{n=0}^{\infty} q_n x^n, \]
+para $|x| < R$. Sean $r_1$ y $r_2$ las raíces de la ecuación indicial y asuma que $r_1 \ge r_2$ si estas raíces son reales. Entonces (4.5.12) tiene dos soluciones linealmente independientes válidas (al menos) en el intervalo $(0, R)$. La forma de la solución se determina de la siguiente manera:
+
+\begin{enumerate}
+    \item $r_1 - r_2$ no es un entero:
+    \begin{align}
+    y_1(x) &= x^{r_1} \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0, \tag{4.5.13} \\
+    y_2(x) &= x^{r_2} \sum_{n=0}^{\infty} b_n x^n, \qquad b_0 \neq 0. \tag{4.5.14}
+    \end{align}
+    \item $r_1 = r_2 = r$:
+    \begin{align}
+    y_1(x) &= x^r \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0, \tag{4.5.15} \\
+    y_2(x) &= y_1(x) \ln x + x^r \sum_{n=1}^{\infty} b_n x^n, \qquad a_0 \neq 0. \tag{4.5.16}
+    \end{align}
+    \item $r_1 - r_2$ es un entero positivo:
+    \begin{align}
+    y_1(x) &= x^{r_1} \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0, \tag{4.5.17} \\
+    y_2(x) &= A y_1(x) \ln x + x^{r_2} \sum_{n=0}^{\infty} b_n x^n, \qquad b_0 \neq 0. \tag{4.5.18}
+    \end{align}
+\end{enumerate}
+
+Los coeficientes en cada una de estas soluciones pueden determinarse por sustitución directa en la Ecuación (4.5.12). Finalmente, si $x^{r_1}$ y $x^{r_2}$ se reemplazan por $|x|^{r_1}$ y $|x|^{r_2}$, respectivamente, obtenemos soluciones linealmente independientes que son válidas para (al menos) $0 < |x| < R$.
+
+\end{remark}
+
+Revisemos algunos ejemplos para ilustrar lo anterior: 
+
+\begin{example}
+    Considere la ecuación diferencial
+\begin{equation} \tag{4.5.19}
+x^2 y'' - x(3 + x)y' + (4 - x)y = 0.
+\end{equation}
+Determine la forma general de dos soluciones en serie linealmente independientes en la vecindad del punto singular regular $x = 0$.
+
+\noindent \textbf{Solución:} \quad Por inspección vemos que $x = 0$ es un punto singular regular de la Ecuación (4.5.19) y que la ecuación indicial es
+\[ r(r - 1) - 3r + 4 = r^2 - 4r + 4 = (r - 2)^2 = 0. \]
+Dado que $r = 2$ es una raíz repetida, se deduce del Teorema 4.5.1 que existen dos soluciones linealmente independientes para la Ecuación (4.5.19) de la forma
+\[ y_1(x) = x^2 \sum_{n=0}^{\infty} a_n x^n, \qquad y_2(x) = y_1(x) \ln |x| + x^2 \sum_{n=1}^{\infty} b_n x^n. \]
+
+Los coeficientes en cada una de estas soluciones en serie podrían obtenerse por sustitución directa en la Ecuación (4.5.19). En este problema, tenemos
+\[ p(x) = -(3 + x), \qquad q(x) = 4 - x. \]
+Dado que estos son polinomios, sus expansiones en serie de potencias alrededor de $x = 0$ convergen para todo $x$ real. Se deduce del Teorema 4.5.1 que las soluciones en serie de la Ecuación (4.5.19) serán válidas para todo $x \neq 0$. \hfill $\square$
+\end{example}
+
+
+\begin{example}
+    Considere la ecuación diferencial
+\begin{equation} \tag{4.5.20}
+x^2 y'' + x(1 + 2x)y' - \frac{1}{4}(1 - \gamma x)y = 0, \qquad x > 0,
+\end{equation}
+donde $\gamma$ es una constante. Determine la forma de dos soluciones en serie linealmente independientes para esta ecuación diferencial alrededor del punto singular regular $x = 0$.
+
+\noindent \textbf{Solución:} \quad En este caso, tenemos $p_0 = 1$ y $q_0 = -\frac{1}{4}$, de modo que
+\[ F(r) = r(r - 1) + r - \frac{1}{4} = r^2 - \frac{1}{4}. \]
+Así, las raíces de la ecuación indicial son $r = \pm \frac{1}{2}$. Estableciendo $r_1 = \frac{1}{2}$ y $r_2 = -\frac{1}{2}$, se deduce que $r_1 - r_2 = 1$, de modo que estamos en el Caso 3. Así, existen dos soluciones linealmente independientes para la Ecuación (4.5.20) en $(0, \infty)$ de la forma
+\begin{equation} \tag{4.5.21}
+y_1(x) = x^{1/2} \sum_{n=0}^{\infty} a_n x^n, \qquad y_2(x) = A y_1(x) \ln x + x^{-1/2} \sum_{n=0}^{\infty} b_n x^n.
+\end{equation}
+Para determinar si la constante $A$ es cero o distinta de cero, necesitamos la relación de recurrencia general. Sustituir
+\[ y_1(x) = x^r \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0, \]
+en (4.5.20) produce
+\[ \left[ \frac{4(r + n)^2 - 1}{4} \right] a_n = - \left[ 2(r + n - 1) + \gamma \right] a_{n-1}, \qquad n = 1, 2, \dots \]
+Cuando $r = -\frac{1}{2}$, esto se reduce a
+\begin{equation} \tag{4.5.22}
+n(n - 1)a_n = -(2n - 3 + \gamma)a_{n-1}.
+\end{equation}
+Como predice nuestra teoría general, el coeficiente de $a_n$ es cero cuando $n = r_1 - r_2 = 1$. Así, existe una segunda solución en serie de Frobenius [$A = 0$ en (4.5.21)] si y solo si el término del lado derecho también se anula cuando $n = 1$. Establecer $n = 1$ en (4.5.22) produce la condición de consistencia
+\begin{equation} \tag{4.5.23}
+0 \cdot a_1 = (1 - \gamma)a_0.
+\end{equation}
+Dado que $a_0 \neq 0$, se deduce de (4.5.23) que cuando $\gamma \neq 1$, no existe una segunda solución en serie de Frobenius linealmente independiente, y por lo tanto la constante $A$ en (4.5.21) es necesariamente distinta de cero. Si $\gamma = 1$, sin embargo, entonces (4.5.23) se satisface idénticamente independientemente del valor de $a_1$. En este caso, podemos especificar $a_1$ arbitrariamente y entonces la relación de recurrencia (4.5.22) determinará los coeficientes restantes en una segunda solución en serie de Frobenius linealmente independiente. En resumen:
+
+\begin{enumerate}
+    \item Si $\gamma \neq 1$, existen dos soluciones linealmente independientes de la forma (4.5.21) con $A$ necesariamente distinto de cero.
+    \item Si $\gamma = 1$, entonces existen dos soluciones en serie de Frobenius linealmente independientes
+    \[ y_1(x) = x^{1/2} \sum_{n=0}^{\infty} a_n x^n, \qquad y_2(x) = x^{-1/2} \sum_{n=0}^{\infty} b_n x^n. \]
+\end{enumerate}
+En ambos casos, las soluciones en serie serán válidas para $0 < x < \infty$. \hfill $\square$
+\end{example}
+
+
+\begin{example}
+    Determine dos soluciones en serie linealmente independientes para
+\begin{equation} \tag{4.5.24}
+x^2 y'' + x(3 - x)y' + y = 0, \qquad x > 0.
+\end{equation}
+
+\noindent \textbf{Solución:} \quad Vemos por inspección que $x = 0$ es un punto singular regular. Además, dado que las funciones
+\[ p(x) = 3 - x \quad \text{y} \quad q(x) = 1 \]
+son polinomios, las soluciones en serie linealmente independientes obtenidas en el Teorema 4.5.1 serán válidas en $(0, \infty)$. Comenzamos por obtener una solución en serie de Frobenius. Sustituir
+\[ y(x) = x^r \sum_{n=0}^{\infty} a_n x^n, \qquad a_0 \neq 0, \]
+en (4.5.24) produce
+\begin{align*}
+\sum_{n=0}^{\infty} (r + n)(r + n - 1)a_n x^{r+n} &+ 3\sum_{n=0}^{\infty} (r + n)a_n x^{r+n} \\
+&- \sum_{n=0}^{\infty} (r + n)a_n x^{r+n+1} + \sum_{n=0}^{\infty} a_n x^{r+n} = 0,
+\end{align*}
+lo cual, al recolectar los coeficientes de $x^{r+n}$ y reemplazar $n$ por $n - 1$ en la tercera suma, se puede escribir como
+\[ \sum_{n=0}^{\infty} [(r + n)(r + n + 2) + 1]a_n x^{r+n} - \sum_{n=1}^{\infty} (r + n - 1)a_{n-1}x^{r+n} = 0. \]
+Dividir por $x^r$ produce
+\begin{equation} \tag{9.5.25}
+\sum_{n=0}^{\infty} [(r + n)(r + n + 2) + 1]a_n x^n - \sum_{n=1}^{\infty} (r + n - 1)a_{n-1} x^n = 0.
+\end{equation}
+Determinamos los $a_n$ de la manera habitual. Cuando $n = 0$, obtenemos
+\[ [r(r + 2) + 1]a_0 = 0, \]
+de modo que la ecuación indicial es
+\[ r^2 + 2r + 1 = 0; \]
+es decir,
+\[ (r + 1)^2 = 0. \]
+Por lo tanto hay solo una raíz:
+\[ r = -1. \]
+De (9.5.25), los coeficientes restantes deben satisfacer la relación de recurrencia
+\[ [(r + n)(r + n + 2) + 1]a_n - (r + n - 1)a_{n-1} = 0, \qquad n = 1, 2, \dots \]
+Estableciendo $r = -1$, esto se simplifica a
+\[ a_n = \frac{n - 2}{n^2}a_{n-1}, \qquad n = 1, 2, 3, \dots \]
+En consecuencia,
+\[ a_1 = -a_0, \qquad a_2 = a_3 = a_4 = \dots = 0. \]
+Así, una solución en serie de Frobenius para (4.5.24) es
+\begin{equation} \tag{9.5.26}
+y_1(x) = x^{-1}(1 - x),
+\end{equation}
+donde establecemos $a_0 = 1$.
+
+Dado que la ecuación indicial para (4.5.24) tiene solo una raíz, no existe una segunda solución en serie de Frobenius linealmente independiente. Sin embargo, de acuerdo con el Teorema 4.5.1, existe una segunda solución linealmente independiente de la forma
+\begin{equation} \tag{4.5.27}
+y_2(x) = y_1(x) \ln x + x^{-1} \sum_{n=1}^{\infty} b_n x^n,
+\end{equation}
+donde los coeficientes $b_n$ se pueden determinar por sustitución en (4.5.24). Ahora determinamos tal solución. Los cálculos son bastante directos, pero son largos y tediosos. Se anima  a prestar toda su atención y a no dejarse abrumar por el aspecto  de las ecuaciones. Derivar (4.5.27) con respecto a $x$ produce
+\begin{align*}
+y_2' &= y_1' \ln x + x^{-1} y_1 + \sum_{n=1}^{\infty} (n - 1)b_n x^{n-2}, \\
+y_2'' &= y_1'' \ln x + 2x^{-1}y_1' - x^{-2}y_1 + \sum_{n=1}^{\infty} (n - 2)(n - 1)b_n x^{n-3}.
+\end{align*}
+Sustituyendo en (4.5.24), obtenemos la siguiente ecuación para los $b_n$:
+\begin{align*}
+x^2 &\left[ y_1'' \ln x + 2x^{-1}y_1' - x^{-2}y_1 + \sum_{n=1}^{\infty} (n - 2)(n - 1)b_n x^{n-3} \right] \\
+&+ x(3 - x) \left[ y_1' \ln x + x^{-1} y_1 + \sum_{n=1}^{\infty} (n - 1)b_n x^{n-2} \right] \\
+&+ y_1 \ln x + x^{-1} \sum_{n=1}^{\infty} b_n x^n = 0,
+\end{align*}
+o, equivalentemente,
+\begin{align*}
+[ (x^2 y_1'' &+ x(3 - x)y_1' + y_1) ] \ln x + 2xy_1' + 2y_1 - xy_1 + \sum_{n=1}^{\infty} (n - 1)(n - 2)b_n x^{n-1} \\
+&+ 3 \sum_{n=1}^{\infty} (n - 1)b_n x^{n-1} - \sum_{n=1}^{\infty} (n - 1)b_n x^n + \sum_{n=1}^{\infty} b_n x^{n-1} = 0.
+\end{align*}
+
+Dado que $y_1$ es una solución a la Ecuación (4.5.24), la combinación de términos que multiplican a $\ln x$ se anulará. Combinando los coeficientes de $x^{n-1}$, obtenemos
+\[ 2xy_1' + 2y_1 - xy_1 + \sum_{n=1}^{\infty} [(n - 1)(n - 2) + 3(n - 1) + 1]b_n x^{n-1} - \sum_{n=1}^{\infty} (n - 1)b_n x^n = 0. \]
+Simplificando los términos en la primera suma y reemplazando $n$ por $n - 1$ en la segunda suma produce
+\begin{equation} \tag{4.5.28}
+2xy_1' + 2y_1 - xy_1 + \sum_{n=1}^{\infty} n^2 b_n x^{n-1} - \sum_{n=2}^{\infty} (n - 2)b_{n-1}x^{n-1} = 0.
+\end{equation}
+De (4.5.26), tenemos
+\[ y_1(x) = x^{-1}(1 - x), \qquad y_1'(x) = -x^{-2}. \]
+Sustituyendo estas expresiones en (4.5.28) da
+\[ -2x^{-1} + 2x^{-1}(1 - x) - (1 - x) + \sum_{n=1}^{\infty} n^2 b_n x^{n-1} - \sum_{n=2}^{\infty} (n - 2)b_{n-1}x^{n-1} = 0. \]
+Es decir,
+\[ -3 + x + \sum_{n=1}^{\infty} n^2 b_n x^{n-1} - \sum_{n=2}^{\infty} (n - 2)b_{n-1}x^{n-1} = 0. \]
+Igualando los coeficientes correspondientes de $x^{n-1}$ a cero para $n = 1, 2, \dots$, obtenemos los $b_n$ de manera familiar.
+
+\begin{align*}
+n &= 1: & -3 + b_1 &= 0, \text{ lo que implica que } b_1 = 3. \\
+n &= 2: & 1 + 4b_2 &= 0, \text{ lo que implica que } b_2 = -\frac{1}{4}. \\
+n &\ge 3: & n^2 b_n &- (n - 2)b_{n-1} = 0.
+\end{align*}
+Es decir,
+\begin{equation} \tag{4.5.29}
+b_n = \frac{n - 2}{n^2}b_{n-1}, \qquad n = 3, 4, \dots
+\end{equation}
+Cuando $n = 3$, tenemos
+\[ b_3 = \frac{1}{3^2}b_2. \]
+Sustituyendo por $b_2 = -\frac{1}{4} = -\frac{1}{2^2}$ produce
+\[ b_3 = -\frac{1}{2^2 \cdot 3^2}. \]
+Cuando $n = 4$, (4.5.29) implica que
+\[ b_4 = \frac{2}{4^2}b_3 = -\frac{1 \cdot 2}{2^2 \cdot 3^2 \cdot 4^2}. \]
+Vemos que en general, para $n \ge 3$,
+\[ b_n = -\frac{(n - 2)!}{2^2 \cdot 3^2 \cdots n^2}, \]
+que se puede escribir como
+\[ b_n = -\frac{(n - 2)!}{(n!)^2}, \qquad n = 3, 4, \dots \]
+Finalmente, sustituir los $b_n$ en (4.5.27) produce la siguiente solución a la Ecuación (4.5.24):
+\[ y_2(x) = x^{-1}(1 - x) \ln x + x^{-1} \left[ 3x - \frac{1}{4}x^2 - \sum_{n=3}^{\infty} \frac{(n - 2)!}{(n!)^2} x^n \right]. \]
+El Teorema 4.5.1 garantiza que $y_1$ y $y_2$ son linealmente independientes en $(0, \infty)$. \hfill $\square$
+
+\end{example}

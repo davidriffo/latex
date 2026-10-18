@@ -1,0 +1,187 @@
+
+Hasta ahora, las técnicas que hemos desarrollado para resolver ecuaciones diferenciales han implicado determinar una solución en forma cerrada para una ecuación dada (o sistema) en términos de funciones elementales familiares. Esencialmente, las únicas ecuaciones diferenciales de orden dos o superior para las que podemos derivar tales soluciones son las siguientes:
+
+\begin{enumerate}
+    \item Ecuaciones con coeficientes constantes.
+    \item Ecuaciones de Cauchy-Euler.
+\end{enumerate}
+
+Por ejemplo, aún no podemos determinar la solución a la ecuación diferencial aparentemente simple
+\[ y'' + e^x y = 0. \]
+
+En este capítulo, consideramos la posibilidad de representar soluciones a ecuaciones diferenciales lineales en la forma de algún tipo de serie infinita. Comenzaremos con el caso más simple, a saber, ecuaciones diferenciales cuyas soluciones pueden representarse como una serie de potencias convergente,
+\[ y(x) = \sum_{n=0}^{\infty} a_n x^n, \]
+donde $a_n$ son constantes. Esto puede considerarse como una generalización del método de coeficientes indeterminados al caso en el que tenemos un número infinito de constantes. Determinaremos los valores apropiados de estas constantes por sustitución en la ecuación diferencial.
+
+No todas las ecuaciones diferenciales tienen soluciones que puedan representarse mediante una serie de potencias convergente. Encontraremos que el siguiente tipo más simple de solución en serie que es aplicable a una amplia clase de ecuaciones diferenciales lineales es uno de la forma
+\[ y(x) = x^r \sum_{n=0}^{\infty} a_n x^n, \]
+llamada \textbf{serie de Frobenius}. Aquí, además de los coeficientes $a_n$, también debemos determinar el valor de la constante $r$ (que en general \textit{no} será un entero positivo). El análisis de este problema es bastante complejo y los cálculos pueden ser extremadamente tediosos. Sin embargo, la técnica es una adición importante y útil a las herramientas del matemático aplicado para resolver ecuaciones diferenciales.
+
+Antes de comenzar el desarrollo de la teoría, notamos que por simplicidad restringiremos nuestra atención en este capítulo a las ecuaciones diferenciales lineales homogéneas de segundo orden cuya forma estándar es
+\[ y'' + p(x)y' + q(x)y = 0, \]
+donde $p$ y $q$ son funciones que están especificadas en algún intervalo $I$. Las técnicas se pueden extender fácilmente a órdenes superiores, y también a sistemas de ecuaciones diferenciales lineales.
+
+\subsection{Repaso de series de potencias}
+ Comenzamos con un repaso muy breve de los principales hechos sobre las series de potencias, que deberían ser familiares de un curso previo de cálculo. Serán necesarios a lo largo del resto del capítulo.
+
+ \begin{definition}
+     Una serie infinita de la forma
+\begin{equation} \tag{4.1.1}
+\sum_{n=0}^{\infty} a_n(x - x_0)^n,
+\end{equation}
+donde $a_n$ y $x_0$ son constantes, se llama \textbf{serie de potencias centrada en $x = x_0$}.
+
+\vspace{0.5cm}
+
+La sustitución $u = x - x_0$ tiene el efecto de transformar (4.1.1) en
+\[ \sum_{n=0}^{\infty} a_n u^n, \]
+de modo que podemos, sin pérdida de generalidad, restringir la atención a las series de potencias de la forma
+\begin{equation} \tag{4.1.2}
+\sum_{n=0}^{\infty} a_n x^n,
+\end{equation}
+cuyo centro es $x = 0$. Se dice que la serie (4.1.2) \textbf{converge} en $x = x_1$ si
+\[ \lim_{k \to \infty} \sum_{n=0}^{k} a_n x_1^n \]
+existe y es finito. El conjunto de todos los $x$ para los que (4.1.2) converge se llama \textbf{intervalo de convergencia}.
+
+ \end{definition}
+
+ \begin{theorem}
+     Para la serie de potencias como la definici\'on anterior, exactamente una de las siguientes afirmaciones es verdadera:
+\begin{enumerate}
+    \item $\sum_{n=0}^{\infty} a_n x^n$ converge solo en $x = 0$.
+    \item $\sum_{n=0}^{\infty} a_n x^n$ converge para todo $x$ real.
+    \item Existe un número positivo $R$ tal que $\sum_{n=0}^{\infty} a_n x^n$ converge (absolutamente) para $|x| < R$ y diverge para $|x| > R$.
+\end{enumerate}
+
+ \end{theorem}
+
+ \begin{remark}
+     El número $R$ que aparece en la posibilidad 3 se llama \textbf{radio de convergencia}. La convergencia o divergencia de la serie en los puntos finales $x = \pm R$ debe tratarse por separado. En la posibilidad 2, definimos el radio de convergencia como $R = \infty$.\\
+     El siguiente resultado, conocido como \textbf{criterio de la raz\'on}, nos permite calcular el radio de convergencia de una serie de potencias.
+
+ \end{remark}
+
+ \begin{theorem}
+     Para la serie de potencias $\sum_{n=0}^{\infty} a_n x^n$, si
+\[ \lim_{n \to \infty} \left| \frac{a_{n+1}}{a_n} \right| = L, \]
+entonces el radio de convergencia de la serie de potencias es $R = 1/L$. Si $L = 0$, la serie converge para todo $x$, mientras que si $L = \infty$, la serie converge solo en $x = 0$.
+
+ \end{theorem}
+
+ \begin{example}
+     Determinemos el radio de convergencia de la serie $$\sum_{n=0}^{\infty} \frac{n^2 x^n}{3^n}.$$
+
+\noindent \textbf{Solución:} \quad En este caso, tenemos
+\[ \lim_{n \to \infty} \left| \frac{a_{n+1}}{a_n} \right| = \lim_{n \to \infty} \frac{(n+1)^2}{3^{n+1}} \cdot \frac{3^n}{n^2} = \lim_{n \to \infty} \frac{(n+1)^2}{3n^2} = \frac{1}{3}. \]
+Así, $L = \frac{1}{3}$, de modo que el radio de convergencia es $R = 3$. Es fácil ver que la serie diverge en los extremos $x = \pm 3$, por lo que el intervalo de convergencia es $(-3, 3)$. 
+ \end{example}
+
+ Las series de potencias, no son mas que funciones reales, dentro de su intervalo de convergencia es por ello que:
+
+ Dos series de potencias $\sum_{n=0}^{\infty} a_n x^n$ y $\sum_{n=0}^{\infty} b_n x^n$ son iguales si y solo si cada coeficiente correspondiente es igual; es decir, $a_n = b_n$ para todo $n$. En particular,
+\[ \sum_{n=0}^{\infty} a_n x^n = 0 \qquad \text{si y solo si } a_n = 0 \text{ para todo } n. \]
+
+Usaremos este resultado repetidamente a lo largo del capítulo.
+
+Ahora sean $\sum_{n=0}^{\infty} a_n x^n$ y $\sum_{n=0}^{\infty} b_n x^n$ series de potencias con radios de convergencia $R_1$ y $R_2$, respectivamente, y sea $R = \min\{R_1, R_2\}$. Para $|x| < R$, defina las funciones $f$ y $g$ por
+\[ f(x) = \sum_{n=0}^{\infty} a_n x^n, \qquad g(x) = \sum_{n=0}^{\infty} b_n x^n. \]
+
+Entonces, para $|x| < R$,
+
+\begin{enumerate}
+    \item $f(x) + g(x) = \sum_{n=0}^{\infty} (a_n + b_n)x^n$ (suma de series de potencias).
+    \item $cf(x) = \sum_{n=0}^{\infty} (ca_n)x^n$ (multiplicación de una serie de potencias por un número real $c$).
+    \item $f(x)g(x) = \sum_{n=0}^{\infty} c_n x^n$, donde $c_n = \sum_{k=0}^{n} a_{n-k}b_k$ (multiplicación de series de potencias).
+\end{enumerate}
+
+Los coeficientes $c_n$ que aparecen en esta fórmula se pueden escribir de forma equivalente como:
+\[ c_n = \sum_{k=0}^{n} a_k b_{n-k}. \]
+
+\begin{example}
+    Suponga que los coeficientes en la expansión
+\[ f(x) = \sum_{n=0}^{\infty} a_n x^n \]
+satisfacen
+\begin{equation} \tag{4.1.3}
+\sum_{n=1}^{\infty} n a_n x^n - \sum_{n=0}^{\infty} a_n x^{n+1} = 0.
+\end{equation}
+Exprese todos los $a_n$ en términos de $a_0$.
+
+\noindent \textbf{Solución:} \quad Reemplazamos $n$ por $n - 1$ en la segunda sumatoria en (4.1.3) (y alteramos el rango de $n$ apropiadamente) para obtener una potencia común de $x^n$ en ambas sumas. El resultado es
+\[ \sum_{n=1}^{\infty} n a_n x^n - \sum_{n=1}^{\infty} a_{n-1} x^n = 0, \]
+que se puede escribir como
+\[ \sum_{n=1}^{\infty} (n a_n - a_{n-1}) x^n = 0. \]
+
+Se deduce que los $a_n$ deben satisfacer la relación de recurrencia
+\[ n a_n - a_{n-1} = 0, \qquad n = 1, 2, 3, \dots; \]
+es decir,
+\[ a_n = \frac{1}{n} a_{n-1}, \qquad n = 1, 2, 3, \dots \]
+
+Sustituyendo para valores sucesivos de $n$, obtenemos
+\begin{align*}
+n &= 1: & a_1 &= a_0, \\
+n &= 2: & a_2 &= \frac{1}{2} a_1 = \frac{1}{2} a_0, \\
+n &= 3: & a_3 &= \frac{1}{3} a_2 = \frac{1}{3 \cdot 2} a_0, \\
+n &= 4: & a_4 &= \frac{1}{4} a_3 = \frac{1}{4 \cdot 3 \cdot 2} a_0.
+\end{align*}
+
+Continuando de esta manera, notamos que:
+\[ a_n = \frac{1}{n!} a_0. \]
+
+De donde, 
+\[ f(x) = a_0 \sum_{n=0}^{\infty} \frac{1}{n!} x^n. \tag*{$\square$} \]
+\end{example}
+
+A continuaci\'on un resultado que usaremos mucho en este cap\'itulo, como \textbf{derivar una serie de potencias}
+
+\begin{theorem}
+    
+Suponga que $\sum_{n=0}^{\infty} a_n x^n$ tiene un radio de convergencia $R$, y sea
+\[ f(x) = \sum_{n=0}^{\infty} a_n x^n, \qquad |x| < R. \]
+
+Entonces $f(x)$ se puede derivar un número arbitrario de veces en el intervalo $|x| < R$. Además, las derivadas se pueden obtener mediante derivación término a término. Así,
+\begin{align*}
+f'(x) &= \sum_{n=0}^{\infty} n a_n x^{n-1} = \sum_{n=1}^{\infty} n a_n x^{n-1}, \\
+f''(x) &= \sum_{n=1}^{\infty} n(n-1)a_n x^{n-2} = \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2},
+\end{align*}
+y así sucesivamente para las derivadas de orden superior.
+\end{theorem}
+
+Ahora recordaremos (o estableceremos) un t\'ermino que nos permitir\'a distinguir a unas funciones de otras, sobre todo como coeficientes de las ecuaciones diferenciales que busquemos resolver:
+
+\begin{definition}
+    Se dice que una función es \textbf{analítica} en $x = x_0$ si puede representarse mediante una serie de potencias convergente centrada en $x = x_0$ con un radio de convergencia distinto de cero.
+
+\end{definition}
+
+\begin{remark}
+    En un curso anterior,  se revis\'o, quiz\'as con otro nombre el concepto anterior, pero ahora podemos decir que si una función es analítica en $x = x_0$, entonces la representación en serie de potencias de esa función es única y está dada por
+\begin{equation} \tag{4.1.4}
+f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(x_0)}{n!} (x - x_0)^n.
+\end{equation}
+
+Esta es la expansión en \textbf{serie de Taylor} de $f(x)$ alrededor de $x = x_0$. Si $x_0 = 0$, entonces (4.1.4) se reduce a
+\[ f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!} x^n, \]
+que se llama la expansión en \textbf{serie de Maclaurin} de $f(x)$. Muchas de las funciones elementales familiares son analíticas en todos los puntos. En particular, las expansiones de Maclaurin de $e^x$, $\sin x$ y $\cos x$ son, respectivamente,
+\begin{align*}
+e^x &= 1 + x + \frac{1}{2!}x^2 + \frac{1}{3!}x^3 + \dots + \frac{1}{n!}x^n + \dots = \sum_{n=0}^{\infty} \frac{1}{n!}x^n, \\
+\sin x &= x - \frac{1}{3!}x^3 + \frac{1}{5!}x^5 - \dots + \frac{(-1)^n}{(2n+1)!}x^{2n+1} + \dots = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!}x^{2n+1}, \\
+\cos x &= 1 - \frac{1}{2!}x^2 + \frac{1}{4!}x^4 - \dots + \frac{(-1)^n}{(2n)!}x^{2n} + \dots = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!}x^{2n}.
+\end{align*}
+
+\end{remark}
+
+\begin{example}
+    Determine el radio de convergencia de la representación en serie de potencias de la función
+\[ f(x) = \frac{1 - x}{x^2 - 4} \]
+centrada en \textbf{(a)} $x = 0$, \textbf{(b)} $x = 1$.
+
+\noindent \textbf{Solución:} \quad Tomando $p(x) = 1 - x$ y $q(x) = x^2 - 4$, tenemos
+\[ f(x) = \frac{p(x)}{q(x)}, \]
+y las raíces de $q$ son $x = \pm 2$.
+
+\begin{itemize}
+    \item[\textbf{(a)}] En este caso, el centro de la serie de potencias es $x = 0$, de modo que la distancia a la raíz más cercana de $q$ es $2$. (Ver Figura 9.1.3.) En consecuencia, el radio de convergencia de la representación en serie de potencias de $f$ centrada en $x = 0$ es $R = 2$.
+    \item[\textbf{(b)}] Si el centro de la serie de potencias es $x = 1$, entonces la raíz más cercana de $q$ está en $x = 2$ (ver Figura 9.1.3), por lo tanto, el radio de convergencia de la representación en serie de potencias de $f$ es $R = 1$. \hfill $\square$
+\end{itemize}
+
+\end{example}
