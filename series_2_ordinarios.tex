@@ -1,284 +1,443 @@
- Ahora consideraremos la ecuación diferencial lineal homogénea de segundo orden escrita en forma estándar:
-\[ y'' + p(x)y' + q(x)y = 0. \]
-
-Nuestro objetivo es determinar una representación en serie de la solución general a esta ecuación diferencial centrada en $x = x_0$. Veremos que la existencia y forma de la solución dependen del comportamiento de las funciones $p$ y $q$ en $x = x_0$.
-
+%% series_2_ordinarios.tex -- version ampliada de series_2 (soluciones en serie en puntos ordinarios)
+%% Agregados: recta con puntos singulares, tabla de coeficientes, diagrama del metodo,
+%% tabla de errores tipicos, comparaciones grafico-numericas (Hermite, Ej. 3, R=1, Airy),
+%% tabla resumen y ejercicios con respuesta. En todo el archivo la forma estandar es
+%% y''+P(x)y'+Q(x)y=0 (mayusculas, como en la seccion de puntos singulares).
+%% Requiere en el preambulo del documento principal:
+%%   \usepackage{pgfplots}  \pgfplotsset{compat=1.18}
+%% Convenciones de notacion del capitulo: en la forma estandar y''+P(x)y'+Q(x)y=0
+%% los coeficientes se llaman P y Q; en la forma de Frobenius
+%% x^2 y''+x p(x) y'+q(x) y=0 se usan p=(x-x0)P y q=(x-x0)^2 Q (minusculas).
+ 
+%% --- Correccion de \ref a cajas numeradas (ver sistemas_2.tex) --------------
+\makeatletter
+\ifdefined\bbereffixdone\else
+  \def\bbereffixdone{}
+  \tcbset{before upper={%
+    \ifx\thetcbcounter\@empty\else
+      \protected@edef\@currentlabel{\thetcbcounter}%
+      \ifdefined\phantomsection\phantomsection\fi
+    \fi}}
+\fi
+\makeatother
+ 
+%% --- Estilo comun de los graficos de este capitulo --------------------------
+\pgfplotsset{
+  bbeserie/.style={width=.94\linewidth, height=6.2cm, axis lines=middle,
+    xlabel=$x$, ylabel=$y$, tick label style={font=\small}, label style={font=\small},
+    legend style={font=\footnotesize, draw=bbe!40, fill=white, fill opacity=.9, text opacity=1},
+    grid=major, grid style={draw=bbe!12}, clip=true,
+    every axis plot/.append style={thick}},
+  bbeosc/.style={bbeserie, axis lines=left}
+}
+\providecommand{\bbezero}[2]{\addplot[bbegray!70, thin, forget plot] coordinates {(#1,0) (#2,0)};}
+\tikzset{
+  bbecaja/.style={draw=bbe, fill=bbe!8, rounded corners=2pt, text=black, align=center,
+    font=\small\sffamily, inner sep=4pt, text width=3.6cm, minimum height=1.1cm},
+  bbeflujo/.style={-{Stealth[length=5pt]}, thick}
+}
+ 
+ 
+Ahora consideraremos la ecuación diferencial lineal homogénea de segundo orden escrita en forma estándar:
+\[ y'' + P(x)y' + Q(x)y = 0. \]
+ 
+Nuestro objetivo es determinar una representación en serie de la solución general a esta ecuación diferencial centrada en $x = x_0$. Veremos que la existencia y forma de la solución dependen del comportamiento de las funciones $P$ y $Q$ en $x = x_0$.
+ 
 \begin{definition}
     El punto $x = x_0$ se llama un \textbf{punto ordinario} de la ecuación diferencial
-\begin{equation} \tag{4.2.1}
-y'' + p(x)y' + q(x)y = 0,
+\begin{equation}
+y'' + P(x)y' + Q(x)y = 0,
+\label{eq:s2-forma-estandar}
 \end{equation}
-si $p$ y $q$ son \textit{ambas} analíticas en $x = x_0$. Cualquier punto que no sea un punto ordinario de (4.2.1) se llama un \textbf{punto singular} de la ecuación diferencial.
-
+si $P$ y $Q$ son \textit{ambas} analíticas en $x = x_0$. Cualquier punto que no sea un punto ordinario de \eqref{eq:s2-forma-estandar} se llama un \textbf{punto singular} de la ecuación diferencial.
 \end{definition}
-
+ 
 \begin{example}
     La ecuación diferencial
 \[ y'' + \frac{1}{x^2 - 4}y' + \frac{1}{x + 1}y = 0 \]
 tiene
-\[ p(x) = \frac{1}{x^2 - 4} \quad \text{y} \quad q(x) = \frac{1}{x + 1}. \]
-
-Vemos por inspección que los únicos puntos en los que $p$ falla en ser analítica son $x = \pm 2$, mientras que $q$ es analítica en todos los puntos excepto en $x = -1$. En consecuencia, los únicos puntos singulares de la ecuación diferencial son $x = -1, \pm 2$. Todos los demás puntos son puntos ordinarios. 
+\[ P(x) = \frac{1}{x^2 - 4} \quad \text{y} \quad Q(x) = \frac{1}{x + 1}. \]
+ 
+Vemos por inspección que los únicos puntos en los que $P$ falla en ser analítica son $x = \pm 2$, mientras que $Q$ es analítica en todos los puntos excepto en $x = -1$. En consecuencia, los únicos puntos singulares de la ecuación diferencial son $x = -1, \pm 2$ (Figura~\ref{fig:s2-singulares}). Todos los demás puntos son puntos ordinarios. \hfill $\square$
 \end{example}
-
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1.7cm]
+  \draw[->, bbegray] (-3.6,0) -- (3.7,0) node[right, text=black, font=\small] {$x$};
+  \foreach \t in {-3,...,3} \draw[bbegray] (\t,-.07) -- (\t,.07) node[below=3pt, text=black, font=\footnotesize] {$\t$};
+  \draw[bbegreen, ultra thick] (-3.5,0) -- (-2.08,0);
+  \draw[bbegreen, ultra thick] (-1.92,0) -- (-1.08,0);
+  \draw[bbegreen, ultra thick] (-.92,0) -- (1.92,0);
+  \draw[bbegreen, ultra thick] (2.08,0) -- (3.55,0);
+  \foreach \s in {-2,-1,2} \node[bbered, font=\Large] at (\s,0) {$\times$};
+  \node[text=black, font=\footnotesize, above=3pt] at (-2,0) {$P$ falla};
+  \node[text=black, font=\footnotesize, above=3pt] at (-1,0) {$Q$ falla};
+  \node[text=black, font=\footnotesize, above=3pt] at (2,0) {$P$ falla};
+  \node[bbegreen, font=\footnotesize\sffamily] at (0.5,.45) {puntos ordinarios};
+\end{tikzpicture}
+\caption{Puntos singulares ($\times$) y puntos ordinarios (verde) de la ecuación del ejemplo.}
+\label{fig:s2-singulares}
+\end{figure}
+ 
 \begin{remark}
-    En esta sección restringimos nuestra atención a los puntos ordinarios. Dado que las funciones $p$ y $q$ son analíticas en un punto ordinario, podríamos sospechar que cualquier solución de 4.2.1) válida en $x = x_0$ también es analítica allí y, por lo tanto, se puede representar como una serie de potencias convergente
+    En esta sección restringimos nuestra atención a los puntos ordinarios. Dado que las funciones $P$ y $Q$ son analíticas en un punto ordinario, podríamos sospechar que cualquier solución de \eqref{eq:s2-forma-estandar} válida en $x = x_0$ también es analítica allí y, por lo tanto, se puede representar como una serie de potencias convergente
 \[ y(x) = \sum_{n=0}^{\infty} a_n(x - x_0)^n, \]
 para constantes apropiadas $a_n$. Este es de hecho el caso, pero antes de enunciar el resultado general, consideramos un ejemplo para ilustrar la idea anterior.
-
 \end{remark}
-
-
-\begin{example}
+ 
+\begin{example}\label{ex:s2-cos}
     Determine dos soluciones en serie de potencias linealmente independientes para la ecuación diferencial
-\begin{equation} \tag{9.2.2}
+\begin{equation}
 y'' + y = 0,
+\label{eq:s2-oscilador}
 \end{equation}
 centrada en $x = 0$. Identifique las soluciones en términos de funciones elementales familiares.
-
+ 
 \noindent \textbf{Solución:} \quad Dado que $x = 0$ es un punto ordinario de la ecuación diferencial, intentamos una solución en serie de potencias de la forma
-\begin{equation} \tag{4.2.3}
+\begin{equation}
 y(x) = \sum_{n=0}^{\infty} a_n x^n.
+\label{eq:s2-ansatz}
 \end{equation}
-
-Procedemos de manera similar al método de coeficientes indeterminados sustituyendo (4.2.3) en (4.2.2) y determinando los valores de los $a_n$ tales que (4.2.3) sea efectivamente una solución. Derivar (4.2.3) dos veces con respecto a $x$ produce
+ 
+Procedemos de manera similar al método de coeficientes indeterminados sustituyendo \eqref{eq:s2-ansatz} en \eqref{eq:s2-oscilador} y determinando los valores de los $a_n$ tales que \eqref{eq:s2-ansatz} sea efectivamente una solución. Derivar \eqref{eq:s2-ansatz} dos veces con respecto a $x$ produce
 \[ y'(x) = \sum_{n=1}^{\infty} n a_n x^{n-1}, \qquad y''(x) = \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2}, \]
-donde hemos desplazado el punto de inicio en las sumatorias sin pérdida de generalidad. Sustituyendo en (4.2.2), se deduce que (4.2.3) define una solución, siempre que
+donde hemos desplazado el punto de inicio en las sumatorias sin pérdida de generalidad. Sustituyendo en \eqref{eq:s2-oscilador}, se deduce que \eqref{eq:s2-ansatz} define una solución, siempre que
 \[ \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2} + \sum_{n=0}^{\infty} a_n x^n = 0. \]
-
-Si reemplazamos $n$ por $k + 2$ en la primera sumatoria, y reemplazamos $n$ por $k$ en la segunda sumatoria, el resultado es
-\[ \sum_{k=0}^{\infty} (k+2)(k+1)a_{k+2}x^k + \sum_{k=0}^{\infty} a_k x^k = 0. \]
-
-Combinar las sumatorias produce
+ 
+Si reemplazamos $n$ por $k + 2$ en la primera sumatoria, y $n$ por $k$ en la segunda, el resultado es
+\[ \sum_{k=0}^{\infty} (k+2)(k+1)a_{k+2}x^k + \sum_{k=0}^{\infty} a_k x^k = 0, \]
+y combinando,
 \[ \sum_{k=0}^{\infty} [(k+2)(k+1)a_{k+2} + a_k]x^k = 0. \]
-
-Esto implica que los coeficientes de $x^k$ deben anularse para $k = 0, 1, 2, \dots$. En consecuencia, obtenemos la relación de recurrencia
-\[ (k+2)(k+1)a_{k+2} + a_k = 0, \qquad k = 0, 1, 2, \dots \]
-
-Dado que $(k+2)(k+1)$ nunca es cero, podemos escribir esta relación de recurrencia en la forma equivalente
-\begin{equation} \tag{4.2.4}
+ 
+Esto implica que los coeficientes de $x^k$ deben anularse para $k = 0, 1, 2, \dots$. En consecuencia, obtenemos la \textbf{relación de recurrencia}
+\begin{equation}
 a_{k+2} = -\frac{1}{(k+2)(k+1)}a_k, \qquad k = 0, 1, 2, \dots
+\label{eq:s2-rec-cos}
 \end{equation}
-
-Ahora usamos esta relación para determinar los valores apropiados de los coeficientes. Es conveniente considerar por separado los dos casos (1) $k$ es par y (2) $k$ es impar.
-
-\noindent \textbf{Caso 1: $k$ es par.} \quad Sustituyendo sucesivamente en (4.2.4), obtenemos los coeficientes de la siguiente manera:
-\\
-Cuando $k = 0$, tenemos
-$$a_2 = -\frac{1}{2}a_0.$$
-Cuando $k = 2$, tenemos
-$$a_4 = -\frac{1}{4 \cdot 3}a_2 = \frac{1}{4 \cdot 3 \cdot 2}a_0.$$
-Es decir,
-$$a_4 = \frac{1}{4!}a_0.$$
-Cuando $k = 4$, tenemos
-$$a_6 = -\frac{1}{6 \cdot 5}a_4,$$
-de modo que
-$$a_6 = -\frac{1}{6!}a_0.$$
-Continuando de esta manera, pronto reconocemos el patrón que está surgiendo, a saber,
-\begin{equation} \tag{4.2.5}
-\boxed{ a_{2n} = \frac{(-1)^n}{(2n)!}a_0. }
+(dividimos por $(k+2)(k+1)$, que nunca es cero). La recurrencia \emph{salta de dos en dos}: los coeficientes pares dependen solo de $a_0$ y los impares solo de $a_1$, y ambos son libres. La tabla siguiente muestra el patrón:
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{bbe!15}$k$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ \\ \hline
+$a_{k+2}$ & $-\dfrac{a_0}{2!}$ & $-\dfrac{a_1}{3!}$ & $+\dfrac{a_0}{4!}$ & $+\dfrac{a_1}{5!}$ & $-\dfrac{a_0}{6!}$ & $-\dfrac{a_1}{7!}$ \\ \hline
+\end{tabular}
+\end{center}
+Reconocemos así los términos generales
+\begin{equation}
+\boxed{ a_{2n} = \frac{(-1)^n}{(2n)!}a_0, \qquad a_{2n+1} = \frac{(-1)^n}{(2n+1)!}a_1. }
+\label{eq:s2-coef-cos}
 \end{equation}
-
-Así, todos los coeficientes pares están determinados en términos de $a_0$, pero $a_0$ en sí es arbitrario.
-
-\vspace{0.5cm}
-\noindent \textbf{Caso 2: $k$ es impar.} \quad Ahora considere la relación de recurrencia (4.2.4) cuando $k$ es un entero positivo impar:
-\\
-Cuando $k = 1$, tenemos
-$$a_3 = -\frac{1}{2 \cdot 3}a_1 = -\frac{1}{3!}a_1.$$
-Cuando $k = 3$, tenemos
-$$a_5 = -\frac{1}{4 \cdot 5}a_3 = \frac{1}{5!}a_1.$$
-Cuando $k = 5$, tenemos
-$$a_7 = -\frac{1}{6 \cdot 7}a_5 = -\frac{1}{7!}a_1.$$
-Continuando de esta manera, vemos que el coeficiente impar general es
-\begin{equation} \tag{4.2.6}
-\boxed{ a_{2n+1} = \frac{(-1)^n}{(2n+1)!}a_1. }
-\end{equation}
-
-Así, usando las Ecuaciones (4.2.5) y (4.2.6), hemos demostrado que para todos los valores de $a_0, a_1$, una solución a la ecuación diferencial dada es
-$$y(x) = a_0\left(1 - \frac{1}{2!}x^2 + \frac{1}{4!}x^4 - \dots\right) + a_1\left(x - \frac{1}{3!}x^3 + \frac{1}{5!}x^5 - \dots\right).$$
-
-Es decir,
-\begin{equation} \tag{4.2.7}
+ 
+Por lo tanto, para todos los valores de $a_0, a_1$, una solución a la ecuación diferencial dada es
+\begin{equation}
 y(x) = a_0 \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!}x^{2n} + a_1 \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!}x^{2n+1}.
+\label{eq:s2-sol-cos}
 \end{equation}
-
-Establecer $a_0 = 1$ y $a_1 = 0$ produce la solución
-$$y_1(x) = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!}x^{2n},$$
-mientras que establecer $a_0 = 0$ y $a_1 = 1$ produce la solución
-$$y_2(x) = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!}x^{2n+1}.$$
-
-Aplicando el criterio de la razón, es sencillo demostrar que ambas series anteriores convergen para todo $x$ real. Finalmente, dado que $y_1$ y $y_2$ no son proporcionales, son linealmente independientes en cualquier intervalo. Se deduce que (4.2.7) es la solución general de la ecuación diferencial dada. De hecho, la serie de potencias que representa a $y_1$ es simplemente la expansión en serie de Maclaurin de $\cos x$, mientras que la serie que define a $y_2$ es la expansión en serie de Maclaurin de $\sin x$. Por lo tanto, podemos escribir (4.2.7) en la forma más familiar
-$$y(x) = a_0 \cos x + a_1 \sin x. $$
-
+ 
+Establecer $a_0 = 1$ y $a_1 = 0$ produce $y_1(x) = \sum_{n\ge 0} \frac{(-1)^n}{(2n)!}x^{2n}$, mientras que $a_0 = 0$ y $a_1 = 1$ produce $y_2(x) = \sum_{n\ge 0} \frac{(-1)^n}{(2n+1)!}x^{2n+1}$.
+ 
+Aplicando el criterio de la razón (a la variable $u=x^2$, ver la nota de la sección anterior), ambas series convergen para todo $x$ real. Dado que $y_1$ y $y_2$ no son proporcionales, son linealmente independientes en cualquier intervalo. Se deduce que \eqref{eq:s2-sol-cos} es la solución general. De hecho, $y_1$ es la serie de Maclaurin de $\cos x$ y $y_2$ la de $\sin x$ (Tabla~\ref{tab:s1-maclaurin}). Por lo tanto,
+\[ y(x) = a_0 \cos x + a_1 \sin x. \tag*{$\square$} \]
 \end{example}
-
-El desarrollo y la soluci\'on del problema anterior, se bas\'o esencialmente en cuatro pasos, a saber: 
-
-\begin{remark}
-    \begin{enumerate}
-    \item Asumir que existe una solución en serie de potencias de la forma $y(x) = \sum_{n=0}^{\infty} a_n x^n$.
-    \item Determinar los valores de los coeficientes, $a_n$, de manera que $y$ sea una solución formal de la ecuación diferencial. Esto condujo a dos soluciones distintas, una determinada en términos de la constante $a_0$, y la otra en términos de la constante $a_1$.
-    \item Usar el criterio de la razón para determinar el radio de convergencia de las soluciones y, por lo tanto, el intervalo sobre el cual las soluciones son válidas.
-    \item Comprobar que las soluciones son linealmente independientes en el intervalo de existencia.
-\end{enumerate}
-
-\end{remark}
-
+ 
+El desarrollo y la solución del problema anterior se basó esencialmente en los pasos que resume la Figura~\ref{fig:s2-metodo}; la Tabla~\ref{tab:s2-errores} reúne los tropiezos más frecuentes.
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=.55cm, bbecaja/.append style={text width=3.3cm, minimum height=1.5cm}]
+  \node[bbecaja] (p1) {\textbf{1.} Proponer\\ $y=\sum a_nx^n$};
+  \node[bbecaja, right=of p1] (p2) {\textbf{2.} Derivar y sustituir en la ecuación};
+  \node[bbecaja, right=of p2] (p3) {\textbf{3.} Corrimiento de índices: potencia común $x^k$};
+  \node[bbecaja, below=.9cm of p3] (p4) {\textbf{4.} Igualar a cero cada coeficiente: \emph{recurrencia}};
+  \node[bbecaja, left=of p4] (p5) {\textbf{5.} Resolver: patrón general o primeros términos};
+  \node[bbecaja, left=of p5] (p6) {\textbf{6.} Radio $R$ e independencia lineal};
+  \draw[bbeflujo] (p1) -- (p2); \draw[bbeflujo] (p2) -- (p3);
+  \draw[bbeflujo] (p3) -- (p4); \draw[bbeflujo] (p4) -- (p5); \draw[bbeflujo] (p5) -- (p6);
+\end{tikzpicture}
+\caption{Método de series de potencias en un punto ordinario.}
+\label{fig:s2-metodo}
+\end{figure}
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Errores típicos al aplicar el método y cómo evitarlos.}
+\label{tab:s2-errores}
+\begin{tabular}{|p{5.6cm}|p{9.2cm}|}
+\hline
+\rowcolor{bbe!15}\textbf{Error típico} & \textbf{Cómo evitarlo} \\ \hline
+Olvidar que $y'$ y $y''$ empiezan en $n=1$ y $n=2$ & Los términos que se anulan al derivar no aportan; comenzar la suma en el primer índice que no se anula. \\ \hline
+Igualar coeficientes con potencias distintas & Antes de sumar, llevar \emph{todas} las series a $x^k$ (Tabla~\ref{tab:s1-corrimiento}). \\ \hline
+Perder los términos "sueltos" de $k=0,1$ & Si las sumas empiezan en índices distintos, sacar a mano los primeros términos (ver el Ejemplo~\ref{ex:s2-tres}). \\ \hline
+Dividir por una expresión que puede ser $0$ & Verificar que el factor de $a_{k+2}$, $(k+2)(k+1)$, nunca se anula para $k\ge 0$. \\ \hline
+Creer que hay una sola constante libre & Siempre hay \textbf{dos}: $a_0$ y $a_1$ (los valores $y(x_0)$ e $y'(x_0)$). \\ \hline
+\end{tabular}
+\end{table}
+ 
 El siguiente teorema justifica los pasos anteriores y muestra que la técnica se puede aplicar alrededor de cualquier punto ordinario de una ecuación diferencial.
-
-\begin{theorem}
-    Sean $p$ y $q$ analíticas en $x = x_0$, y suponga que sus expansiones en serie de potencias son válidas para $|x - x_0| < R$. Entonces la solución general a la ecuación diferencial
-\begin{equation} \tag{4.2.8}
-y'' + p(x)y' + q(x)y = 0
+ 
+\begin{theorem}\label{thm:s2-ordinario}
+    Sean $P$ y $Q$ analíticas en $x = x_0$, y suponga que sus expansiones en serie de potencias son válidas para $|x - x_0| < R$. Entonces la solución general a la ecuación diferencial
+\begin{equation}
+y'' + P(x)y' + Q(x)y = 0
+\label{eq:s2-teorema}
 \end{equation}
 puede representarse como una serie de potencias centrada en $x = x_0$, con un radio de convergencia de \textit{al menos} $R$. Los coeficientes en esta solución en serie pueden determinarse en términos de $a_0$ y $a_1$ sustituyendo directamente
 \[ y(x) = \sum_{n=0}^{\infty} a_n(x - x_0)^n \]
-en (9.2.8). La solución resultante es de la forma
+en \eqref{eq:s2-teorema}. La solución resultante es de la forma
 \[ y(x) = a_0 y_1(x) + a_1 y_2(x), \]
-donde $y_1$ y $y_2$ son soluciones linealmente independientes de (4.2.8) en el intervalo de existencia. Si se imponen las condiciones iniciales $y(x_0) = \alpha$, $y'(x_0) = \beta$, entonces $a_0 = \alpha, a_1 = \beta$.
-
+donde $y_1$ y $y_2$ son soluciones linealmente independientes de \eqref{eq:s2-teorema} en el intervalo de existencia. Si se imponen las condiciones iniciales $y(x_0) = \alpha$, $y'(x_0) = \beta$, entonces $a_0 = \alpha, a_1 = \beta$.
 \end{theorem}
-
-A continuaci\'on algunos ejemplos para darle uso al teorema anterior: 
-
-\begin{example}
+ 
+\begin{remark}
+\textbf{¿Qué $R$ garantiza el teorema?} Si $P$ y $Q$ son funciones racionales, la serie de $P$ y $Q$ centrada en $x_0$ converge hasta la singularidad más cercana, \emph{real o compleja} (Teorema del radio de una función racional, en el repaso de series). Por lo tanto, el radio de la solución es \textbf{al menos} la distancia de $x_0$ al punto singular más cercano de la ecuación. Si $P$ y $Q$ son polinomios, $R=\infty$.
+\end{remark}
+ 
+A continuación algunos ejemplos para darle uso al teorema anterior.
+ 
+\begin{example}\label{ex:s2-hermite}
   Determine dos soluciones en serie linealmente independientes en potencias de $x$ para
-\begin{equation} \tag{4.2.10}
+\begin{equation}
 y'' - 2xy' - 4y = 0,
+\label{eq:s2-hermite}
 \end{equation}
 y encuentre el radio de convergencia de estas soluciones.
-
-\noindent \textbf{Solución:} \quad El punto $x = 0$ es un punto ordinario de la ecuación diferencial, y por lo tanto el Teorema 4.2.4 se puede aplicar con $x_0 = 0$. En este caso, tenemos
-\[ p(x) = -2x, \qquad q(x) = -4. \]
-
-Dado que ambos son polinomios, sus expansiones en serie de potencias alrededor de $x = 0$ son válidas para todo $x$, y por lo tanto, del Teorema 4.2.4, la solución general a (4.2.10) puede expresarse en la forma
-\begin{equation} \tag{4.2.11}
-y(x) = \sum_{n=0}^{\infty} a_n x^n,
-\end{equation}
-y esta solución en serie de potencias convergerá para todo $x$ real. Derivando (4.2.11), obtenemos
-\[ y'(x) = \sum_{n=1}^{\infty} n a_n x^{n-1}, \qquad y''(x) = \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2}. \]
-Sustituir en (4.2.10) produce
+ 
+\noindent \textbf{Solución:} \quad El punto $x = 0$ es un punto ordinario de la ecuación diferencial, y por lo tanto el Teorema~\ref{thm:s2-ordinario} se puede aplicar con $x_0 = 0$. En este caso, tenemos
+\[ P(x) = -2x, \qquad Q(x) = -4. \]
+ 
+Dado que ambos son polinomios, sus expansiones en serie de potencias alrededor de $x = 0$ son válidas para todo $x$, y por lo tanto la solución general de \eqref{eq:s2-hermite} puede expresarse en la forma $y(x) = \sum_{n=0}^{\infty} a_n x^n$, y esta solución en serie de potencias convergerá para todo $x$ real. Derivando y sustituyendo, obtenemos
 \[ \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2} - 2\sum_{n=1}^{\infty} n a_n x^n - 4\sum_{n=0}^{\infty} a_n x^n = 0. \]
-
+ 
 Ahora redefinimos los rangos en la sumatoria para obtener un $x^k$ común en todos los términos. Esto se logra reemplazando $n$ con $k + 2$ en la primera sumatoria, y, por consistencia en la notación, reemplazamos $n$ con $k$ en las otras sumatorias. El resultado es
 \[ \sum_{k=0}^{\infty} [(k+2)(k+1)a_{k+2} - 2ka_k - 4a_k]x^k = 0. \]
-
-Esta ecuación requiere que el coeficiente de $x^k$ se anule, y por lo tanto, obtenemos la relación de recurrencia
-\[ (k+2)(k+1)a_{k+2} - 2ka_k - 4a_k = 0, \qquad k = 0, 1, 2, \dots, \]
-que se puede escribir en la forma equivalente
-\[ a_{k+2} = \frac{2(k+2)}{(k+1)(k+2)}a_k, \qquad k = 0, 1, 2, \dots; \]
-es decir,
-\begin{equation} \tag{4.2.12}
+ 
+Esta ecuación requiere que el coeficiente de $x^k$ se anule, y por lo tanto, obtenemos la relación de recurrencia $(k+2)(k+1)a_{k+2} = 2(k+2)a_k$, es decir,
+\begin{equation}
 a_{k+2} = \frac{2}{k+1}a_k, \qquad k = 0, 1, 2, \dots
+\label{eq:s2-rec-hermite}
 \end{equation}
-
-Vemos por esta relación que, como en el Ejemplo 4.2.3, todos los coeficientes pares pueden expresarse en términos de $a_0$, mientras que todos los coeficientes impares pueden expresarse en términos de $a_1$. Ahora determinamos la forma exacta de estos coeficientes.
-
-\vspace{0.3cm}
-\noindent \textbf{Caso 1: $k$ es par.} \quad De (4.2.12), tenemos lo siguiente: \\
-Cuando $k = 0$,
-\[ a_2 = 2a_0. \]
-Cuando $k = 2$,
-\[ a_4 = \frac{2}{3}a_2 = \frac{2^2}{3}a_0. \]
-Cuando $k = 4$,
-\[ a_6 = \frac{2}{5}a_4 = \frac{2^3}{1 \cdot 3 \cdot 5}a_0. \]
-
-El término general par es así
+ 
+Vemos por esta relación que, como en el Ejemplo~\ref{ex:s2-cos}, todos los coeficientes pares pueden expresarse en términos de $a_0$, mientras que todos los coeficientes impares pueden expresarse en términos de $a_1$.
+ 
+\vspace{0.2cm}
+\noindent \textbf{Coeficientes pares} ($k=0,2,4,\dots$): $a_2 = 2a_0$, \; $a_4 = \frac{2}{3}a_2 = \frac{2^2}{3}a_0$, \; $a_6 = \frac{2}{5}a_4 = \frac{2^3}{1\cdot 3\cdot 5}a_0$, y en general
 \[ a_{2n} = \frac{2^n}{1 \cdot 3 \cdot 5 \cdot \dots \cdot (2n - 1)}a_0. \]
-
-\vspace{0.3cm}
-\noindent \textbf{Caso 2: $k$ es impar.} \quad Sustituyendo sucesivamente en (4.2.12) se obtiene lo siguiente: \\
-Cuando $k = 1$,
-\[ a_3 = a_1. \]
-Cuando $k = 3$,
-\[ a_5 = \frac{2}{4}a_3 = \frac{1}{1 \cdot 2}a_1. \]
-Cuando $k = 5$,
-\[ a_7 = \frac{2}{6}a_5 = \frac{1}{1 \cdot 2 \cdot 3}a_1. \]
-Cuando $k = 7$,
-\[ a_9 = \frac{2}{8}a_7 = \frac{1}{1 \cdot 2 \cdot 3 \cdot 4}a_1. \]
-
-El término general impar puede, por lo tanto, escribirse como
+ 
+\noindent \textbf{Coeficientes impares} ($k=1,3,5,\dots$): $a_3 = a_1$, \; $a_5 = \frac{2}{4}a_3 = \frac{1}{2!}a_1$, \; $a_7 = \frac{2}{6}a_5 = \frac{1}{3!}a_1$, \; $a_9 = \frac{2}{8}a_7 = \frac{1}{4!}a_1$, y en general
 \[ a_{2n+1} = \frac{1}{n!}a_1. \]
-
-Sustituyendo de nuevo en (4.2.11), obtenemos la solución
-\begin{align*}
-y(x) &= a_0 \left[ 1 + 2x^2 + \frac{2^2}{1 \cdot 3}x^4 + \frac{2^3}{1 \cdot 3 \cdot 5}x^6 + \dots + \frac{2^n}{1 \cdot 3 \cdot 5 \cdot \dots \cdot (2n-1)}x^{2n} + \dots \right] \\
-&\quad + a_1 \left( x + x^3 + \frac{1}{2!}x^5 + \frac{1}{3!}x^7 + \dots + \frac{1}{n!}x^{2n+1} + \dots \right).
-\end{align*}
-
-Es decir,
-\[ y(x) = a_0 \left[ 1 + \sum_{n=1}^{\infty} \frac{2^n}{1 \cdot 3 \cdot 5 \cdot \dots \cdot (2n-1)}x^{2n} \right] + a_1 \sum_{n=0}^{\infty} \frac{1}{n!}x^{2n+1}. \]
-
-En consecuencia, a partir del Teorema 4.2.4, dos soluciones linealmente independientes de (4.2.10) en $(-\infty, \infty)$ son
-\[ y_1(x) = 1 + \sum_{n=1}^{\infty} \frac{2^n}{1 \cdot 3 \cdot \dots \cdot (2n-1)}x^{2n}, \qquad y_2(x) = \sum_{n=0}^{\infty} \frac{1}{n!}x^{2n+1}. \tag*{$\square$} \]
-
+ 
+Sustituyendo de nuevo, dos soluciones linealmente independientes de \eqref{eq:s2-hermite} en $(-\infty, \infty)$ son
+\[ y_1(x) = 1 + \sum_{n=1}^{\infty} \frac{2^n}{1 \cdot 3 \cdot \dots \cdot (2n-1)}x^{2n}, \qquad y_2(x) = \sum_{n=0}^{\infty} \frac{1}{n!}x^{2n+1}. \]
+ 
+\noindent\textbf{Identificación.} La serie $y_2=x\sum_{n\ge 0}\frac{(x^2)^n}{n!}$ es la de $x\,e^{x^2}$, de modo que $y_2(x)=x\,e^{x^2}$ (verifícalo: $y_2'=(1+2x^2)e^{x^2}$, $y_2''=(6x+4x^3)e^{x^2}$, y $y_2''-2xy_2'-4y_2=0$). Además, como $1\cdot3\cdots(2n-1)=\frac{(2n)!}{2^n n!}$, se puede escribir $y_1(x)=\sum_{n\ge 0}\frac{4^n\,n!}{(2n)!}\,x^{2n}$. \hfill $\square$
 \end{example}
-
-En general, no será posible encontrar la recurrencia entre los coeficientes de las respectivas series de potencias, es por esto que en la mayor\'ia de las ocasiones, debemos ser felices con obtener una cantidad finita de términos de cada solución en serie de potencias, por ejemplo:
-
-\begin{example}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, height=6cm, xmin=0, xmax=1.7, ymin=0, ymax=30, restrict y to domain=-1:60,
+  legend pos=north west, samples=120]
+\addplot[black, very thick, domain=0:1.7] {x*exp(x^2)};
+\addplot[bbered, domain=0:1.7] {x + x^3};
+\addplot[bbeamber, domain=0:1.7] {x + x^3 + x^5/2};
+\addplot[bbegreen, domain=0:1.7] {x + x^3 + x^5/2 + x^7/6};
+\addplot[bbeblue, domain=0:1.7] {x + x^3 + x^5/2 + x^7/6 + x^9/24};
+\legend{$xe^{x^2}$, hasta $x^3$, hasta $x^5$, hasta $x^7$, hasta $x^9$}
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:s2-hermite}: sumas parciales de $y_2=\sum x^{2n+1}/n!$ frente a $xe^{x^2}$. Cada término adicional alarga el tramo en que la aproximación es buena.}
+\label{fig:s2-hermite}
+\end{figure}
+ 
+En general, no será posible encontrar la recurrencia entre los coeficientes de las respectivas series de potencias, o ésta será tan complicada que no se pueda resolver; es por esto que en la mayoría de las ocasiones debemos ser felices con obtener una cantidad finita de términos de cada solución en serie de potencias, por ejemplo:
+ 
+\begin{example}\label{ex:s2-tres}
     Determine los términos hasta $x^5$ en cada una de las dos soluciones en serie de potencias linealmente independientes para
 \[ y'' + (2 - 4x^2)y' - 8xy = 0 \]
 centradas en $x = 0$. Encuentre también el radio de convergencia de estas soluciones.
-
-\noindent \textbf{Solución:} \quad Las funciones $p(x) = 2 - 4x^2$ y $q(x) = -8x$ son polinomios, y por lo tanto, a partir del Teorema 9.2.4, las soluciones en serie de potencias convergerán para todo $x$ real. Ahora determinamos las soluciones. Sustituir
-\begin{equation} \tag{4.2.13}
+ 
+\noindent \textbf{Solución:} \quad Las funciones $P(x) = 2 - 4x^2$ y $Q(x) = -8x$ son polinomios, y por lo tanto, a partir del Teorema~\ref{thm:s2-ordinario}, las soluciones en serie de potencias convergerán para todo $x$ real. Ahora determinamos las soluciones. Sustituir
+\begin{equation}
 y(x) = \sum_{n=0}^{\infty} a_n x^n
+\label{eq:s2-ansatz-3}
 \end{equation}
 en la ecuación diferencial dada produce
 \[ \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2} + 2\sum_{n=1}^{\infty} n a_n x^{n-1} - 4\sum_{n=1}^{\infty} n a_n x^{n+1} - 8\sum_{n=0}^{\infty} a_n x^{n+1} = 0. \]
-
-Reemplazando $n$ por $k + 2$ en la primera sumatoria, $k + 1$ en la segunda sumatoria, y $k - 1$ en la tercera y cuarta sumatorias, obtenemos
-\[ \sum_{k=0}^{\infty} (k+2)(k+1)a_{k+2}x^k + 2\sum_{k=0}^{\infty} (k+1)a_{k+1}x^k - 4\sum_{k=2}^{\infty} (k-1)a_{k-1}x^k - 8\sum_{k=1}^{\infty} a_{k-1}x^k, \]
-lo cual es igual a cero. Separando los términos correspondientes a $k = 0$ y $k = 1$, se deduce que esto puede escribirse como
+ 
+Reemplazando $n$ por $k + 2$ en la primera sumatoria, $k + 1$ en la segunda, y $k - 1$ en la tercera y cuarta, obtenemos
+\[ \sum_{k=0}^{\infty} (k+2)(k+1)a_{k+2}x^k + 2\sum_{k=0}^{\infty} (k+1)a_{k+1}x^k - 4\sum_{k=2}^{\infty} (k-1)a_{k-1}x^k - 8\sum_{k=1}^{\infty} a_{k-1}x^k = 0. \]
+Las sumas empiezan en índices distintos ($k=0,0,2,1$), así que separamos los términos $k = 0$ y $k = 1$ (las "sueltas" que advertía la Tabla~\ref{tab:s2-errores}):
 \begin{align*}
 (2a_2 + 2a_1) + (6a_3 + 4a_2 - 8a_0)x + \quad & \\
 \sum_{k=2}^{\infty} \{(k+2)(k+1)a_{k+2} + 2(k+1)a_{k+1} - [4(k-1) + 8]a_{k-1}\}x^k &= 0.
 \end{align*}
-
-Igualar los coeficientes de todas las potencias $x^k$ a cero produce lo siguiente: \\
-Para $k = 0$ y $k = 1$, tenemos
-\begin{equation} \tag{4.2.14}
+Igualar los coeficientes de todas las potencias $x^k$ a cero produce, para $k = 0$ y $k = 1$,
+\begin{equation}
 2a_2 + 2a_1 = 0 \quad \text{y} \quad 6a_3 + 4a_2 - 8a_0 = 0,
+\label{eq:s2-inicio-3}
 \end{equation}
-y para $k \ge 2$, tenemos
-\begin{equation} \tag{4.2.15}
-(k+2)(k+1)a_{k+2} + 2(k+1)a_{k+1} - [4(k-1) + 8]a_{k-1} = 0.
+y para $k \ge 2$,
+\begin{equation}
+(k+2)(k+1)a_{k+2} + 2(k+1)a_{k+1} - 4(k+1)a_{k-1} = 0,
+\label{eq:s2-rec-3-previa}
 \end{equation}
-
-Se deduce de (4.2.14) que
-\begin{equation} \tag{4.2.16}
+pues $4(k-1)+8=4(k+1)$. Se deduce de \eqref{eq:s2-inicio-3} que
+\begin{equation}
 a_2 = -a_1, \qquad a_3 = \frac{2}{3}(2a_0 + a_1),
+\label{eq:s2-a2a3}
 \end{equation}
-y (4.2.15) produce la relación de recurrencia general
-\begin{equation} \tag{4.2.17}
+y, dividiendo \eqref{eq:s2-rec-3-previa} por $k+1$, la relación de recurrencia general
+\begin{equation}
 a_{k+2} = \frac{4a_{k-1} - 2a_{k+1}}{k+2}, \qquad k = 2, 3, 4, \dots
+\label{eq:s2-rec-3}
 \end{equation}
-
-En este caso, la relación de recurrencia es bastante difícil de resolver. Sin embargo, solo se nos pidió determinar los términos hasta $x^5$ en la solución en serie, por lo que procedemos a hacerlo. Ya tenemos $a_2$ y $a_3$ expresados en términos de $a_0$ y $a_1$. Establecer $k = 2$ en (4.2.17) produce
-\[ a_4 = \frac{1}{4}(4a_1 - 2a_3) = \frac{1}{4}\left[ 4a_1 - \frac{4}{3}(2a_0 + a_1) \right], \]
-donde hemos sustituido de (4.2.16) para $a_3$. Simplificando esta expresión, obtenemos
-\[ a_4 = \frac{2}{3}(a_1 - a_0). \]
-
-Todavía requerimos un término más. Establecer $k = 3$ en (4.2.17) produce
-\[ a_5 = \frac{1}{5}(4a_2 - 2a_4) = \frac{1}{5}\left[ -4a_1 - \frac{4}{3}(a_1 - a_0) \right], \]
-de modo que
-\[ a_5 = \frac{4}{15}(a_0 - 4a_1). \]
-Sustituyendo los coeficientes $a_2, a_3, a_4$ y $a_5$ en (4.2.13), obtenemos
-\begin{align*}
-y(x) &= a_0 + a_1 x - a_1 x^2 + \frac{2}{3}(2a_0 + a_1)x^3 \\
-&\quad + \frac{2}{3}(a_1 - a_0)x^4 + \frac{4}{15}(a_0 - 4a_1)x^5 + \dots \ .
-\end{align*}
-Es decir,
+(Observación: \eqref{eq:s2-rec-3} vale en realidad para todo $k\ge 0$ con la convención $a_{-1}=0$; las dos igualdades \eqref{eq:s2-inicio-3} son su caso $k=0,1$.)
+ 
+La recurrencia involucra \emph{tres} coeficientes y es difícil de resolver en forma cerrada. Como solo se pidieron los términos hasta $x^5$, procedemos así. Ya tenemos $a_2$ y $a_3$ en términos de $a_0$ y $a_1$. Con $k = 2$ en \eqref{eq:s2-rec-3},
+\[ a_4 = \frac{1}{4}(4a_1 - 2a_3) = \frac{1}{4}\left[ 4a_1 - \frac{4}{3}(2a_0 + a_1) \right] = \frac{2}{3}(a_1 - a_0), \]
+y con $k = 3$,
+\[ a_5 = \frac{1}{5}(4a_2 - 2a_4) = \frac{1}{5}\left[ -4a_1 - \frac{4}{3}(a_1 - a_0) \right] = \frac{4}{15}(a_0 - 4a_1). \]
+Sustituyendo $a_2,\dots,a_5$ en \eqref{eq:s2-ansatz-3} y agrupando en $a_0$ y $a_1$,
 \begin{align*}
 y(x) &= a_0 \left( 1 + \frac{4}{3}x^3 - \frac{2}{3}x^4 + \frac{4}{15}x^5 + \dots \right) \\
 &\quad + a_1 \left( x - x^2 + \frac{2}{3}x^3 + \frac{2}{3}x^4 - \frac{16}{15}x^5 + \dots \right).
 \end{align*}
-
-Así, dos soluciones linealmente independientes a la ecuación diferencial dada en $(-\infty, \infty)$ son
-\[ y_1(x) = 1 + \frac{4}{3}x^3 - \frac{2}{3}x^4 + \frac{4}{15}x^5 + \dots \]
-y
-\[ y_2(x) = x - x^2 + \frac{2}{3}x^3 + \frac{2}{3}x^4 - \frac{16}{15}x^5 + \dots \ . \tag*{$\square$} \]
-
+Así, dos soluciones linealmente independientes en $(-\infty, \infty)$ son
+\[ y_1(x) = 1 + \frac{4}{3}x^3 - \frac{2}{3}x^4 + \frac{4}{15}x^5 + \dots, \qquad y_2(x) = x - x^2 + \frac{2}{3}x^3 + \frac{2}{3}x^4 - \frac{16}{15}x^5 + \dots \ . \tag*{$\square$} \]
 \end{example}
+ 
+\begin{remark}
+\textbf{¿Qué tan buena es una solución truncada?} Aquí ocurre algo poco frecuente: la ecuación tiene una integral primera. Como
+$\frac{d}{dx}\bigl[(2-4x^2)y\bigr]=(2-4x^2)y'-8xy$, la ecuación equivale a $\frac{d}{dx}\bigl[y'+(2-4x^2)y\bigr]=0$, es decir, $y'+(2-4x^2)y=C$. Con el factor integrante $e^{g(x)}$, $g(x)=2x-\frac43x^3$, se obtiene
+\[ y(x)=e^{-g(x)}\Bigl[a_0+C\int_0^x e^{g(t)}\,dt\Bigr],\qquad C=a_1+2a_0. \]
+Esto permite comparar con los polinomios de grado $5$ (Figura~\ref{fig:s2-ej3}): son excelentes cerca de $x=0$ y se separan de la solución exacta al alejarnos, a pesar de que $R=\infty$.
+\end{remark}
+ 
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{.49\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, width=\linewidth, height=5.6cm, xmin=-1.5, xmax=1.5, ymin=-3, ymax=9,
+  restrict y to domain=-10:20, legend pos=north west, legend style={font=\scriptsize}, samples=100]
+\addplot[black, very thick, smooth] coordinates {(-1.5,-0.3530) (-1.45,-0.3750) (-1.4,-0.3926) (-1.35,-0.4035) (-1.3,-0.4053) (-1.25,-0.3958) (-1.2,-0.3730) (-1.15,-0.3357) (-1.1,-0.2834) (-1.05,-0.2165) (-1,-0.1362) (-0.95,-0.0445) (-0.9,0.0557) (-0.85,0.1613) (-0.8,0.2689) (-0.75,0.3752) (-0.7,0.4773) (-0.65,0.5726) (-0.6,0.6590) (-0.55,0.7353) (-0.5,0.8008) (-0.45,0.8553) (-0.4,0.8992) (-0.35,0.9333) (-0.3,0.9587) (-0.25,0.9765) (-0.2,0.9882) (-0.15,0.9952) (-0.1,0.9986) (-0.05,0.9998) (0,1.0000) (0.05,1.0002) (0.1,1.0013) (0.15,1.0042) (0.2,1.0097) (0.25,1.0187) (0.3,1.0317) (0.35,1.0497) (0.4,1.0735) (0.45,1.1041) (0.5,1.1425) (0.55,1.1903) (0.6,1.2492) (0.65,1.3212) (0.7,1.4092) (0.75,1.5169) (0.8,1.6490) (0.85,1.8117) (0.9,2.0135) (0.95,2.2658) (1,2.5844) (1.05,2.9913) (1.1,3.5176) (1.15,4.2081) (1.2,5.1283) (1.25,6.3756) (1.3,8.0981) (1.35,10.5242) (1.4,14.0150) (1.45,19.1525) (1.5,26.8976)};
+\addplot[bbered, domain=-1.5:1.5] {1 + 4/3*x^3 - 2/3*x^4 + 4/15*x^5};
+\legend{exacta, grado 5}
+\end{axis}
+\end{tikzpicture}
+\caption{$y_1$ ($a_0=1,\ a_1=0$).}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{.49\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, width=\linewidth, height=5.6cm, xmin=-1.5, xmax=1.5, ymin=-3, ymax=9,
+  restrict y to domain=-10:20, legend pos=north west, legend style={font=\scriptsize}, samples=100]
+\addplot[black, very thick, smooth] coordinates {(-1.5,-0.2881) (-1.45,-0.3435) (-1.4,-0.4082) (-1.35,-0.4816) (-1.3,-0.5624) (-1.25,-0.6484) (-1.2,-0.7369) (-1.15,-0.8243) (-1.1,-0.9068) (-1.05,-0.9805) (-1,-1.0420) (-0.95,-1.0880) (-0.9,-1.1165) (-0.85,-1.1262) (-0.8,-1.1169) (-0.75,-1.0892) (-0.7,-1.0447) (-0.65,-0.9858) (-0.6,-0.9151) (-0.55,-0.8356) (-0.5,-0.7501) (-0.45,-0.6614) (-0.4,-0.5721) (-0.35,-0.4843) (-0.3,-0.3995) (-0.25,-0.3191) (-0.2,-0.2439) (-0.15,-0.1743) (-0.1,-0.1106) (-0.05,-0.0526) (0,0.0000) (0.05,0.0476) (0.1,0.0907) (0.15,0.1300) (0.2,0.1661) (0.25,0.1997) (0.3,0.2314) (0.35,0.2620) (0.4,0.2921) (0.45,0.3225) (0.5,0.3540) (0.55,0.3874) (0.6,0.4237) (0.65,0.4641) (0.7,0.5098) (0.75,0.5627) (0.8,0.6247) (0.85,0.6987) (0.9,0.7883) (0.95,0.8983) (1,1.0355) (1.05,1.2090) (1.1,1.4320) (1.15,1.7232) (1.2,2.1099) (1.25,2.6329) (1.3,3.3540) (1.35,4.3686) (1.4,5.8275) (1.45,7.9736) (1.5,11.2080)};
+\addplot[bbered, domain=-1.5:1.5] {x - x^2 + 2/3*x^3 + 2/3*x^4 - 16/15*x^5};
+\legend{exacta, grado 5}
+\end{axis}
+\end{tikzpicture}
+\caption{$y_2$ ($a_0=0,\ a_1=1$).}
+\end{subfigure}
+\caption{Ejemplo~\ref{ex:s2-tres}: solución exacta (calculada con la integral primera) y su polinomio de grado $5$.}
+\label{fig:s2-ej3}
+\end{figure}
+ 
+El radio de convergencia no siempre es infinito aunque los coeficientes sean polinomios. El siguiente ejemplo muestra el fenómeno que ya vimos con $1/(1+x^2)$.
+ 
+\begin{example}\label{ex:s2-raiz}
+Resuelva en potencias de $x$ la ecuación $(1+x^2)y''+xy'-y=0$ e indique el radio de convergencia.
+ 
+\noindent \textbf{Solución:} \quad En forma estándar, $P(x)=\dfrac{x}{1+x^2}$ y $Q(x)=-\dfrac{1}{1+x^2}$ son analíticas en $x=0$ y sus singularidades son $x=\pm i$, a distancia $1$ del origen: el Teorema~\ref{thm:s2-ordinario} garantiza $R\ge 1$. Sustituimos $y=\sum a_nx^n$ en la forma sin denominadores:
+\[ \sum_{n=2}^{\infty} n(n-1)a_nx^{n-2}+\sum_{n=2}^{\infty} n(n-1)a_nx^{n}+\sum_{n=1}^{\infty} n a_nx^{n}-\sum_{n=0}^{\infty} a_nx^{n}=0. \]
+Con $k$ como exponente común y agrupando $n(n-1)+n-1=n^2-1$,
+\[ \sum_{k=0}^{\infty}\bigl[(k+2)(k+1)a_{k+2}+(k^2-1)a_k\bigr]x^k=0 \quad\Longrightarrow\quad a_{k+2}=-\frac{k-1}{k+2}\,a_k. \]
+\begin{itemize}
+\item \emph{Coeficientes impares:} $a_3=-\frac{0}{3}a_1=0$ y por lo tanto $a_5=a_7=\dots=0$. La solución impar es $y_2(x)=x$, ¡un polinomio! (Verificación: $0+x-x=0$.)
+\item \emph{Coeficientes pares:} $a_2=\frac12a_0$, $a_4=-\frac14a_2=-\frac18a_0$, $a_6=-\frac36a_4=\frac1{16}a_0$, $a_8=-\frac58a_6=-\frac{5}{128}a_0$. Es la serie binomial de
+\[ y_1(x)=\sqrt{1+x^2}=1+\tfrac12x^2-\tfrac18x^4+\tfrac1{16}x^6-\tfrac{5}{128}x^8+\cdots \]
+\end{itemize}
+La solución general es $y=a_0\sqrt{1+x^2}+a_1x$. El radio de $y_1$ es exactamente $R=1$ (razón: $\bigl|a_{k+2}/a_k\bigr|\to 1$ en $u=x^2$), aunque $y_1$ es suave en toda la recta real. \hfill $\square$
+\end{example}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, height=6cm, xmin=-1.7, xmax=1.7, ymin=-0.7, ymax=3.2, restrict y to domain=-5:8,
+  legend style={at={(0.5,-0.06)}, anchor=north}, samples=150, legend columns=3]
+\addplot[black, very thick, domain=-1.7:1.7] {sqrt(1+x^2)};
+\addplot[bbered, domain=-1.7:1.7] {1 + x^2/2};
+\addplot[bbeamber, domain=-1.7:1.7] {1 + x^2/2 - x^4/8};
+\addplot[bbegreen, domain=-1.7:1.7] {1 + x^2/2 - x^4/8 + x^6/16};
+\addplot[bbeblue, domain=-1.7:1.7] {1 + x^2/2 - x^4/8 + x^6/16 - 5*x^8/128};
+\legend{$\sqrt{1+x^2}$, hasta $x^2$, hasta $x^4$, hasta $x^6$, hasta $x^8$}
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:s2-raiz}: las sumas parciales convergen en $|x|<1$ y se alejan de la solución para $|x|>1$.}
+\label{fig:s2-raiz}
+\end{figure}
+ 
+Un último ejemplo, muy importante en física, tiene una recurrencia que salta de \emph{tres} en tres.
+ 
+\begin{example}\label{ex:s2-airy}
+\textbf{(Ecuación de Airy.)} Determine dos soluciones en serie de $y''-xy=0$ centradas en $x=0$.
+ 
+\noindent \textbf{Solución:} \quad $P=0$ y $Q=-x$ son polinomios: $R=\infty$. Con $y=\sum a_nx^n$,
+\[ \sum_{k=0}^{\infty}(k+2)(k+1)a_{k+2}x^k-\sum_{k=1}^{\infty}a_{k-1}x^k=0 . \]
+El término $k=0$ da $2a_2=0$, y para $k\ge 1$: $(k+2)(k+1)a_{k+2}=a_{k-1}$, es decir,
+\[ a_2=0,\qquad a_{k+3}=\frac{a_k}{(k+3)(k+2)},\qquad k=0,1,2,\dots \]
+La recurrencia conecta $a_0\to a_3\to a_6\to\cdots$ y $a_1\to a_4\to a_7\to\cdots$, mientras que $a_2=a_5=a_8=\cdots=0$:
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\rowcolor{bbe!15}$m$ & $1$ & $2$ & $3$ & $4$ \\ \hline
+$a_{3m}/a_0$ & $\frac{1}{2\cdot 3}=\frac1{6}$ & $\frac{1}{6\cdot 5\cdot 6}=\frac{1}{180}$ & $\frac{1}{180\cdot 8\cdot 9}=\frac{1}{12960}$ & $\frac{1}{12960\cdot 11\cdot 12}$ \\ \hline
+$a_{3m+1}/a_1$ & $\frac{1}{3\cdot 4}=\frac1{12}$ & $\frac{1}{12\cdot 6\cdot 7}=\frac{1}{504}$ & $\frac{1}{504\cdot 9\cdot 10}=\frac{1}{45360}$ & $\frac{1}{45360\cdot 12\cdot 13}$ \\ \hline
+\end{tabular}
+\end{center}
+Por lo tanto, dos soluciones linealmente independientes en $(-\infty,\infty)$ son
+\[ y_1(x)=1+\frac{x^3}{6}+\frac{x^6}{180}+\frac{x^9}{12960}+\cdots,\qquad y_2(x)=x+\frac{x^4}{12}+\frac{x^7}{504}+\frac{x^{10}}{45360}+\cdots \tag*{$\square$} \]
+\end{example}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeosc, height=6.2cm, xmin=-8, xmax=2.5, ymin=-3.5, ymax=6, restrict y to domain=-8:12,
+  legend pos=north west, samples=100]
+\bbezero{-8}{2.5}
+\addplot[bbeblue, very thick, smooth] coordinates {(-8,-0.3436) (-7.9,-0.2127) (-7.8,-0.0652) (-7.7,0.0874) (-7.6,0.2334) (-7.5,0.3617) (-7.4,0.4631) (-7.3,0.5305) (-7.2,0.5594) (-7.1,0.5482) (-7,0.4984) (-6.9,0.4138) (-6.8,0.3009) (-6.7,0.1676) (-6.6,0.0231) (-6.5,-0.1230) (-6.4,-0.2611) (-6.3,-0.3826) (-6.2,-0.4802) (-6.1,-0.5481) (-6,-0.5828) (-5.9,-0.5827) (-5.8,-0.5484) (-5.7,-0.4824) (-5.6,-0.3891) (-5.5,-0.2740) (-5.4,-0.1439) (-5.3,-0.0061) (-5.2,0.1321) (-5.1,0.2635) (-5,0.3815) (-4.9,0.4805) (-4.8,0.5561) (-4.7,0.6052) (-4.6,0.6259) (-4.5,0.6179) (-4.4,0.5822) (-4.3,0.5210) (-4.2,0.4374) (-4.1,0.3356) (-4,0.2200) (-3.9,0.0956) (-3.8,-0.0325) (-3.7,-0.1595) (-3.6,-0.2805) (-3.5,-0.3915) (-3.4,-0.4889) (-3.3,-0.5697) (-3.2,-0.6317) (-3.1,-0.6736) (-3,-0.6947) (-2.9,-0.6950) (-2.8,-0.6752) (-2.7,-0.6365) (-2.6,-0.5807) (-2.5,-0.5098) (-2.4,-0.4262) (-2.3,-0.3323) (-2.2,-0.2308) (-2.1,-0.1242) (-2,-0.0150) (-1.9,0.0946) (-1.8,0.2023) (-1.7,0.3064) (-1.6,0.4054) (-1.5,0.4979) (-1.4,0.5829) (-1.3,0.6598) (-1.2,0.7282) (-1.1,0.7878) (-1,0.8388) (-0.9,0.8814) (-0.8,0.9161) (-0.7,0.9435) (-0.6,0.9643) (-0.5,0.9793) (-0.4,0.9894) (-0.3,0.9955) (-0.2,0.9987) (-0.1,0.9998) (0,1.0000) (0.1,1.0002) (0.2,1.0013) (0.3,1.0045) (0.4,1.0107) (0.5,1.0209) (0.6,1.0363) (0.7,1.0578) (0.8,1.0868) (0.9,1.1245) (1,1.1723) (1.1,1.2319) (1.2,1.3050) (1.3,1.3938) (1.4,1.5008) (1.5,1.6288) (1.6,1.7813) (1.7,1.9624) (1.8,2.1770) (1.9,2.4308) (2,2.7309) (2.1,3.0858) (2.2,3.5056) (2.3,4.0028) (2.4,4.5923) (2.5,5.2924)};
+\addplot[bbered, very thick, smooth] coordinates {(-8,-0.2676) (-7.9,-0.4530) (-7.8,-0.6027) (-7.7,-0.7058) (-7.6,-0.7550) (-7.5,-0.7471) (-7.4,-0.6835) (-7.3,-0.5696) (-7.2,-0.4144) (-7.1,-0.2295) (-7,-0.0284) (-6.9,0.1748) (-6.8,0.3660) (-6.7,0.5324) (-6.6,0.6635) (-6.5,0.7509) (-6.4,0.7899) (-6.3,0.7786) (-6.2,0.7184) (-6.1,0.6140) (-6,0.4722) (-5.9,0.3023) (-5.8,0.1145) (-5.7,-0.0798) (-5.6,-0.2697) (-5.5,-0.4446) (-5.4,-0.5952) (-5.3,-0.7138) (-5.2,-0.7947) (-5.1,-0.8345) (-5,-0.8319) (-4.9,-0.7880) (-4.8,-0.7055) (-4.7,-0.5893) (-4.6,-0.4455) (-4.5,-0.2812) (-4.4,-0.1043) (-4.3,0.0771) (-4.2,0.2554) (-4.1,0.4229) (-4,0.5732) (-3.9,0.7007) (-3.8,0.8010) (-3.7,0.8709) (-3.6,0.9087) (-3.5,0.9139) (-3.4,0.8872) (-3.3,0.8304) (-3.2,0.7463) (-3.1,0.6384) (-3,0.5106) (-2.9,0.3676) (-2.8,0.2140) (-2.7,0.0543) (-2.6,-0.1069) (-2.5,-0.2653) (-2.4,-0.4171) (-2.3,-0.5590) (-2.2,-0.6881) (-2.1,-0.8020) (-2,-0.8992) (-1.9,-0.9784) (-1.8,-1.0391) (-1.7,-1.0811) (-1.6,-1.1048) (-1.5,-1.1108) (-1.4,-1.1002) (-1.3,-1.0741) (-1.2,-1.0342) (-1.1,-0.9818) (-1,-0.9186) (-0.9,-0.8463) (-0.8,-0.7663) (-0.7,-0.6802) (-0.6,-0.5893) (-0.5,-0.4948) (-0.4,-0.3979) (-0.3,-0.2993) (-0.2,-0.1999) (-0.1,-0.1000) (0,0.0000) (0.1,0.1000) (0.2,0.2001) (0.3,0.3007) (0.4,0.4021) (0.5,0.5052) (0.6,0.6109) (0.7,0.7202) (0.8,0.8346) (0.9,0.9556) (1,1.0853) (1.1,1.2259) (1.2,1.3800) (1.3,1.5508) (1.4,1.7417) (1.5,1.9571) (1.6,2.2019) (1.7,2.4820) (1.8,2.8044) (1.9,3.1775) (2,3.6111) (2.1,4.1171) (2.2,4.7098) (2.3,5.4064) (2.4,6.2277) (2.5,7.1990)};
+\legend{$y_1$, $y_2$}
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:s2-airy}: para $x<0$ las soluciones oscilan (con amplitud decreciente y frecuencia creciente); para $x>0$ crecen sin oscilar. La serie lo ``sabe'' todo: es válida en toda la recta.}
+\label{fig:s2-airy}
+\end{figure}
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Resumen de los ejemplos: la forma de la recurrencia sugiere cuánto se puede resolver.}
+\label{tab:s2-resumen}
+\begin{tabular}{|p{3.9cm}|p{4.2cm}|p{4.1cm}|c|}
+\hline
+\rowcolor{bbe!15}\textbf{Ecuación} & \textbf{Recurrencia} & \textbf{Solución cerrada} & $\mathbf{R}$ \\ \hline
+$y''+y=0$ & $a_{k+2}=-\dfrac{a_k}{(k+2)(k+1)}$ & $\cos x,\ \sin x$ & $\infty$ \\ \hline
+$y''-2xy'-4y=0$ & $a_{k+2}=\dfrac{2a_k}{k+1}$ & $y_2=xe^{x^2}$ & $\infty$ \\ \hline
+$y''+(2-4x^2)y'-8xy=0$ & $a_{k+2}=\dfrac{4a_{k-1}-2a_{k+1}}{k+2}$ (3 términos) & vía $y'+(2-4x^2)y=C$ & $\infty$ \\ \hline
+$(1+x^2)y''+xy'-y=0$ & $a_{k+2}=-\dfrac{k-1}{k+2}a_k$ & $x,\ \sqrt{1+x^2}$ & $1$ \\ \hline
+$y''-xy=0$ & $a_{k+3}=\dfrac{a_k}{(k+3)(k+2)}$ (salto de 3) & funciones de Airy & $\infty$ \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{exercise}[Para llevar]
+\begin{enumerate}
+\item Resuelve $y''+xy'+y=0$ en potencias de $x$ e identifica una solución en términos de funciones elementales.
+\item ¿Qué radio de convergencia garantiza el teorema para las soluciones de $(x^2-2x+10)y''+y'+y=0$ en potencias de $x$? ¿Y en potencias de $(x-1)$?
+\end{enumerate}
+\emph{Respuestas:} (1) $a_{k+2}=-\dfrac{a_k}{k+2}$, de donde $a_{2n}=\dfrac{(-1)^n}{2^n\,n!}a_0$ y $y_1=e^{-x^2/2}$; la otra solución es $y_2=\sum_{n\ge0}\dfrac{(-1)^n}{1\cdot3\cdots(2n+1)}x^{2n+1}$ (ambas con $R=\infty$). \; (2) Las raíces de $x^2-2x+10=(x-1)^2+9$ son $1\pm3i$: en potencias de $x$, $R\ge\sqrt{10}$; en potencias de $(x-1)$, $R\ge 3$.
+\end{exercise}
