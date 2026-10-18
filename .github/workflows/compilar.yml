@@ -10,11 +10,8 @@ jobs:
   pdf:
     runs-on: ubuntu-latest
     steps:
-      - name: Descargar el repositorio (forzar main)
+      - name: Descargar el repositorio
         uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
 
       - name: "Debug: contenido del repositorio antes de compilar"
         run: |
