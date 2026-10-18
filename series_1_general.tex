@@ -1,121 +1,402 @@
 
-Hasta ahora, las técnicas que hemos desarrollado para resolver ecuaciones diferenciales han implicado determinar una solución en forma cerrada para una ecuación dada (o sistema) en términos de funciones elementales familiares. Esencialmente, las únicas ecuaciones diferenciales de orden dos o superior para las que podemos derivar tales soluciones son las siguientes:
+un apunte de un alto nivel academico y pedagogico, con una estructura y estetica profesional, enfocado en el aprendizaje activo de los estudiantes de ingenieria de un curso de ecuaciones diferenciales
 
+
+
+
+Recientes
+Visualización de apunte sistemas_1.tex
+ahora
+Design plugin para Apunte.tex
+hace 4 minutos
+Compilar archivo LaTeX a PDF
+hace 3 días
+Trabajo anterior
+hace 3 días
+Sección de práctica con ejercicios
+1 oct
+
+Instrucciones
+
+Contexto
+25 archivos
+
+Programado
+Privado
+
+Contexto
+Nombre	
+
+claude
+
+Apunte v2
+TEX
+
+auditoria bb2
+MD
+
+bb2_v2
+CLS
+
+practica sistemas_1
+TEX
+
+series_1_general
+TEX
+
+series_2_ordinarios
+TEX
+
+series_3_singulares
+TEX
+
+series_4_frobenius
+TEX
+
+series_5_bessel
+TEX
+
+sistemas defectuosos
+TEX
+
+Apunte
+TEX
+
+base sistemas defectuosos
+MD
+
+bb2
+CLS
+
+logo edo
+PNG
+
+practica sistemas_1
+TEX
+
+problems on systems of differential equations
+
+series_1_general
+TEX
+
+series_2_ordinarios
+TEX
+
+series_3_singulares
+TEX
+
+series_4_frobenius
+TEX
+
+series_5_bessel
+TEX
+
+sistemas_1_v2
+TEX
+
+sistemas_2
+TEX
+
+sistemas_2
+TEX
+
+sistemas defectuosos
+TEX
+25 archivos · 15% de la capacidad del proyecto utilizada
+
+series_1_general
+TEX · 28.9kB · hace 29 minutos
+%% series_1_general.tex -- version ampliada de series_1 (introduccion y repaso de series de potencias)
+%% Agregados: mapa del capitulo, tablas (formas de solucion, tres casos de convergencia,
+%% operaciones, corrimiento de indices, series de Maclaurin), figuras (intervalos de
+%% convergencia, polinomios de Taylor, discos de convergencia en el plano complejo),
+%% actividades y ejercicios con respuesta.
+%% Requiere en el preambulo del documento principal:
+%%   \usepackage{pgfplots}  \pgfplotsset{compat=1.18}
+%% Convenciones de notacion del capitulo: en la forma estandar y''+P(x)y'+Q(x)y=0
+%% los coeficientes se llaman P y Q; en la forma de Frobenius
+%% x^2 y''+x p(x) y'+q(x) y=0 se usan p=(x-x0)P y q=(x-x0)^2 Q (minusculas).
+ 
+%% --- Correccion de \ref a cajas numeradas (ver sistemas_2.tex) --------------
+\makeatletter
+\ifdefined\bbereffixdone\else
+  \def\bbereffixdone{}
+  \tcbset{before upper={%
+    \ifx\thetcbcounter\@empty\else
+      \protected@edef\@currentlabel{\thetcbcounter}%
+      \ifdefined\phantomsection\phantomsection\fi
+    \fi}}
+\fi
+\makeatother
+ 
+%% --- Estilo comun de los graficos de este capitulo --------------------------
+\pgfplotsset{
+  bbeserie/.style={width=.94\linewidth, height=6.2cm, axis lines=middle,
+    xlabel=$x$, ylabel=$y$, tick label style={font=\small}, label style={font=\small},
+    legend style={font=\footnotesize, draw=bbe!40, fill=white, fill opacity=.9, text opacity=1},
+    grid=major, grid style={draw=bbe!12}, clip=true,
+    every axis plot/.append style={thick}},
+  bbeosc/.style={bbeserie, axis lines=left}
+}
+\providecommand{\bbezero}[2]{\addplot[bbegray!70, thin, forget plot] coordinates {(#1,0) (#2,0)};}
+\tikzset{
+  bbecaja/.style={draw=bbe, fill=bbe!8, rounded corners=2pt, text=black, align=center,
+    font=\small\sffamily, inner sep=4pt, text width=3.6cm, minimum height=1.1cm},
+  bbeflujo/.style={-{Stealth[length=5pt]}, thick}
+}
+ 
+ 
+Hasta ahora, las técnicas que hemos desarrollado para resolver ecuaciones diferenciales han implicado determinar una solución en forma cerrada para una ecuación dada (o sistema) en términos de funciones elementales familiares. Esencialmente, las únicas ecuaciones diferenciales de orden dos o superior para las que podemos derivar tales soluciones son las siguientes:
+ 
 \begin{enumerate}
     \item Ecuaciones con coeficientes constantes.
     \item Ecuaciones de Cauchy-Euler.
 \end{enumerate}
-
+ 
 Por ejemplo, aún no podemos determinar la solución a la ecuación diferencial aparentemente simple
 \[ y'' + e^x y = 0. \]
-
-En este capítulo, consideramos la posibilidad de representar soluciones a ecuaciones diferenciales lineales en la forma de algún tipo de serie infinita. Comenzaremos con el caso más simple, a saber, ecuaciones diferenciales cuyas soluciones pueden representarse como una serie de potencias convergente,
+ 
+En este capítulo consideramos la posibilidad de representar soluciones a ecuaciones diferenciales lineales en la forma de algún tipo de serie infinita. Comenzaremos con el caso más simple, a saber, ecuaciones diferenciales cuyas soluciones pueden representarse como una serie de potencias convergente,
 \[ y(x) = \sum_{n=0}^{\infty} a_n x^n, \]
 donde $a_n$ son constantes. Esto puede considerarse como una generalización del método de coeficientes indeterminados al caso en el que tenemos un número infinito de constantes. Determinaremos los valores apropiados de estas constantes por sustitución en la ecuación diferencial.
-
-No todas las ecuaciones diferenciales tienen soluciones que puedan representarse mediante una serie de potencias convergente. Encontraremos que el siguiente tipo más simple de solución en serie que es aplicable a una amplia clase de ecuaciones diferenciales lineales es uno de la forma
+ 
+No todas las ecuaciones diferenciales tienen soluciones que puedan representarse mediante una serie de potencias convergente. Encontraremos que el siguiente tipo más simple de solución en serie, aplicable a una amplia clase de ecuaciones diferenciales lineales, es uno de la forma
 \[ y(x) = x^r \sum_{n=0}^{\infty} a_n x^n, \]
 llamada \textbf{serie de Frobenius}. Aquí, además de los coeficientes $a_n$, también debemos determinar el valor de la constante $r$ (que en general \textit{no} será un entero positivo). El análisis de este problema es bastante complejo y los cálculos pueden ser extremadamente tediosos. Sin embargo, la técnica es una adición importante y útil a las herramientas del matemático aplicado para resolver ecuaciones diferenciales.
-
+ 
 Antes de comenzar el desarrollo de la teoría, notamos que por simplicidad restringiremos nuestra atención en este capítulo a las ecuaciones diferenciales lineales homogéneas de segundo orden cuya forma estándar es
-\[ y'' + p(x)y' + q(x)y = 0, \]
-donde $p$ y $q$ son funciones que están especificadas en algún intervalo $I$. Las técnicas se pueden extender fácilmente a órdenes superiores, y también a sistemas de ecuaciones diferenciales lineales.
-
+\[ y'' + P(x)y' + Q(x)y = 0, \]
+donde $P$ y $Q$ son funciones que están especificadas en algún intervalo $I$. Las técnicas se pueden extender fácilmente a órdenes superiores, y también a sistemas de ecuaciones diferenciales lineales.
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+  \node[bbecaja] (a) {\textbf{Repaso}\\ series de potencias};
+  \node[bbecaja, right=1cm of a] (b) {\textbf{Punto ordinario}\\ $y=\displaystyle\sum a_nx^n$};
+  \node[bbecaja, right=1cm of b] (c) {\textbf{Singular regular}\\ $y=x^r\displaystyle\sum a_nx^n$};
+  \node[bbecaja, below=1.2cm of b] (d) {\textbf{Casos de Frobenius}\\ raíces dobles o que difieren en un entero: aparece $\ln x$};
+  \node[bbecaja, right=1cm of d] (e) {\textbf{Ecuación de Bessel}\\ $J_p(x),\ Y_p(x)$};
+  \draw[bbeflujo] (a) -- (b);
+  \draw[bbeflujo] (b) -- (c);
+  \draw[bbeflujo] (c.south) -- ++(0,-.45) -| (b.south |- d.north) -- (d.north);
+  \draw[bbeflujo] (d) -- (e);
+\end{tikzpicture}
+\caption{Mapa del capítulo: cada etapa extiende la anterior a una situación más difícil.}
+\label{fig:s1-mapa}
+\end{figure}
+ 
+La Tabla~\ref{tab:s1-formas} anticipa el resultado central del capítulo: \emph{la forma de la solución la decide el comportamiento de $P$ y $Q$ en el punto donde desarrollamos}.
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Qué forma de solución esperar según el tipo de punto $x_0$ (se justifica en las secciones siguientes).}
+\label{tab:s1-formas}
+\begin{tabular}{|p{2.9cm}|p{4.4cm}|p{4.2cm}|p{3.2cm}|}
+\hline
+\rowcolor{bbe!15}\textbf{Tipo de punto} & \textbf{Condición} & \textbf{Forma de la solución} & \textbf{Validez} \\ \hline
+Ordinario & $P$ y $Q$ analíticas en $x_0$ & $\displaystyle\sum_{n\ge 0} a_n(x-x_0)^n$ & $|x-x_0|<R$ \\ \hline
+Singular regular & $(x-x_0)P$ y $(x-x_0)^2Q$ analíticas en $x_0$ & $(x-x_0)^r\displaystyle\sum_{n\ge 0} a_n(x-x_0)^n$ (a veces con $\ln$) & $0<x-x_0<R$ \\ \hline
+Singular irregular & ninguna de las anteriores & fuera del alcance de este curso & --- \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{remark}
+Aunque todavía no sabemos resolver $y''+e^xy=0$ en forma cerrada, el método de la sección siguiente produce, sin esfuerzo, la solución
+\[
+y = a_0\Bigl(1-\tfrac{1}{2}x^2-\tfrac{1}{6}x^3+\tfrac{1}{40}x^5+\cdots\Bigr)
+ + a_1\Bigl(x-\tfrac{1}{6}x^3-\tfrac{1}{12}x^4-\tfrac{1}{60}x^5+\cdots\Bigr).
+\]
+Al terminar la Sección de puntos ordinarios, intenta reproducir estos coeficientes.
+\end{remark}
+ 
 \subsection{Repaso de series de potencias}
  Comenzamos con un repaso muy breve de los principales hechos sobre las series de potencias, que deberían ser familiares de un curso previo de cálculo. Serán necesarios a lo largo del resto del capítulo.
-
+ 
  \begin{definition}
      Una serie infinita de la forma
-\begin{equation} \tag{4.1.1}
+\begin{equation}
 \sum_{n=0}^{\infty} a_n(x - x_0)^n,
+\label{eq:s1-serie-x0}
 \end{equation}
 donde $a_n$ y $x_0$ son constantes, se llama \textbf{serie de potencias centrada en $x = x_0$}.
-
-\vspace{0.5cm}
-
-La sustitución $u = x - x_0$ tiene el efecto de transformar (4.1.1) en
+ 
+\vspace{0.3cm}
+ 
+La sustitución $u = x - x_0$ tiene el efecto de transformar \eqref{eq:s1-serie-x0} en
 \[ \sum_{n=0}^{\infty} a_n u^n, \]
 de modo que podemos, sin pérdida de generalidad, restringir la atención a las series de potencias de la forma
-\begin{equation} \tag{4.1.2}
+\begin{equation}
 \sum_{n=0}^{\infty} a_n x^n,
+\label{eq:s1-serie-0}
 \end{equation}
-cuyo centro es $x = 0$. Se dice que la serie (4.1.2) \textbf{converge} en $x = x_1$ si
+cuyo centro es $x = 0$. Se dice que la serie \eqref{eq:s1-serie-0} \textbf{converge} en $x = x_1$ si
 \[ \lim_{k \to \infty} \sum_{n=0}^{k} a_n x_1^n \]
-existe y es finito. El conjunto de todos los $x$ para los que (4.1.2) converge se llama \textbf{intervalo de convergencia}.
-
+existe y es finito. El conjunto de todos los $x$ para los que \eqref{eq:s1-serie-0} converge se llama \textbf{intervalo de convergencia}.
  \end{definition}
-
- \begin{theorem}
-     Para la serie de potencias como la definici\'on anterior, exactamente una de las siguientes afirmaciones es verdadera:
+ 
+ \begin{theorem}[Radio de convergencia]
+     Para una serie de potencias como la de la definición anterior, exactamente una de las siguientes afirmaciones es verdadera:
 \begin{enumerate}
     \item $\sum_{n=0}^{\infty} a_n x^n$ converge solo en $x = 0$.
     \item $\sum_{n=0}^{\infty} a_n x^n$ converge para todo $x$ real.
     \item Existe un número positivo $R$ tal que $\sum_{n=0}^{\infty} a_n x^n$ converge (absolutamente) para $|x| < R$ y diverge para $|x| > R$.
 \end{enumerate}
-
  \end{theorem}
-
+ 
  \begin{remark}
-     El número $R$ que aparece en la posibilidad 3 se llama \textbf{radio de convergencia}. La convergencia o divergencia de la serie en los puntos finales $x = \pm R$ debe tratarse por separado. En la posibilidad 2, definimos el radio de convergencia como $R = \infty$.\\
-     El siguiente resultado, conocido como \textbf{criterio de la raz\'on}, nos permite calcular el radio de convergencia de una serie de potencias.
-
+     El número $R$ que aparece en la posibilidad 3 se llama \textbf{radio de convergencia}. La convergencia o divergencia de la serie en los puntos finales $x = \pm R$ debe tratarse por separado. En la posibilidad 1 definimos $R=0$ y en la posibilidad 2, $R = \infty$.
  \end{remark}
-
- \begin{theorem}
+ 
+La Tabla~\ref{tab:s1-tres-casos} muestra que las tres posibilidades ocurren, y que en los extremos puede pasar cualquier cosa; la Figura~\ref{fig:s1-intervalos} lo dibuja.
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Cinco series que ilustran el teorema (los extremos se estudian aparte).}
+\label{tab:s1-tres-casos}
+\begin{tabular}{|c|c|c|p{5.4cm}|}
+\hline
+\rowcolor{bbe!15}\textbf{Serie} & $\mathbf{R}$ & \textbf{Intervalo} & \textbf{Comportamiento en los extremos} \\ \hline
+$\displaystyle\sum n!\,x^n$ & $0$ & $\{0\}$ & ---  \\ \hline
+$\displaystyle\sum \dfrac{x^n}{n!}$ & $\infty$ & $(-\infty,\infty)$ & ---  \\ \hline
+$\displaystyle\sum x^n$ & $1$ & $(-1,1)$ & diverge en $x=\pm 1$ (los términos no tienden a $0$) \\ \hline
+$\displaystyle\sum_{n\ge 1} \dfrac{x^n}{n}$ & $1$ & $[-1,1)$ & converge en $x=-1$ (armónica alternada), diverge en $x=1$ (armónica) \\ \hline
+$\displaystyle\sum_{n\ge 1} \dfrac{x^n}{n^2}$ & $1$ & $[-1,1]$ & converge en ambos (comparación con $\sum 1/n^2$) \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1.45cm, y=.78cm, lab/.style={anchor=east, text=black, font=\small}]
+  \foreach \yy/\txt in {0/{$\sum n!\,x^n$},-1/{$\sum x^n/n!$},-2/{$\sum x^n$},-3/{$\sum x^n/n$},-4/{$\sum x^n/n^2$}}
+    { \node[lab] at (-2.7,\yy) {\txt};
+      \draw[bbegray!50, thin] (-2.5,\yy) -- (2.5,\yy);
+      \foreach \t in {-1,0,1} \draw[bbegray!70, thin] (\t,\yy-.12) -- (\t,\yy+.12); }
+  \foreach \t in {-1,0,1} \node[font=\footnotesize, text=black] at (\t,.55) {$\t$};
+  % R = 0
+  \fill (0,0) circle (2.6pt);
+  % R = infinito
+  \draw[ultra thick, <->] (-2.5,-1) -- (2.5,-1);
+  % (-1,1)
+  \draw[ultra thick] (-1,-2) -- (1,-2);
+  \draw[fill=white] (-1,-2) circle (2.6pt); \draw[fill=white] (1,-2) circle (2.6pt);
+  % [-1,1)
+  \draw[ultra thick] (-1,-3) -- (1,-3);
+  \fill (-1,-3) circle (2.6pt); \draw[fill=white] (1,-3) circle (2.6pt);
+  % [-1,1]
+  \draw[ultra thick] (-1,-4) -- (1,-4);
+  \fill (-1,-4) circle (2.6pt); \fill (1,-4) circle (2.6pt);
+  \node[anchor=west, text=black, font=\footnotesize] at (2.7,-2) {$R=1$};
+  \node[anchor=west, text=black, font=\footnotesize] at (2.7,-1) {$R=\infty$};
+  \node[anchor=west, text=black, font=\footnotesize] at (2.7,0) {$R=0$};
+\end{tikzpicture}
+\caption{Conjuntos de convergencia de la Tabla~\ref{tab:s1-tres-casos} ($\bullet$ converge, $\circ$ diverge).}
+\label{fig:s1-intervalos}
+\end{figure}
+ 
+El siguiente resultado, conocido como \textbf{criterio de la razón}, nos permite calcular el radio de convergencia de una serie de potencias.
+ 
+ \begin{theorem}[Criterio de la razón]
      Para la serie de potencias $\sum_{n=0}^{\infty} a_n x^n$, si
 \[ \lim_{n \to \infty} \left| \frac{a_{n+1}}{a_n} \right| = L, \]
 entonces el radio de convergencia de la serie de potencias es $R = 1/L$. Si $L = 0$, la serie converge para todo $x$, mientras que si $L = \infty$, la serie converge solo en $x = 0$.
-
  \end{theorem}
-
+ 
  \begin{example}
      Determinemos el radio de convergencia de la serie $$\sum_{n=0}^{\infty} \frac{n^2 x^n}{3^n}.$$
-
+ 
 \noindent \textbf{Solución:} \quad En este caso, tenemos
 \[ \lim_{n \to \infty} \left| \frac{a_{n+1}}{a_n} \right| = \lim_{n \to \infty} \frac{(n+1)^2}{3^{n+1}} \cdot \frac{3^n}{n^2} = \lim_{n \to \infty} \frac{(n+1)^2}{3n^2} = \frac{1}{3}. \]
-Así, $L = \frac{1}{3}$, de modo que el radio de convergencia es $R = 3$. Es fácil ver que la serie diverge en los extremos $x = \pm 3$, por lo que el intervalo de convergencia es $(-3, 3)$. 
+Así, $L = \frac{1}{3}$, de modo que el radio de convergencia es $R = 3$. En los extremos $x=\pm 3$ los términos son $n^2(\pm 1)^n$, que no tienden a cero, de modo que la serie diverge allí y el intervalo de convergencia es $(-3, 3)$.
+ 
+\vspace{.2cm}
+\noindent\textit{Comprobación numérica.} Las razones $|a_{n+1}/a_n|$ se acercan a $1/3$ por arriba:
+\begin{center}
+\small
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\rowcolor{bbe!15}$n$ & $1$ & $2$ & $5$ & $10$ & $100$ & $1000$ \\ \hline
+$\dfrac{(n+1)^2}{3n^2}$ & $1{,}333$ & $0{,}750$ & $0{,}480$ & $0{,}403$ & $0{,}340$ & $0{,}334$ \\ \hline
+\end{tabular}
+\end{center}
+\hfill $\square$
  \end{example}
-
- Las series de potencias, no son mas que funciones reales, dentro de su intervalo de convergencia es por ello que:
-
- Dos series de potencias $\sum_{n=0}^{\infty} a_n x^n$ y $\sum_{n=0}^{\infty} b_n x^n$ son iguales si y solo si cada coeficiente correspondiente es igual; es decir, $a_n = b_n$ para todo $n$. En particular,
+ 
+\begin{note}
+El criterio de la razón exige $a_n\neq 0$ para todo $n$ grande. Las series que aparecerán al resolver ecuaciones diferenciales suelen tener \emph{huecos} (solo potencias pares o impares, o de tres en tres). En ese caso se aplica el criterio a la variable auxiliar $u=x^2$ (o $u=x^3$). Por ejemplo, para $\sum_{n\ge 1} \dfrac{2^n}{1\cdot 3\cdots(2n-1)}\,x^{2n}$ tomamos $u=x^2$ y obtenemos $\dfrac{2}{2n+1}\to 0$, es decir, $R=\infty$.
+\end{note}
+ 
+Las series de potencias no son más que funciones reales dentro de su intervalo de convergencia; es por ello que:
+ 
+\begin{itemize}
+\item Dos series $\sum a_n x^n$ y $\sum b_n x^n$ son iguales si y solo si $a_n = b_n$ para todo $n$. En particular,
 \[ \sum_{n=0}^{\infty} a_n x^n = 0 \qquad \text{si y solo si } a_n = 0 \text{ para todo } n. \]
-
-Usaremos este resultado repetidamente a lo largo del capítulo.
-
+Usaremos este resultado repetidamente a lo largo del capítulo: \emph{es lo que nos permite igualar a cero cada coeficiente}.
+\end{itemize}
+ 
 Ahora sean $\sum_{n=0}^{\infty} a_n x^n$ y $\sum_{n=0}^{\infty} b_n x^n$ series de potencias con radios de convergencia $R_1$ y $R_2$, respectivamente, y sea $R = \min\{R_1, R_2\}$. Para $|x| < R$, defina las funciones $f$ y $g$ por
 \[ f(x) = \sum_{n=0}^{\infty} a_n x^n, \qquad g(x) = \sum_{n=0}^{\infty} b_n x^n. \]
-
-Entonces, para $|x| < R$,
-
-\begin{enumerate}
-    \item $f(x) + g(x) = \sum_{n=0}^{\infty} (a_n + b_n)x^n$ (suma de series de potencias).
-    \item $cf(x) = \sum_{n=0}^{\infty} (ca_n)x^n$ (multiplicación de una serie de potencias por un número real $c$).
-    \item $f(x)g(x) = \sum_{n=0}^{\infty} c_n x^n$, donde $c_n = \sum_{k=0}^{n} a_{n-k}b_k$ (multiplicación de series de potencias).
-\end{enumerate}
-
-Los coeficientes $c_n$ que aparecen en esta fórmula se pueden escribir de forma equivalente como:
-\[ c_n = \sum_{k=0}^{n} a_k b_{n-k}. \]
-
+Entonces, para $|x| < R$, se tiene lo siguiente:
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Álgebra de series de potencias (válida para $|x|<R=\min\{R_1,R_2\}$).}
+\label{tab:s1-operaciones}
+\begin{tabular}{|l|l|}
+\hline
+\rowcolor{bbe!15}\textbf{Operación} & \textbf{Coeficiente de $x^n$ en el resultado} \\ \hline
+Suma: $f(x)+g(x)$ & $a_n+b_n$ \\ \hline
+Múltiplo: $c\,f(x)$ & $c\,a_n$ \\ \hline
+Producto: $f(x)\,g(x)$ & $c_n=\displaystyle\sum_{k=0}^{n} a_{n-k}b_k=\sum_{k=0}^{n} a_k b_{n-k}$ \\ \hline
+\end{tabular}
+\end{table}
+ 
+\begin{example}
+\textbf{(El producto de series en acción.)} Sabemos que $e^x e^x=e^{2x}$. Verifiquémoslo con la fórmula del producto. Con $a_k=b_k=1/k!$,
+\[ c_n=\sum_{k=0}^{n}\frac{1}{k!\,(n-k)!}=\frac{1}{n!}\sum_{k=0}^{n}\binom{n}{k}=\frac{2^n}{n!}, \]
+que es precisamente el coeficiente de $x^n$ en $e^{2x}=\sum_{n\ge 0} \frac{(2x)^n}{n!}$. \hfill $\square$
+\end{example}
+ 
+\subsubsection*{Corrimiento de índices: la destreza técnica del capítulo}
+ 
+Casi todo el trabajo de este capítulo consiste en escribir varias series con la \emph{misma} potencia $x^k$ para poder sumarlas. La Tabla~\ref{tab:s1-corrimiento} resume la receta: si queremos que la potencia sea $x^k$, definimos $k$ como el exponente y despejamos $n$.
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Receta de corrimiento de índices (el rango inferior se desplaza igual que el índice).}
+\label{tab:s1-corrimiento}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\rowcolor{bbe!15}\textbf{Serie original} & \textbf{Cambio} & \textbf{Nuevo índice inicial} & \textbf{Serie resultante} \\ \hline
+$\displaystyle\sum_{n=2}^{\infty} n(n-1)a_n x^{n-2}$ & $k=n-2$ & $k=0$ & $\displaystyle\sum_{k=0}^{\infty}(k+2)(k+1)a_{k+2}x^{k}$ \\ \hline
+$\displaystyle\sum_{n=1}^{\infty} n a_n x^{n-1}$ & $k=n-1$ & $k=0$ & $\displaystyle\sum_{k=0}^{\infty}(k+1)a_{k+1}x^{k}$ \\ \hline
+$\displaystyle\sum_{n=0}^{\infty} a_n x^{n+1}$ & $k=n+1$ & $k=1$ & $\displaystyle\sum_{k=1}^{\infty}a_{k-1}x^{k}$ \\ \hline
+\end{tabular}
+\end{table}
+ 
 \begin{example}
     Suponga que los coeficientes en la expansión
 \[ f(x) = \sum_{n=0}^{\infty} a_n x^n \]
 satisfacen
-\begin{equation} \tag{4.1.3}
+\begin{equation}
 \sum_{n=1}^{\infty} n a_n x^n - \sum_{n=0}^{\infty} a_n x^{n+1} = 0.
+\label{eq:s1-ej-recurrencia}
 \end{equation}
 Exprese todos los $a_n$ en términos de $a_0$.
-
-\noindent \textbf{Solución:} \quad Reemplazamos $n$ por $n - 1$ en la segunda sumatoria en (4.1.3) (y alteramos el rango de $n$ apropiadamente) para obtener una potencia común de $x^n$ en ambas sumas. El resultado es
+ 
+\noindent \textbf{Solución:} \quad Reemplazamos $n$ por $n - 1$ en la segunda sumatoria de \eqref{eq:s1-ej-recurrencia} (y alteramos el rango de $n$ apropiadamente) para obtener una potencia común de $x^n$ en ambas sumas. El resultado es
 \[ \sum_{n=1}^{\infty} n a_n x^n - \sum_{n=1}^{\infty} a_{n-1} x^n = 0, \]
 que se puede escribir como
 \[ \sum_{n=1}^{\infty} (n a_n - a_{n-1}) x^n = 0. \]
-
-Se deduce que los $a_n$ deben satisfacer la relación de recurrencia
+ 
+Se deduce que los $a_n$ deben satisfacer la \textbf{relación de recurrencia}
 \[ n a_n - a_{n-1} = 0, \qquad n = 1, 2, 3, \dots; \]
 es decir,
 \[ a_n = \frac{1}{n} a_{n-1}, \qquad n = 1, 2, 3, \dots \]
-
+ 
 Sustituyendo para valores sucesivos de $n$, obtenemos
 \begin{align*}
 n &= 1: & a_1 &= a_0, \\
@@ -123,65 +404,210 @@ n &= 2: & a_2 &= \frac{1}{2} a_1 = \frac{1}{2} a_0, \\
 n &= 3: & a_3 &= \frac{1}{3} a_2 = \frac{1}{3 \cdot 2} a_0, \\
 n &= 4: & a_4 &= \frac{1}{4} a_3 = \frac{1}{4 \cdot 3 \cdot 2} a_0.
 \end{align*}
-
-Continuando de esta manera, notamos que:
-\[ a_n = \frac{1}{n!} a_0. \]
-
-De donde, 
-\[ f(x) = a_0 \sum_{n=0}^{\infty} \frac{1}{n!} x^n. \tag*{$\square$} \]
+ 
+Continuando de esta manera, notamos que $a_n = \dfrac{1}{n!} a_0$. De donde,
+\[ f(x) = a_0 \sum_{n=0}^{\infty} \frac{1}{n!} x^n = a_0 e^x. \tag*{$\square$} \]
 \end{example}
-
-A continuaci\'on un resultado que usaremos mucho en este cap\'itulo, como \textbf{derivar una serie de potencias}
-
-\begin{theorem}
-    
+ 
+\begin{activity}[Pausa para practicar]
+Escribe como una \emph{única} serie en potencias de $x^k$:
+\[ \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2} \;-\; 3\sum_{n=1}^{\infty} n a_n x^{n} \;+\; \sum_{n=0}^{\infty} a_n x^{n+1}. \]
+Antes de mirar la solución, responde: ¿cuál es el primer valor de $k$ en que aparecen \emph{las tres} series?
+\end{activity}
+ 
+\begin{solution}
+Aplicamos la Tabla~\ref{tab:s1-corrimiento}: la primera serie es $\sum_{k\ge 0}(k+2)(k+1)a_{k+2}x^k$, la segunda $-3\sum_{k\ge 1} k a_k x^k$ y la tercera $\sum_{k\ge 1} a_{k-1}x^k$. Las tres coinciden recién desde $k=1$; el término $k=0$ pertenece solo a la primera serie. Por lo tanto
+\[ 2a_2 + \sum_{k=1}^{\infty}\bigl[(k+2)(k+1)a_{k+2}-3k\,a_k+a_{k-1}\bigr]x^k . \]
+\end{solution}
+ 
+A continuación, un resultado que usaremos mucho en este capítulo: cómo \textbf{derivar una serie de potencias}.
+ 
+\begin{theorem}[Derivación término a término]
 Suponga que $\sum_{n=0}^{\infty} a_n x^n$ tiene un radio de convergencia $R$, y sea
 \[ f(x) = \sum_{n=0}^{\infty} a_n x^n, \qquad |x| < R. \]
-
-Entonces $f(x)$ se puede derivar un número arbitrario de veces en el intervalo $|x| < R$. Además, las derivadas se pueden obtener mediante derivación término a término. Así,
+ 
+Entonces $f(x)$ se puede derivar un número arbitrario de veces en el intervalo $|x| < R$. Además, las derivadas se pueden obtener mediante derivación término a término, y la serie derivada tiene el mismo radio $R$. Así,
 \begin{align*}
 f'(x) &= \sum_{n=0}^{\infty} n a_n x^{n-1} = \sum_{n=1}^{\infty} n a_n x^{n-1}, \\
 f''(x) &= \sum_{n=1}^{\infty} n(n-1)a_n x^{n-2} = \sum_{n=2}^{\infty} n(n-1)a_n x^{n-2},
 \end{align*}
 y así sucesivamente para las derivadas de orden superior.
 \end{theorem}
-
-Ahora recordaremos (o estableceremos) un t\'ermino que nos permitir\'a distinguir a unas funciones de otras, sobre todo como coeficientes de las ecuaciones diferenciales que busquemos resolver:
-
+ 
+Ahora recordaremos (o estableceremos) un término que nos permitirá distinguir a unas funciones de otras, sobre todo como coeficientes de las ecuaciones diferenciales que busquemos resolver:
+ 
 \begin{definition}
     Se dice que una función es \textbf{analítica} en $x = x_0$ si puede representarse mediante una serie de potencias convergente centrada en $x = x_0$ con un radio de convergencia distinto de cero.
-
 \end{definition}
-
+ 
 \begin{remark}
-    En un curso anterior,  se revis\'o, quiz\'as con otro nombre el concepto anterior, pero ahora podemos decir que si una función es analítica en $x = x_0$, entonces la representación en serie de potencias de esa función es única y está dada por
-\begin{equation} \tag{4.1.4}
+    En un curso anterior se revisó, quizás con otro nombre, el concepto anterior, pero ahora podemos decir que si una función es analítica en $x = x_0$, entonces la representación en serie de potencias de esa función es única y está dada por
+\begin{equation}
 f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(x_0)}{n!} (x - x_0)^n.
+\label{eq:s1-taylor}
 \end{equation}
-
-Esta es la expansión en \textbf{serie de Taylor} de $f(x)$ alrededor de $x = x_0$. Si $x_0 = 0$, entonces (4.1.4) se reduce a
+ 
+Esta es la expansión en \textbf{serie de Taylor} de $f(x)$ alrededor de $x = x_0$. Si $x_0 = 0$, entonces \eqref{eq:s1-taylor} se reduce a
 \[ f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(0)}{n!} x^n, \]
-que se llama la expansión en \textbf{serie de Maclaurin} de $f(x)$. Muchas de las funciones elementales familiares son analíticas en todos los puntos. En particular, las expansiones de Maclaurin de $e^x$, $\sin x$ y $\cos x$ son, respectivamente,
-\begin{align*}
-e^x &= 1 + x + \frac{1}{2!}x^2 + \frac{1}{3!}x^3 + \dots + \frac{1}{n!}x^n + \dots = \sum_{n=0}^{\infty} \frac{1}{n!}x^n, \\
-\sin x &= x - \frac{1}{3!}x^3 + \frac{1}{5!}x^5 - \dots + \frac{(-1)^n}{(2n+1)!}x^{2n+1} + \dots = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!}x^{2n+1}, \\
-\cos x &= 1 - \frac{1}{2!}x^2 + \frac{1}{4!}x^4 - \dots + \frac{(-1)^n}{(2n)!}x^{2n} + \dots = \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!}x^{2n}.
-\end{align*}
-
+que se llama la expansión en \textbf{serie de Maclaurin} de $f(x)$. Muchas de las funciones elementales familiares son analíticas en todos los puntos; la Tabla~\ref{tab:s1-maclaurin} reúne las que más usaremos.
 \end{remark}
-
+ 
+\begin{table}[H]
+\centering
+\small
+\caption{Series de Maclaurin que se usan en todo el capítulo.}
+\label{tab:s1-maclaurin}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{bbe!15}\textbf{Función} & \textbf{Serie} & $\mathbf{R}$ \\ \hline
+$e^x$ & $\displaystyle\sum_{n=0}^{\infty}\frac{x^n}{n!}$ & $\infty$ \\ \hline
+$\sin x$ & $\displaystyle\sum_{n=0}^{\infty}\frac{(-1)^n x^{2n+1}}{(2n+1)!}$ & $\infty$ \\ \hline
+$\cos x$ & $\displaystyle\sum_{n=0}^{\infty}\frac{(-1)^n x^{2n}}{(2n)!}$ & $\infty$ \\ \hline
+$\sinh x$, $\cosh x$ & $\displaystyle\sum_{n=0}^{\infty}\frac{x^{2n+1}}{(2n+1)!}$, \quad $\displaystyle\sum_{n=0}^{\infty}\frac{x^{2n}}{(2n)!}$ & $\infty$ \\ \hline
+$\dfrac{1}{1-x}$ & $\displaystyle\sum_{n=0}^{\infty}x^n$ & $1$ \\ \hline
+$\ln(1+x)$ & $\displaystyle\sum_{n=1}^{\infty}\frac{(-1)^{n+1}x^n}{n}$ & $1$ \\ \hline
+$\arctan x$ & $\displaystyle\sum_{n=0}^{\infty}\frac{(-1)^n x^{2n+1}}{2n+1}$ & $1$ \\ \hline
+\end{tabular}
+\end{table}
+ 
+Las tres primeras filas tienen $R=\infty$: sus polinomios de Taylor se acercan a la función en \emph{todo} intervalo, solo que necesitan más términos cuanto más lejos del centro queramos ser precisos (Figura~\ref{fig:s1-taylor-sin}).
+ 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeosc, width=.84\linewidth, height=6.6cm, xmin=-7, xmax=7, ymin=-2.2, ymax=2.2,
+  xtick={-6.2832,-3.1416,0,3.1416,6.2832}, xticklabels={$-2\pi$,$-\pi$,$0$,$\pi$,$2\pi$},
+  restrict y to domain=-6:6, legend pos=outer north east, samples=200]
+\bbezero{-7}{7}
+\addplot[black, very thick, domain=-7:7] {sin(deg(x))};
+\addplot[bbered, domain=-7:7] {x - x^3/6};
+\addplot[bbeamber, domain=-7:7] {x - x^3/6 + x^5/120};
+\addplot[bbegreen, domain=-7:7] {x - x^3/6 + x^5/120 - x^7/5040};
+\addplot[bbeblue, domain=-7:7] {x - x^3/6 + x^5/120 - x^7/5040 + x^9/362880};
+\legend{$\sin x$, grado 3, grado 5, grado 7, grado 9}
+\end{axis}
+\end{tikzpicture}
+\caption{Polinomios de Taylor de $\sin x$ en $x_0=0$: aunque $R=\infty$, cada polinomio solo es útil cerca del centro.}
+\label{fig:s1-taylor-sin}
+\end{figure}
+ 
+\subsubsection*{El radio de convergencia lo fijan las singularidades, ¡incluso las complejas!}
+ 
+\begin{activity}[Predice antes de calcular]
+La función $f(x)=\dfrac{1}{1+x^2}$ es infinitamente derivable en \emph{todo} $\mathbb{R}$, sin saltos ni asíntotas. ¿Qué radio de convergencia esperas para su serie de Maclaurin? Anota tu predicción y compárala con la Figura~\ref{fig:s1-razon-compleja}.
+\end{activity}
+ 
+Como $\dfrac{1}{1+x^2}=\sum_{k\ge 0}(-1)^k x^{2k}$ (serie geométrica con razón $-x^2$), la serie converge solo para $|x|<1$. Los polinomios de Taylor de la Figura~\ref{fig:s1-razon-compleja}(a) lo confirman: dentro de $(-1,1)$ mejoran al subir el grado, pero fuera de ese intervalo \emph{empeoran}. ¿Qué pasa en $x=\pm 1$ si la función es perfectamente suave allí? La explicación está en el plano complejo: $1+z^2=0$ en $z=\pm i$, y esos puntos están a distancia $1$ del origen (Figura~\ref{fig:s1-razon-compleja}(b)).
+ 
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{.56\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbeserie, width=\linewidth, height=6cm, xmin=-1.7, xmax=1.7, ymin=-1, ymax=3,
+  restrict y to domain=-4:6, legend style={at={(0.5,-0.14)}, anchor=north, font=\scriptsize}, legend columns=2, samples=150]
+\addplot[black, very thick, domain=-1.7:1.7] {1/(1+x^2)};
+\addplot[bbered, domain=-1.7:1.7] {1 - x^2 + x^4};
+\addplot[bbegreen, domain=-1.7:1.7] {1 - x^2 + x^4 - x^6 + x^8};
+\addplot[bbeblue, domain=-1.7:1.7] {1 - x^2 + x^4 - x^6 + x^8 - x^10 + x^12 - x^14 + x^16};
+\legend{$f$, grado 4, grado 8, grado 16}
+\end{axis}
+\end{tikzpicture}
+\caption{Polinomios de Taylor.}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{.40\linewidth}
+\centering
+\begin{tikzpicture}[scale=1.35]
+  \fill[bbe!12] (0,0) circle (1);
+  \draw[bbe, thick] (0,0) circle (1);
+  \draw[->, bbegray] (-1.5,0) -- (1.6,0) node[right, text=black, font=\small] {$\mathrm{Re}$};
+  \draw[->, bbegray] (0,-1.5) -- (0,1.6) node[above, text=black, font=\small] {$\mathrm{Im}$};
+  \node[bbered, font=\Large] at (0,1) {$\times$};
+  \node[bbered, font=\Large] at (0,-1) {$\times$};
+  \node[text=black, font=\small, anchor=west] at (.1,1.12) {$i$};
+  \node[text=black, font=\small, anchor=west] at (.1,-1.12) {$-i$};
+  \fill[black] (0,0) circle (1.4pt);
+  \node[text=black, font=\small, anchor=north east] at (-.05,-.05) {$0$};
+  \draw[->, thick] (0,0) -- (.707,.707);
+  \node[text=black, font=\footnotesize, anchor=west] at (.62,.42) {$R=1$};
+\end{tikzpicture}
+\caption{Singularidades $\pm i$.}
+\end{subfigure}
+\caption{La serie de $1/(1+x^2)$ diverge para $|x|>1$ porque la función tiene singularidades complejas en $\pm i$.}
+\label{fig:s1-razon-compleja}
+\end{figure}
+ 
+Esto motiva la siguiente regla práctica, que usaremos para decidir hasta dónde llega una solución en serie.
+ 
+\begin{theorem}[Radio de una función racional]
+Sea $f=p/q$ con $p,q$ polinomios sin factores comunes. El radio de convergencia de la serie de Taylor de $f$ centrada en $x_0$ es la distancia (en el plano complejo) de $x_0$ a la raíz de $q$ más cercana.
+\end{theorem}
+ 
 \begin{example}
-    Determine el radio de convergencia de la representación en serie de potencias de la función
+Determine el radio de convergencia de la representación en serie de potencias de la función
 \[ f(x) = \frac{1 - x}{x^2 - 4} \]
 centrada en \textbf{(a)} $x = 0$, \textbf{(b)} $x = 1$.
-
+ 
 \noindent \textbf{Solución:} \quad Tomando $p(x) = 1 - x$ y $q(x) = x^2 - 4$, tenemos
 \[ f(x) = \frac{p(x)}{q(x)}, \]
-y las raíces de $q$ son $x = \pm 2$.
-
+y las raíces de $q$ son $x = \pm 2$ (no hay factores comunes con $p$).
+ 
 \begin{itemize}
-    \item[\textbf{(a)}] En este caso, el centro de la serie de potencias es $x = 0$, de modo que la distancia a la raíz más cercana de $q$ es $2$. (Ver Figura 9.1.3.) En consecuencia, el radio de convergencia de la representación en serie de potencias de $f$ centrada en $x = 0$ es $R = 2$.
-    \item[\textbf{(b)}] Si el centro de la serie de potencias es $x = 1$, entonces la raíz más cercana de $q$ está en $x = 2$ (ver Figura 9.1.3), por lo tanto, el radio de convergencia de la representación en serie de potencias de $f$ es $R = 1$. \hfill $\square$
+    \item[\textbf{(a)}] El centro es $x = 0$, de modo que la distancia a la raíz más cercana de $q$ es $2$ (Figura~\ref{fig:s1-discos}(a)). En consecuencia, $R = 2$.
+    \item[\textbf{(b)}] Si el centro es $x = 1$, la raíz más cercana de $q$ está en $x = 2$, a distancia $1$ (la otra, $x=-2$, está a distancia $3$). Por lo tanto $R = 1$. \hfill $\square$
 \end{itemize}
-
 \end{example}
+ 
+\begin{example}
+Determine el radio de convergencia de la serie de $g(x)=\dfrac{1}{x^2+2x+5}$ centrada en \textbf{(a)} $x=0$, \textbf{(b)} $x=1$.
+ 
+\noindent \textbf{Solución:} \quad Las raíces de $x^2+2x+5$ son $x=-1\pm 2i$, \emph{complejas}: $g$ es suave en toda la recta real, pero igual hay un límite. (a) La distancia de $0$ a $-1\pm 2i$ es $\sqrt{1+4}=\sqrt{5}$, luego $R=\sqrt5\approx 2{,}24$. (b) La distancia de $1$ a $-1\pm2i$ es $|2\mp 2i|=\sqrt{8}=2\sqrt2$, luego $R=2\sqrt2\approx 2{,}83$ (Figura~\ref{fig:s1-discos}(b)). \hfill $\square$
+\end{example}
+ 
+\begin{figure}[H]
+\centering
+\begin{subfigure}[t]{.49\linewidth}
+\centering
+\begin{tikzpicture}[scale=.82]
+  \draw[->, bbegray] (-3.4,0) -- (3.6,0) node[right, text=black, font=\small] {$\mathrm{Re}$};
+  \draw[->, bbegray] (0,-2.3) -- (0,2.4) node[above, text=black, font=\small] {$\mathrm{Im}$};
+  \draw[bbeblue, thick, fill=bbeblue!10, fill opacity=.5] (0,0) circle (2);
+  \draw[bbegreen, thick, fill=bbegreen!10, fill opacity=.5] (1,0) circle (1);
+  \node[bbered, font=\Large] at (2,0) {$\times$};
+  \node[bbered, font=\Large] at (-2,0) {$\times$};
+  \fill[bbeblue] (0,0) circle (2pt); \fill[bbegreen] (1,0) circle (2pt);
+  \node[text=black, font=\footnotesize, below] at (2.05,-.15) {$2$};
+  \node[text=black, font=\footnotesize, below] at (-2.15,-.15) {$-2$};
+  \node[bbeblue, font=\footnotesize] at (-1.05,.95) {$x_0=0,\ R=2$};
+  \node[bbegreen, font=\footnotesize] at (1,.5) {$R=1$};
+\end{tikzpicture}
+\caption{$f=\frac{1-x}{x^2-4}$: raíces $\pm2$.}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{.49\linewidth}
+\centering
+\begin{tikzpicture}[scale=.62]
+  \draw[->, bbegray] (-4.6,0) -- (4.6,0) node[right, text=black, font=\small] {$\mathrm{Re}$};
+  \draw[->, bbegray] (0,-3.3) -- (0,3.3) node[above, text=black, font=\small] {$\mathrm{Im}$};
+  \draw[bbeblue, thick, fill=bbeblue!10, fill opacity=.5] (0,0) circle (2.2361);
+  \draw[bbegreen, thick, fill=bbegreen!10, fill opacity=.5] (1,0) circle (2.8284);
+  \node[bbered, font=\Large] at (-1,2) {$\times$};
+  \node[bbered, font=\Large] at (-1,-2) {$\times$};
+  \fill[bbeblue] (0,0) circle (2.2pt); \fill[bbegreen] (1,0) circle (2.2pt);
+  \node[text=black, font=\footnotesize, anchor=south east] at (-1.1,2.1) {$-1+2i$};
+  \node[bbeblue, font=\footnotesize] at (-1.7,-1.25) {$R=\sqrt5$};
+  \node[bbegreen, font=\footnotesize] at (3.3,1.2) {$R=2\sqrt2$};
+\end{tikzpicture}
+\caption{$g=\frac{1}{x^2+2x+5}$: raíces $-1\pm2i$.}
+\end{subfigure}
+\caption{Discos de convergencia: el radio llega justo hasta la singularidad más cercana ($\times$). Centros: $x_0=0$ (azul) y $x_0=1$ (verde).}
+\label{fig:s1-discos}
+\end{figure}
+ 
+\begin{exercise}[Para llevar]
+\begin{enumerate}
+\item Determina el intervalo de convergencia de $\displaystyle\sum_{n\ge 1}\frac{(-1)^n x^n}{n\,2^n}$.
+\item ¿Cuál es el radio de convergencia de la serie de $1/(x^2+1)$ centrada en $x_0=2$?
+\item Calcula $c_0,c_1,c_2$ en el producto $\dfrac{1}{1-x}\,e^{x}=\sum c_n x^n$.
+\end{enumerate}
+\emph{Respuestas:} (1) $R=2$; en $x=2$ converge ($\sum (-1)^n/n$ alternada, convergencia condicional) y en $x=-2$ diverge ($\sum 1/n$), luego el intervalo es $(-2,2]$. \; (2) $\sqrt5$, la distancia de $2$ a $\pm i$. \; (3) $c_n=\sum_{k=0}^{n}1/k!$, es decir $c_0=1$, $c_1=2$, $c_2=5/2$.
+\end{exercise}
