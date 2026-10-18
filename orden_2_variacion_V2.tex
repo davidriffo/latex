@@ -1,0 +1,302 @@
+En la secci\'on anterior abrimos la senda por la cual podemos comenzar a resolver ecuaciones no homog\'eneas. Sin embargo, a poco andar nos damos cuenta de que, si bien el m\'etodo de coeficientes indeterminados es de f\'acil implementaci\'on, tiene un rango de aplicaci\'on muy acotado: solo sirve cuando la funci\'on $f$ es un polinomio, una exponencial, un seno o un coseno (o productos y sumas de ellos), y no permite resolver, por ejemplo, $y''+y=\tan(x)$.
+
+Es en este punto del camino donde aparece el matem\'atico Joseph-Louis Lagrange quien, entre sus m\'ultiples aportes a la ciencia, desarroll\'o un m\'etodo mucho m\'as general para determinar soluciones particulares de ecuaciones no homog\'eneas, que llamaremos \textbf{variaci\'on de par\'ametros}.
+
+En esta secci\'on usaremos $x$ como variable independiente, y reservaremos la letra $t$ para las variables de integraci\'on.
+
+La idea de Lagrange parte de la siguiente observaci\'on: si $y_1(x),y_2(x)$ son dos soluciones linealmente independientes de la ecuaci\'on
+\[
+ay''+by'+cy=0,
+\]
+entonces, para $c_1,c_2\in \mathbb{R}$, las funciones $c_1y_1(x)+c_2y_2(x)$ representan todas las soluciones posibles de dicha ecuaci\'on. Lagrange propone reemplazar las constantes $c_1,c_2$ por funciones, es decir, buscar una soluci\'on de
+\[
+ay''+by'+cy=f(x)
+\]
+de la forma
+\[
+y_p(x)=u(x)y_1(x)+v(x)y_2(x).
+\]
+El problema se reduce entonces a \emph{variar} adecuadamente los \emph{par\'ametros} $u,v$ (de ah\'i el nombre del m\'etodo) para que $y_p$ sea soluci\'on.
+
+\begin{remark}[Deducci\'on del m\'etodo]
+    Consideremos la funci\'on $y_p=uy_1+vy_2$ y calculemos su primera derivada:
+    \[
+    y'_p=u'y_1+uy'_1+v'y_2+vy'_2.
+    \]
+    Tenemos dos funciones inc\'ognitas, $u$ y $v$, pero una sola ecuaci\'on que cumplir: que $y_p$ sea soluci\'on. Esto nos da la libertad de imponer una condici\'on adicional, y elegimos una que simplifique los c\'alculos:
+    \[
+    u'y_1+v'y_2=0.
+    \]
+    Con esta elecci\'on, la primera derivada se reduce a $y'_p=uy'_1+vy'_2$, y al derivar nuevamente no aparecen $u''$ ni $v''$:
+    \[
+    y_p''=u'y_1'+uy_1''+v'y_2'+vy''_2.
+    \]
+    Reemplazando $y_p$, $y_p'$ e $y_p''$ en la ecuaci\'on y agrupando los t\'erminos que contienen $u$ y $v$:
+    \[
+    u\underbrace{(ay_1''+by_1'+cy_1)}_{=0}+v\underbrace{(ay_2''+by_2'+cy_2)}_{=0}+a\left(u'y_1'+v'y_2'\right)=f.
+    \]
+    Los dos primeros par\'entesis se anulan porque $y_1$ e $y_2$ son soluciones de la ecuaci\'on homog\'enea. Por lo tanto, obtenemos
+    \[
+    u'y_1'+v'y_2'=\dfrac{f}{a}.
+    \]
+    En resumen, para encontrar los par\'ametros $u,v$ debemos resolver el sistema
+    \begin{align*}
+        u'y_1+v'y_2&=0,\\
+        u'y_1'+v'y_2'&=\dfrac{f}{a}.
+    \end{align*}
+    Este es un sistema lineal en las inc\'ognitas $u',v'$, cuyo determinante es precisamente el Wronskiano $W[y_1,y_2]=y_1y_2'-y_1'y_2$. Por la regla de Cramer,
+    \[
+    u'=-\dfrac{y_2\,f}{a\,W[y_1,y_2]},\qquad v'=\dfrac{y_1\,f}{a\,W[y_1,y_2]}.
+    \]
+\end{remark}
+
+Notemos que aqu\'i es fundamental que $y_1$ e $y_2$ sean linealmente independientes: como vimos en la primera secci\'on, el Wronskiano de dos soluciones L.I. nunca se anula, y por lo tanto el sistema anterior siempre tiene soluci\'on y podemos dividir por $W[y_1,y_2]$ sin problemas.
+
+\begin{theorem}[Variaci\'on de par\'ametros]
+    Sea $f$ una funci\'on continua en un intervalo $I$, $a\neq 0$, y sean $y_1,y_2$ dos soluciones linealmente independientes de la ecuaci\'on homog\'enea $ay''+by'+cy=0$. Entonces la funci\'on
+    \[
+    y_p(x)=u(x)y_1(x)+v(x)y_2(x),
+    \]
+    donde
+    \[
+    u(x)=-\int \dfrac{y_2(x)\,f(x)}{a\,W[y_1,y_2](x)}\,dx,\qquad v(x)=\int \dfrac{y_1(x)\,f(x)}{a\,W[y_1,y_2](x)}\,dx,
+    \]
+    es una soluci\'on particular de $ay''+by'+cy=f(x)$ en $I$.
+\end{theorem}
+
+\begin{remark}[Procedimiento]
+    Para resolver $ay''+by'+cy=f(x)$ por variaci\'on de par\'ametros debemos:
+    \begin{enumerate}[label=\roman*)]
+        \item Encontrar dos soluciones L.I., $y_1,y_2$, de la respectiva ecuaci\'on homog\'enea.
+        \item Calcular el Wronskiano $W[y_1,y_2]$.
+        \item Calcular $u'$ y $v'$ con las f\'ormulas del teorema, e integrarlas para obtener $u$ y $v$.
+        \item Formar la soluci\'on particular $y_p=uy_1+vy_2$.
+        \item Escribir la soluci\'on general:
+        \[
+        y(x)=c_1y_1(x)+c_2y_2(x)+y_p(x).
+        \]
+    \end{enumerate}
+    Al integrar $u'$ y $v'$ podemos tomar las constantes de integraci\'on iguales a cero: si las agreg\'aramos, solo sumar\'iamos un m\'ultiplo de $y_1$ y otro de $y_2$, que ya est\'an incluidos en la soluci\'on homog\'enea.
+\end{remark}
+
+Comencemos con el ejemplo que el m\'etodo de coeficientes indeterminados no pod\'ia resolver.
+
+\begin{example}
+    Resolver la ecuaci\'on
+    \[
+    y''+y=\tan(x),\qquad -\dfrac{\pi}{2}<x<\dfrac{\pi}{2}.
+    \]
+    La ecuaci\'on auxiliar $r^2+1=0$ tiene ra\'ices $\pm i$, luego
+    \[
+    y_1(x)=\cos(x),\qquad y_2(x)=\sin(x),\qquad W[y_1,y_2]=\cos^2(x)+\sin^2(x)=1.
+    \]
+    Como $a=1$, tenemos
+    \begin{align*}
+    u'&=-\sin(x)\tan(x)=-\dfrac{\sin^2(x)}{\cos(x)}=-\dfrac{1-\cos^2(x)}{\cos(x)}=\cos(x)-\sec(x),\\
+    v'&=\cos(x)\tan(x)=\sin(x).
+    \end{align*}
+    Integrando,
+    \[
+    u=\sin(x)-\ln\big(\sec(x)+\tan(x)\big),\qquad v=-\cos(x),
+    \]
+    donde no necesitamos valor absoluto porque $\sec(x)+\tan(x)>0$ en el intervalo considerado. Por lo tanto,
+    \begin{align*}
+    y_p(x)&=\cos(x)\big[\sin(x)-\ln\big(\sec(x)+\tan(x)\big)\big]-\sin(x)\cos(x)\\
+    &=-\cos(x)\ln\big(\sec(x)+\tan(x)\big),
+    \end{align*}
+    y la soluci\'on general es
+    \[
+    y(x)=c_1\cos(x)+c_2\sin(x)-\cos(x)\ln\big(\sec(x)+\tan(x)\big).
+    \]
+\end{example}
+
+\begin{example}
+    Resolver la ecuaci\'on
+    \[
+    y''+4y'+4y=e^{-2x}\ln(x),\qquad x>0.
+    \]
+    Aqu\'i el m\'etodo de coeficientes indeterminados no sirve por dos razones: $\ln(x)$ no pertenece a una familia cerrada bajo derivaci\'on y, adem\'as, $e^{-2x}$ coincide con una soluci\'on de la homog\'enea.
+
+    La ecuaci\'on homog\'enea $y''+4y'+4y=0$ tiene por ecuaci\'on auxiliar $r^2+4r+4=(r+2)^2=0$, con ra\'iz doble $r=-2$, por lo que dos soluciones L.I. son
+    \[
+    y_1(x)=e^{-2x},\qquad y_2(x)=xe^{-2x}.
+    \]
+    Sus derivadas son $y_1'=-2e^{-2x}$ e $y_2'=(1-2x)e^{-2x}$, y el Wronskiano es
+    \[
+    W[y_1,y_2]=e^{-2x}(1-2x)e^{-2x}-\left(-2e^{-2x}\right)xe^{-2x}=e^{-4x}.
+    \]
+    Buscamos $y_p(x)=u(x)e^{-2x}+v(x)xe^{-2x}$, donde $u,v$ satisfacen:
+    \begin{align*}
+        u'e^{-2x}+v'xe^{-2x}&=0,\\
+        u'\left(-2e^{-2x}\right)+v'(1-2x)e^{-2x}&=e^{-2x}\ln(x).
+    \end{align*}
+    Usando las f\'ormulas del teorema:
+    \[
+    u'=-\dfrac{xe^{-2x}\cdot e^{-2x}\ln(x)}{e^{-4x}}=-x\ln(x),\qquad v'=\dfrac{e^{-2x}\cdot e^{-2x}\ln(x)}{e^{-4x}}=\ln(x).
+    \]
+    Integrando (por partes),
+    \[
+    u=\dfrac{1}{4}x^2\big(1-2\ln(x)\big),\qquad v=x\big(\ln(x)-1\big).
+    \]
+    Por lo tanto,
+    \[
+    y_p(x)=\dfrac{1}{4}x^2e^{-2x}\big(1-2\ln(x)\big)+x^2e^{-2x}\big(\ln(x)-1\big)=\dfrac{1}{4}x^2e^{-2x}\big(2\ln(x)-3\big),
+    \]
+    y nuestra soluci\'on general es:
+    \[
+    y(x)=c_1e^{-2x}+c_2xe^{-2x}+\dfrac{1}{4}x^2e^{-2x}\big(2\ln(x)-3\big).
+    \]
+\end{example}
+
+En algunos casos, al enfrentarnos a una ecuaci\'on, conviene combinar ambos m\'etodos gracias al principio de superposici\'on.
+
+\begin{example}
+    Resolver la ecuaci\'on
+    \[
+    y''+9y=6\cot^2(3x)+5e^{2x},\qquad 0<x<\dfrac{\pi}{3}.
+    \]
+    Separamos el problema en dos: determinamos una soluci\'on particular de $y''+9y=5e^{2x}$ mediante coeficientes indeterminados, y una de $y''+9y=6\cot^2(3x)$ mediante variaci\'on de par\'ametros.
+
+    La ecuaci\'on auxiliar $r^2+9=0$ tiene ra\'ices $\pm3i$, luego la soluci\'on homog\'enea es $y_h(x)=c_1\cos(3x)+c_2\sin(3x)$.
+
+    \textbf{Primera parte.} Proponiendo $y_{p_1}=Ae^{2x}$ obtenemos $4A+9A=5$, es decir,
+    \[
+    y_{p_1}(x)=\dfrac{5}{13}e^{2x}.
+    \]
+
+    \textbf{Segunda parte.} Con $y_1=\cos(3x)$, $y_2=\sin(3x)$ tenemos
+    \[
+    W[y_1,y_2]=\cos(3x)\cdot3\cos(3x)-\big(-3\sin(3x)\big)\sin(3x)=3.
+    \]
+    Entonces
+    \begin{align*}
+    u'&=-\dfrac{\sin(3x)\cdot6\cot^2(3x)}{3}=-\dfrac{2\cos^2(3x)}{\sin(3x)},\\
+    v'&=\dfrac{\cos(3x)\cdot6\cot^2(3x)}{3}=\dfrac{2\cos^3(3x)}{\sin^2(3x)}.
+    \end{align*}
+    Para integrar $u'$ escribimos $\cos^2(3x)=1-\sin^2(3x)$:
+    \[
+    u=-2\int\big(\csc(3x)-\sin(3x)\big)\,dx=-\dfrac{2}{3}\ln\big(\csc(3x)-\cot(3x)\big)-\dfrac{2}{3}\cos(3x).
+    \]
+    Para integrar $v'$ sustituimos $s=\sin(3x)$, $ds=3\cos(3x)\,dx$, y usamos nuevamente $\cos^2(3x)=1-s^2$:
+    \[
+    v=\dfrac{2}{3}\int\dfrac{1-s^2}{s^2}\,ds=\dfrac{2}{3}\left(-\dfrac{1}{s}-s\right)=-\dfrac{2}{3}\big(\csc(3x)+\sin(3x)\big).
+    \]
+    Luego,
+    \begin{align*}
+        y_{p_2}&=u\cos(3x)+v\sin(3x)\\
+        &=-\dfrac{2}{3}\cos(3x)\ln\big(\csc(3x)-\cot(3x)\big)-\dfrac{2}{3}\cos^2(3x)-\dfrac{2}{3}\big(1+\sin^2(3x)\big)\\
+        &=-\dfrac{2}{3}\Big[\cos(3x)\ln\big(\csc(3x)-\cot(3x)\big)+2\Big].
+    \end{align*}
+    Usando la identidad $\csc(\theta)-\cot(\theta)=\dfrac{1-\cos(\theta)}{\sin(\theta)}=\tan\left(\dfrac{\theta}{2}\right)$, que es positiva para $0<\theta<\pi$, podemos escribir de forma m\'as compacta
+    \[
+    y_{p_2}(x)=-\dfrac{2}{3}\left[\cos(3x)\ln\left(\tan\dfrac{3x}{2}\right)+2\right].
+    \]
+
+    Finalmente, haciendo uso del principio de superposici\'on, la soluci\'on general de la ecuaci\'on dada es:
+    \[
+    y(x)=c_1\cos(3x)+c_2\sin(3x)-\dfrac{2}{3}\left[\cos(3x)\ln\left(\tan\dfrac{3x}{2}\right)+2\right]+\dfrac{5}{13}e^{2x}.
+    \]
+\end{example}
+
+\begin{remark}[Alcance del m\'etodo]
+    En la deducci\'on del m\'etodo nunca usamos que $a,b,c$ fueran constantes: solo usamos que $y_1$ e $y_2$ son soluciones de la ecuaci\'on homog\'enea. Por lo tanto, variaci\'on de par\'ametros tambi\'en funciona para ecuaciones con \textbf{coeficientes variables}
+    \[
+    a(x)y''+b(x)y'+c(x)y=f(x),
+    \]
+    reemplazando $a$ por $a(x)$ en las f\'ormulas, siempre que conozcamos dos soluciones L.I. de la homog\'enea. Esta es la gran ventaja del m\'etodo frente a coeficientes indeterminados. En la siguiente secci\'on veremos c\'omo encontrar $y_2$ cuando ya conocemos $y_1$.
+\end{remark}
+
+\begin{example}
+    Consideremos la ecuaci\'on
+    \[
+    x^2y''-2xy'+2y=x^3,\qquad x>0.
+    \]
+    Se puede verificar directamente que $y_1(x)=x$ e $y_2(x)=x^2$ son soluciones de la ecuaci\'on homog\'enea. Su Wronskiano es $W[y_1,y_2]=x\cdot2x-1\cdot x^2=x^2$, y con $a(x)=x^2$:
+    \[
+    u'=-\dfrac{x^2\cdot x^3}{x^2\cdot x^2}=-x,\qquad v'=\dfrac{x\cdot x^3}{x^2\cdot x^2}=1,
+    \]
+    de donde $u=-\dfrac{x^2}{2}$, $v=x$, y
+    \[
+    y_p(x)=-\dfrac{x^2}{2}\cdot x+x\cdot x^2=\dfrac{x^3}{2}.
+    \]
+    Notemos que aqu\'i no podr\'iamos haber usado coeficientes indeterminados, pues la ecuaci\'on no tiene coeficientes constantes.
+\end{example}
+
+Finalizamos la secci\'on con una forma alternativa de escribir la soluci\'on particular, que tiene gran importancia en ecuaciones diferenciales y en f\'isica.
+
+\begin{remark}[Funci\'on de Green]
+    Consideremos la ecuaci\'on escrita con coeficiente $1$ en $y''$,
+    \[
+    y''+by'+cy=F(x),
+    \]
+    (si la ecuaci\'on original tiene $a\neq1$, basta dividir por $a$ y tomar $F=f/a$). Si en las f\'ormulas del teorema usamos integrales definidas desde un punto $x_0$, con $t$ como variable de integraci\'on, la soluci\'on particular $y_p=uy_1+vy_2$ se escribe como
+    \[
+    y_p(x)=-y_1(x)\int_{x_0}^x \dfrac{y_2(t)F(t)}{W[y_1,y_2](t)}\,dt+y_2(x)\int_{x_0}^x \dfrac{y_1(t)F(t)}{W[y_1,y_2](t)}\,dt.
+    \]
+    Como $y_1(x)$ e $y_2(x)$ no dependen de $t$, podemos introducirlas en las integrales y reescribir de forma equivalente:
+    \[
+    y_p(x)=\int_{x_0}^x \dfrac{y_1(t)y_2(x)-y_2(t)y_1(x)}{W[y_1,y_2](t)}\,F(t)\,dt,
+    \]
+    es decir,
+    \[
+    y_p(x)=\int_{x_0}^x K(x,t)\,F(t)\,dt,\qquad\text{donde}\qquad K(x,t)=\dfrac{y_1(t)y_2(x)-y_2(t)y_1(x)}{W[y_1,y_2](t)}.
+    \]
+    La funci\'on $K(x,t)$ la llamaremos \textbf{funci\'on de Green} del problema de valor inicial (tambi\'en conocida como n\'ucleo de Cauchy). Notemos que $K(x,t)$ solo depende de las soluciones de la ecuaci\'on homog\'enea, y no de la funci\'on $F$: una vez calculada, sirve para \emph{cualquier} fuerza externa.
+
+    Adem\'as, esta soluci\'on particular satisface $y_p(x_0)=0$ e $y_p'(x_0)=0$, lo que la hace especialmente \'util para resolver problemas de valor inicial.
+\end{remark}
+
+\begin{example}
+    Usando lo anterior, podemos escribir la soluci\'on general de todas las ecuaciones de la forma
+    \[
+    y''+16y=F(x).
+    \]
+    En este caso,
+    \[
+    y_1(x)=\cos(4x),\qquad y_2(x)=\sin(4x),
+    \]
+    y su respectivo Wronskiano es $W[y_1,y_2]=4\cos^2(4x)+4\sin^2(4x)=4$. Con lo cual
+    \[
+    K(x,t)=\dfrac{1}{4}\big(\cos(4t)\sin(4x)-\sin(4t)\cos(4x)\big)=\dfrac{1}{4}\sin\big(4(x-t)\big).
+    \]
+    Y por lo tanto:
+    \[
+    y_p(x)=\dfrac{1}{4}\int_{x_0}^x \sin\big(4(x-t)\big)\,F(t)\,dt,
+    \]
+    con lo cual podemos expresar la soluci\'on general de nuestra ecuaci\'on como:
+    \[
+    y(x)=c_1\cos(4x)+c_2\sin(4x)+\dfrac{1}{4}\int_{x_0}^x \sin\big(4(x-t)\big)\,F(t)\,dt.
+    \]
+\end{example}
+
+\begin{example}[Resonancia, otra vez]
+    Apliquemos la f\'ormula anterior con $F(x)=\cos(4x)$ y $x_0=0$. Usando la identidad $\sin(\alpha)\cos(\beta)=\frac{1}{2}\left[\sin(\alpha+\beta)+\sin(\alpha-\beta)\right]$,
+    \[
+    \sin\big(4x-4t\big)\cos(4t)=\dfrac{1}{2}\Big[\sin(4x)+\sin\big(4x-8t\big)\Big].
+    \]
+    El primer t\'ermino no depende de $t$, y para el segundo,
+    \[
+    \int_0^x\sin(4x-8t)\,dt=\left[\dfrac{\cos(4x-8t)}{8}\right]_{t=0}^{t=x}=\dfrac{\cos(-4x)-\cos(4x)}{8}=0.
+    \]
+    Por lo tanto,
+    \[
+    y_p(x)=\dfrac{1}{4}\cdot\dfrac{1}{2}\,x\sin(4x)=\dfrac{x}{8}\sin(4x).
+    \]
+    Esta es exactamente la soluci\'on de resonancia que obtendr\'iamos con coeficientes indeterminados proponiendo $y_p=x\big(A\cos(4x)+B\sin(4x)\big)$: ambos m\'etodos entregan el mismo resultado.
+\end{example}
+
+Para cerrar, comparemos los dos m\'etodos que hemos estudiado para encontrar soluciones particulares.
+
+\begin{center}
+\small\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{0.22\linewidth}|>{\raggedright\arraybackslash}p{0.33\linewidth}|>{\raggedright\arraybackslash}p{0.33\linewidth}|}
+\hline
+ & \textbf{Coeficientes indeterminados} & \textbf{Variaci\'on de par\'ametros} \\ \hline
+Funciones $f$ admisibles & Polinomios, exponenciales, senos, cosenos, y sus productos y sumas & Cualquier $f$ continua \\ \hline
+Coeficientes de la ecuaci\'on & Solo constantes & Constantes o variables (conociendo $y_1,y_2$) \\ \hline
+Tipo de c\'alculo & Resolver un sistema lineal & Calcular dos integrales \\ \hline
+Dificultad & Baja, cuando se puede aplicar & Las integrales pueden ser dif\'iciles o imposibles de expresar con funciones elementales \\ \hline
+\end{tabular}
+\end{center}
+
+En la pr\'actica, cuando $f$ es de uno de los tipos admitidos por coeficientes indeterminados, ese m\'etodo suele ser m\'as r\'apido; en cualquier otro caso, variaci\'on de par\'ametros es la herramienta a utilizar.

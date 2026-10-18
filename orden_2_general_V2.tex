@@ -1,0 +1,362 @@
+El primer tipo de ecuaci\'on de segundo orden que revisaremos ser\'a la ecuaci\'on homog\'enea de coeficientes constantes, la cual es:
+\[
+ay''+by'+cy=0,
+\]
+donde $a,b,c\in\mathbb{R}$ y $a\neq 0$. Este tipo de ecuaciones emerge de manera natural en problemas del tipo masa-resorte. La ecuaci\'on se dice homog\'enea, ya que no hay una funci\'on externa (fuerza) $f(t)$. En el caso en que existe una fuerza externa, la ecuaci\'on de coeficientes constantes se convierte en:
+\[
+ay''+by'+cy=f(t).
+\]
+
+La idea para resolver la ecuaci\'on homog\'enea se la debemos nuevamente al gran L.~Euler y se trata de lo siguiente: buscamos una funci\'on $y$ para la cual su segunda derivada sea una combinaci\'on de la funci\'on buscada y de su primera derivada. Esta simple idea sugiere pensar en funciones del tipo $y=e^{rt}$, ya que sus derivadas son m\'ultiplos de ella misma. De hecho, si reemplazamos:
+\[
+ar^2e^{rt}+bre^{rt}+ce^{rt}=0\Longrightarrow e^{rt}(ar^2+br+c)=0.
+\]
+Como la funci\'on $e^{rt}$ nunca es cero, tenemos que
+\[
+ar^2+br+c=0.
+\]
+A esta ecuaci\'on la llamaremos la \textbf{ecuaci\'on auxiliar} (o caracter\'istica) de la ecuaci\'on homog\'enea de coeficientes constantes.
+
+\begin{example}
+  Consideremos la ecuaci\'on dada por:
+  \[
+  y''+5y'-6y=0.
+  \]
+  Su respectiva ecuaci\'on auxiliar es:
+  \[
+  r^2+5r-6=(r-1)(r+6)=0,
+  \]
+  por lo tanto, las funciones $e^{t}$ y $e^{-6t}$ son soluciones de la ecuaci\'on dada.
+\end{example}
+\newpage
+%[Principio de superposici\'on]
+\begin{remark}
+    Notemos que la funci\'on $y(t)\equiv 0$ siempre es soluci\'on de la ecuaci\'on homog\'enea. M\'as a\'un, dadas dos soluciones $y_1,y_2$ de ella y dos constantes $c_1,c_2\in \mathbb{R}$, la funci\'on
+    \[
+    y(t)=c_1y_1(t)+c_2y_2(t)
+    \]
+    es tambi\'en soluci\'on. Esto es f\'acil de verificar reemplazando en la ecuaci\'on homog\'enea y usando la linealidad de la derivada:
+    \begin{align*}
+      &a(c_1y_1+c_2y_2)''+b(c_1y_1+c_2y_2)'+c(c_1y_1+c_2y_2)\\
+      &\qquad= a(c_1y_1''+c_2y_2'')+b(c_1y_1'+c_2y_2')+c(c_1y_1+c_2y_2)\\
+      &\qquad= c_1\underbrace{(ay_1''+by_1'+cy_1)}_{=0}+c_2\underbrace{(ay_2''+by_2'+cy_2)}_{=0}=0.
+    \end{align*}
+    Los dos grados de libertad que entregan las constantes $c_1,c_2$ nos sugieren que, a diferencia de las ecuaciones de orden uno, las ecuaciones de segundo orden requieren m\'as condiciones iniciales para poder determinar soluciones particulares.
+
+    En t\'erminos de un sistema mec\'anico, no nos basta con la posici\'on inicial $y(0)$: tambi\'en requerimos la velocidad inicial del sistema $y'(0)$ para determinar su comportamiento. A modo de ejemplo, un PVI de segundo orden se ve como a continuaci\'on.
+\end{remark}
+
+\begin{example}
+     Considere el PVI dado por
+     \[
+     y''+2y'-y=0,\qquad y(0)=0,\qquad y'(0)=-1.
+     \]
+     Al igual que en el ejemplo anterior, utilizamos la ecuaci\'on auxiliar para encontrar las soluciones de la forma $y(t)=e^{rt}$. En este caso,
+     \[
+     r^2+2r-1=0\Longrightarrow r_1=-1+\sqrt{2},\qquad r_2=-1-\sqrt{2}.
+     \]
+     Con lo cual la soluci\'on general ser\'a:
+     \[
+     y(t)=c_1e^{(-1+\sqrt{2})t}+c_2e^{(-1-\sqrt{2})t}.
+     \]
+     A continuaci\'on debemos determinar los valores de $c_1,c_2$ a partir de los valores iniciales dados, es decir:
+     \begin{align*}
+         y(0)&=c_1e^0+c_2e^0,\\
+         y'(0)&=(-1+\sqrt{2})c_1e^0+(-1-\sqrt{2})c_2e^0,
+     \end{align*}
+     de lo anterior tenemos el sistema de ecuaciones:
+     \begin{align*}
+         0&=c_1+c_2,\\
+         -1&=(-1+\sqrt{2})c_1+(-1-\sqrt{2})c_2.
+     \end{align*}
+     De la primera ecuaci\'on, $c_2=-c_1$; reemplazando en la segunda obtenemos $2\sqrt{2}\,c_1=-1$. Por lo tanto $c_1=-\dfrac{\sqrt{2}}{4}$, $c_2=\dfrac{\sqrt{2}}{4}$, y la respectiva soluci\'on particular es:
+     \[
+     y(t)=-\dfrac{\sqrt{2}}{4}e^{(-1+\sqrt{2})t}+\dfrac{\sqrt{2}}{4}e^{(-1-\sqrt{2})t}.
+     \]
+\end{example}
+
+En el cap\'itulo anterior revisamos un teorema que nos aseguraba, bajo ciertas condiciones, la existencia y unicidad de soluci\'on para las ecuaciones de orden uno. A continuaci\'on revisaremos el resultado equivalente para PVI con ecuaciones de orden dos.
+
+\begin{theorem}[Existencia y unicidad]
+    Para cualquier colecci\'on de n\'umeros reales $a,b,c,t_0,Y_0,Y_1$ con $a\neq 0$, existe una \'unica soluci\'on del problema de valor inicial
+    \[
+    ay''+by'+cy=0,\qquad y(t_0)=Y_0,\qquad y'(t_0)=Y_1,
+    \]
+    y esta soluci\'on es v\'alida para todo $t\in\, ]-\infty,\infty[$.
+\end{theorem}
+
+Como veremos a continuaci\'on, el hecho de que el teorema anterior nos asegure la unicidad de la soluci\'on es de gran ayuda: nos bastar\'a encontrar (de cualquier manera) dos soluciones $y_1,y_2$ que sean \emph{esencialmente distintas} para que la funci\'on $c_1y_1+c_2y_2$, con constantes adecuadas, sea la soluci\'on buscada. Notemos que no basta con que sean distintas: por ejemplo, $e^{t}$ y $2e^{t}$ son distintas, pero cualquier combinaci\'on de ellas es de la forma $Ce^{t}$, y con una sola constante no podemos satisfacer dos condiciones iniciales. Para precisar esta idea, definimos el siguiente concepto.
+
+\begin{definition}
+    Dos funciones $y_1(t),\,y_2(t)$ se dicen \textbf{linealmente independientes} (L.I.) sobre el intervalo $I\subseteq \mathbb{R}$ si la \'unica forma de tener
+    \[
+    c_1y_1(t)+c_2y_2(t)=0\quad\text{para todo } t\in I
+    \]
+    es con $c_1=c_2=0$. En caso contrario diremos que las funciones son \textbf{linealmente dependientes} (L.D.) sobre $I$.
+
+    Para dos funciones, esto equivale a decir que ninguna de ellas es un m\'ultiplo constante de la otra en $I$; es decir, no existe una constante $k$ tal que $y_1(t)=k\,y_2(t)$ para todo $t\in I$ (ni $y_2(t)=k\,y_1(t)$ para todo $t\in I$).
+\end{definition}
+
+\begin{example}
+    Las funciones
+    \[
+    y_1(t)=\sin(t)\cos(t),\qquad y_2(t)=\sin(2t)
+    \]
+    son linealmente dependientes en $\mathbb{R}$, ya que por la identidad del \'angulo doble $y_1(t)=\tfrac{1}{2}\,y_2(t)$ para todo $t$.
+
+    En cambio, las funciones
+    \[
+    y_1(t)=e^{t},\qquad y_2(t)=e^{4t}
+    \]
+    son linealmente independientes en $\mathbb{R}$, pues el cociente $y_2(t)/y_1(t)=e^{3t}$ no es constante.
+\end{example}
+
+Para verificar la independencia lineal de manera sistem\'atica, introducimos la siguiente herramienta.
+
+\begin{definition}
+    Dadas dos funciones derivables $y_1,y_2$, se define el \textbf{Wronskiano} de ellas como:
+    \[
+    W[y_1,y_2](t)=\begin{vmatrix}
+        y_1(t) & y_2(t)\\
+        y_1'(t) & y_2'(t)
+    \end{vmatrix}=y_1(t)y_2'(t)-y_1'(t)y_2(t).
+    \]
+\end{definition}
+
+\begin{remark}
+    Si existe al menos un punto $t_0\in I$ tal que $W[y_1,y_2](t_0)\neq 0$, entonces las funciones $y_1,y_2$ son L.I. en $I$.
+
+    El rec\'iproco es falso para funciones arbitrarias: por ejemplo, $y_1(t)=t^2$ e $y_2(t)=t|t|$ tienen Wronskiano id\'enticamente nulo en $\mathbb{R}$ y, sin embargo, son L.I. en $\mathbb{R}$. No obstante, cuando $y_1,y_2$ son \emph{soluciones} de la ecuaci\'on homog\'enea, su Wronskiano o bien es id\'enticamente cero, o bien no se anula nunca (esto lo justificaremos m\'as adelante con la f\'ormula de Abel). En ese caso, las soluciones son L.I. si y solo si su Wronskiano es distinto de cero.
+\end{remark}
+
+\begin{example}
+    Para las funciones $y_1(t)=e^{t}$, $y_2(t)=e^{4t}$ se tiene:
+    \[
+    W[y_1,y_2](t)=\begin{vmatrix}
+        e^t & e^{4t}\\
+        e^t & 4e^{4t}
+    \end{vmatrix}=4e^{5t}-e^{5t}=3e^{5t}\neq 0,\qquad \forall\, t\in\, ]-\infty,\infty[,
+    \]
+    lo que confirma que son L.I.
+\end{example}
+
+El siguiente resultado relaciona la existencia de soluciones con los conceptos reci\'en introducidos.
+
+\begin{theorem}
+    Si $y_1(t),y_2(t)$ son dos soluciones L.I. en $]-\infty,\infty[$ de la ecuaci\'on de coeficientes constantes, entonces existen \'unicas constantes $c_1,c_2$ de manera que $c_1y_1(t)+c_2y_2(t)$ satisface el problema de valor inicial
+    \[
+    ay''+by'+cy=0,\qquad y(t_0)=Y_0,\qquad y'(t_0)=Y_1,
+    \]
+    en dicho intervalo. Por esta raz\'on, a la expresi\'on $y_h=c_1y_1+c_2y_2$ la llamamos \textbf{soluci\'on general} de la ecuaci\'on homog\'enea.
+\end{theorem}
+
+\begin{remark}
+    Es instructivo ver d\'onde aparece el Wronskiano en el teorema anterior. Imponer las condiciones iniciales a $c_1y_1+c_2y_2$ lleva al sistema
+    \begin{align*}
+        c_1y_1(t_0)+c_2y_2(t_0)&=Y_0,\\
+        c_1y_1'(t_0)+c_2y_2'(t_0)&=Y_1,
+    \end{align*}
+    cuyo determinante es exactamente $W[y_1,y_2](t_0)$. Por lo tanto, el sistema tiene soluci\'on \'unica $(c_1,c_2)$ precisamente cuando $W[y_1,y_2](t_0)\neq 0$, es decir, cuando las soluciones son L.I.
+\end{remark}
+
+Para la ecuaci\'on de coeficientes constantes tenemos, por lo tanto, tres casos seg\'un el tipo de ra\'ices de la ecuaci\'on auxiliar.
+
+\subsection*{Caso 1: ra\'ices reales y distintas}
+
+\begin{theorem}
+    Si la ecuaci\'on auxiliar $ar^2+br+c=0$ posee dos soluciones reales y distintas $r_1,r_2$, entonces la ecuaci\'on homog\'enea tiene por soluci\'on general:
+    \[
+    y_h=c_1e^{r_1t}+c_2e^{r_2t}.
+    \]
+\end{theorem}
+
+En efecto, $W[e^{r_1t},e^{r_2t}](t)=(r_2-r_1)e^{(r_1+r_2)t}\neq 0$, pues $r_1\neq r_2$. Este es el caso que encontramos en los dos primeros ejemplos de la secci\'on.
+
+\subsection*{Caso 2: una ra\'iz real doble}
+
+\begin{theorem}
+    Si la ecuaci\'on auxiliar $ar^2+br+c=0$ posee una \'unica ra\'iz real $r$ (ra\'iz doble), entonces la ecuaci\'on homog\'enea tiene por soluci\'on general:
+    \[
+    y_h=c_1e^{rt}+c_2te^{rt}.
+    \]
+\end{theorem}
+
+\begin{proof}[Justificaci\'on]
+    Si $r$ es ra\'iz doble, entonces $r=-\dfrac{b}{2a}$, es decir, $2ar+b=0$. Para $y=te^{rt}$ tenemos $y'=(1+rt)e^{rt}$ e $y''=(2r+r^2t)e^{rt}$, luego
+    \[
+    ay''+by'+cy=e^{rt}\big[t\underbrace{(ar^2+br+c)}_{=0}+\underbrace{(2ar+b)}_{=0}\big]=0.
+    \]
+    Adem\'as, $W[e^{rt},te^{rt}](t)=e^{2rt}\neq 0$, por lo que ambas soluciones son L.I.
+\end{proof}
+
+\begin{example}
+    Consideremos la ecuaci\'on
+    \[
+    y''+4y'+4y=0.
+    \]
+    Su ecuaci\'on auxiliar es $r^2+4r+4=(r+2)^2=0$, que tiene una \'unica ra\'iz $r=-2$. Con esto, por el resultado anterior,
+    \[
+    y_h(t)=c_1e^{-2t}+c_2te^{-2t}.
+    \]
+    Verifiquemos directamente que $y_2(t)=te^{-2t}$ es soluci\'on de nuestra ecuaci\'on:
+    \begin{align*}
+        y_2(t)&=te^{-2t},\\
+        y_2'(t)&=e^{-2t}-2te^{-2t},\\
+        y_2''(t)&=-4e^{-2t}+4te^{-2t},
+    \end{align*}
+    y reemplazando:
+    \[
+    y_2''+4y_2'+4y_2=\left(-4e^{-2t}+4te^{-2t}\right)+4\left(e^{-2t}-2te^{-2t}\right)+4te^{-2t}=0.
+    \]
+\end{example}
+
+\subsection*{Caso 3: ra\'ices complejas conjugadas}
+
+\begin{theorem}
+    Si la ecuaci\'on auxiliar posee ra\'ices complejas $\alpha\pm i\beta$ (con $\beta\neq 0$), entonces dos soluciones linealmente independientes de la ecuaci\'on de coeficientes constantes son:
+    \[
+    y_1(t)=e^{\alpha t}\cos(\beta t),\qquad y_2(t)=e^{\alpha t}\sin(\beta t).
+    \]
+    Por lo tanto, la soluci\'on general es:
+    \[
+    y(t)=c_1e^{\alpha t}\cos(\beta t)+c_2e^{\alpha t}\sin(\beta t),
+    \]
+    donde $c_1,c_2$ son constantes reales.
+\end{theorem}
+
+\begin{proof}[Justificaci\'on]
+    La funci\'on compleja $e^{(\alpha+i\beta)t}$ es soluci\'on de la ecuaci\'on, pues $\alpha+i\beta$ es ra\'iz de la ecuaci\'on auxiliar. Por la f\'ormula de Euler,
+    \[
+    e^{(\alpha+i\beta)t}=e^{\alpha t}\cos(\beta t)+i\,e^{\alpha t}\sin(\beta t).
+    \]
+    Como los coeficientes $a,b,c$ son reales, al reemplazar en la ecuaci\'on la parte real y la parte imaginaria deben anularse por separado; por lo tanto, $e^{\alpha t}\cos(\beta t)$ y $e^{\alpha t}\sin(\beta t)$ son soluciones reales. Su Wronskiano es $\beta e^{2\alpha t}\neq 0$, as\'i que son L.I.
+\end{proof}
+
+\begin{example}
+    Determine la soluci\'on del problema de valor inicial
+    \[
+    y''+2y'+2y=0,\qquad y(0)=0,\qquad y'(0)=2.
+    \]
+    La respectiva ecuaci\'on auxiliar es $r^2+2r+2=0$, la cual tiene por soluciones
+    \[
+    r=-1\pm i\Longrightarrow \alpha=-1,\quad \beta=1.
+    \]
+    Con lo cual, la soluci\'on general es:
+    \[
+    y(t)=c_1e^{-t}\cos(t)+c_2e^{-t}\sin(t).
+    \]
+    Luego debemos calcular las respectivas constantes. De $y(0)=0$ obtenemos $c_1=0$. Derivando,
+    \[
+    y'(t)=e^{-t}\big[(c_2-c_1)\cos(t)-(c_1+c_2)\sin(t)\big],
+    \]
+    y de $y'(0)=c_2-c_1=2$ obtenemos $c_2=2$. Por lo tanto, la soluci\'on del PVI es
+    \[
+    y(t)=2e^{-t}\sin(t).
+    \]
+\end{example}
+
+\subsection*{Resumen}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Ra\'ices de } $ar^2+br+c=0$ & \textbf{Soluci\'on general} \\ \hline
+$r_1\neq r_2$ reales & $c_1e^{r_1t}+c_2e^{r_2t}$ \\ \hline
+$r_1=r_2=r$ real & $c_1e^{rt}+c_2te^{rt}$ \\ \hline
+$\alpha\pm i\beta$ complejas & $e^{\alpha t}\big(c_1\cos(\beta t)+c_2\sin(\beta t)\big)$ \\ \hline
+\end{tabular}
+\end{center}
+
+Estos casos se pueden extender f\'acilmente a ecuaciones de orden mayor que dos. Si bien no es el objetivo de este cap\'itulo, mostraremos un ejemplo para fijar la idea general.
+
+\begin{example}
+    Consideremos la ecuaci\'on:
+    \[
+    y'''+3y''-y'-3y=0,
+    \]
+    la cual tiene asociada la ecuaci\'on auxiliar $r^3+3r^2-r-3=0$. Agrupando t\'erminos, esta ecuaci\'on se puede factorizar como
+    \[
+    r^3+3r^2-r-3=r^2(r+3)-(r+3)=(r-1)(r+1)(r+3)=0,
+    \]
+    con lo cual la respectiva soluci\'on general es:
+    \[
+    y_h=c_1e^{t}+c_2e^{-t}+c_3e^{-3t}.
+    \]
+\end{example}
+
+\newpage
+\subsection*{Aplicaci\'on: el sistema masa-resorte}
+
+\begin{remark}
+    Como mencionamos anteriormente, la mec\'anica del modelo masa-resorte se rige por la segunda ley de Newton: la posici\'on de un objeto de masa $m$ en el tiempo $t$ est\'a dada por $y(t)$, que satisface la ecuaci\'on
+    \[
+    my''(t)+by'(t)+ky(t)=0,
+    \]
+    cuyos t\'erminos se pueden identificar f\'isicamente como
+    \[
+    \text{[inercia]}\,y''+\text{[amortiguaci\'on]}\,y'+\text{[rigidez]}\,y=0.
+    \]
+    En un sistema f\'isico usual se tiene $m>0$, $b\geq 0$ y $k>0$.
+\end{remark}
+
+\begin{example}
+    Determine la ecuaci\'on de movimiento para el sistema masa-resorte con
+    $m=36\,\mathrm{kg}$, $b=12\,\mathrm{kg/s}$ y $k=37\,\mathrm{kg/s^2}$, donde las condiciones iniciales son $y(0)=0{,}7\,\mathrm{m}$ e $y'(0)=0{,}1\,\mathrm{m/s}$.
+
+    La ecuaci\'on es $36y''+12y'+37y=0$, con ecuaci\'on auxiliar $36r^2+12r+37=0$. Su discriminante es $144-4\cdot 36\cdot 37=-5184=-72^2$, luego
+    \[
+    r=\frac{-12\pm 72i}{72}=-\frac{1}{6}\pm i\Longrightarrow \alpha=-\frac{1}{6},\quad \beta=1,
+    \]
+    y la soluci\'on general es
+    \[
+    y(t)=c_1e^{-t/6}\cos(t)+c_2e^{-t/6}\sin(t).
+    \]
+    De $y(0)=0{,}7$ obtenemos $c_1=0{,}7$. Adem\'as,
+    \[
+    y'(0)=-\frac{c_1}{6}+c_2=0{,}1\Longrightarrow c_2=0{,}1+\frac{0{,}7}{6}=\frac{13}{60}.
+    \]
+    Por lo tanto, la ecuaci\'on de movimiento es
+    \[
+    y(t)=0{,}7\,e^{-t/6}\cos(t)+\frac{13}{60}\,e^{-t/6}\sin(t).
+    \]
+    El factor $e^{-t/6}$ hace que la amplitud de las oscilaciones decaiga con el tiempo: es un movimiento \textbf{subamortiguado}.
+
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{Capitulo_2/grafico_resorte_v2.png}
+    \end{center}
+\end{example}
+
+\begin{example}
+    Considere ahora la ecuaci\'on
+    \[
+    36y''-12y'+37y=0.
+    \]
+    Su ecuaci\'on auxiliar tiene ra\'ices $r=\frac{1}{6}\pm i$, por lo que su soluci\'on general es:
+    \[
+    y(t)=c_1e^{t/6}\cos(t)+c_2e^{t/6}\sin(t).
+    \]
+    Observe que el \'unico cambio respecto del ejemplo anterior es el signo del coeficiente de $y'$. Un coeficiente de amortiguaci\'on negativo no corresponde a un resorte usual (ser\'ia un sistema que \emph{inyecta} energ\'ia), y su efecto es que ahora el factor $e^{t/6}$ hace crecer la amplitud de las oscilaciones sin l\'imite, como se aprecia en el gr\'afico:
+    \begin{center}
+        \includegraphics[width=0.6\textwidth]{Capitulo_2/masa_resorte_2.png}
+    \end{center}
+\end{example}
+
+\begin{example}
+    Considere la ecuaci\'on
+    \[
+    y''+5y'-6y=0,
+    \]
+    que tiene por soluci\'on general:
+    \[
+    y_h=c_1e^{t}+c_2e^{-6t}.
+    \]
+    Si imponemos la condici\'on inicial $y(0)=1$ con una velocidad inicial $y'(0)=v_0$, obtenemos el sistema $c_1+c_2=1$, $c_1-6c_2=v_0$, cuya soluci\'on da
+    \[
+    y(t)=\dfrac{6+v_0}{7}e^{t}+\dfrac{1-v_0}{7}e^{-6t}.
+    \]
+    Observe que el t\'ermino $e^{t}$ crece sin l\'imite, mientras que $e^{-6t}$ tiende a cero. Por lo tanto, la soluci\'on tiende a cero cuando $t\to\infty$ \emph{\'unicamente} si $v_0=-6$; para cualquier otra velocidad inicial, la soluci\'on diverge a $+\infty$ (si $v_0>-6$) o a $-\infty$ (si $v_0<-6$). Esto se puede visualizar como:
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{Capitulo_2/masa_resorte_3.png}
+    \end{center}
+\end{example}
