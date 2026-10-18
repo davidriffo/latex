@@ -44,7 +44,7 @@ jobs:
               for f in sorted(os.listdir(d)):
                   if f.endswith(".tex"):
                       txt = open(os.path.join(d, f), encoding="utf-8", errors="ignore").read()
-                      if re.search(r"^\s*\\documentclass", txt, re.M):
+                      if re.search(r"^[^%\n]*\\documentclass", txt, re.M):
                           incluir.append({"dir": d, "root": f, "nombre": d + "-" + f[:-4]})
           with open(os.environ["GITHUB_OUTPUT"], "a") as o:
               o.write("matriz=" + json.dumps({"include": incluir}) + "\n")
