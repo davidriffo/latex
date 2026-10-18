@@ -1,0 +1,714 @@
+%% sistemas_defectuosos.tex -- reestructuracion de base_sistemas_defectuosos.md
+%% al estilo de sistemas_2.tex (tablas, figuras TikZ/pgfplots y cajas de bb2.cls).
+%% Requiere en el preambulo del documento principal:
+%%   \usepackage{pgfplots}  \pgfplotsset{compat=1.18}
+%% Referencias a sistemas_2.tex: thm:n-indep, ex:defectuosa, fig:silla, fig:nodo.
+%% Las etiquetas de este archivo no chocan con las de sistemas_2.tex.
+
+%% --- Correccion de \ref a cajas numeradas ---------------------------------
+%% Con 'auto counter' de tcolorbox, \label dentro de Ejemplo/Teorema/Definicion
+%% devuelve el numero de la subseccion en vez del de la caja. Este bloque fija
+%% \@currentlabel dentro de cada caja. Se define una sola vez (puede ir tambien
+%% en bb2.cls o en el preambulo; la guarda evita duplicarlo).
+\makeatletter
+\ifdefined\bbereffixdone\else
+  \def\bbereffixdone{}
+  \tcbset{before upper={%
+    \ifx\thetcbcounter\@empty\else
+      \protected@edef\@currentlabel{\thetcbcounter}%
+      \ifdefined\phantomsection\phantomsection\fi
+    \fi}}
+\fi
+\makeatother
+
+%% Estilos para los retratos de fase (flechas = sentido de t creciente).
+\pgfplotsset{
+  bberetrato/.style={axis equal image, axis lines=middle, xlabel=$x_1$, ylabel=$x_2$,
+    ticks=none, clip=true, every axis plot/.append style={thick}},
+  bbenodo/.style={axis lines=middle, xlabel=$x_1$, ylabel=$x_2$, ticks=none, clip=true,
+    width=.95\linewidth, height=.95\linewidth, every axis plot/.append style={thick}},
+  bbeflecha/.style={postaction={decorate},
+    decoration={markings, mark=at position 0.55 with {\arrow{Stealth[length=5pt]}}}}
+}
+
+\subsection{El caso defectuoso}
+
+Los resultados de la secci\'on anterior resuelven $\mathbf{x}'=A\mathbf{x}$ siempre que $A$ tenga $n$ vectores propios linealmente independientes (Teorema~\ref{thm:n-indep}). Esta secci\'on responde la pregunta que queda abierta: \emph{?`qu\'e hacemos cuando faltan vectores propios?}
+
+\textbf{Dos n\'umeros que lo deciden.} Para cada valor propio $\lambda$ de $A$ miramos
+
+\begin{itemize}
+    \item $m$: la \textbf{multiplicidad} de $\lambda$ como ra\'iz del polinomio caracter\'istico;
+    \item $r$: la \textbf{dimensi\'on del espacio propio} de $\lambda$, es decir, cu\'antos vectores propios linealmente independientes tiene.
+\end{itemize}
+Siempre se cumple
+\[
+1\le r\le m,
+\]
+y la matriz es no defectuosa justamente cuando $r=m$ para todo valor propio. La Tabla~\ref{tab:defecto} compara ambos casos.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{>{\bfseries}l l l}
+\rowcolor{bbe!15}
+ & \textcolor{bbe}{$A$ no defectuosa} & \textcolor{bbe}{$A$ defectuosa} \\
+Condici\'on & $r=m$ para cada $\lambda$ & $r<m$ para alg\'un $\lambda$ \\
+Soluciones $e^{\lambda t}\mathbf v$ & $m$ por cada $\lambda$ ($n$ en total) & solo $r$ para ese $\lambda$ \\
+Soluciones que faltan & ninguna & $m-r$ \\
+De d\'onde salen & --- & vectores propios generalizados \\
+Ejemplo & $A=\begin{bmatrix}1&2\\2&-2\end{bmatrix}$ & $A=\begin{bmatrix}0&1\\-9&6\end{bmatrix}$ \\
+\end{tabular}
+\caption{Matrices no defectuosas y defectuosas.}
+\label{tab:defecto}
+\end{table}
+
+\begin{remark}
+Un valor propio simple ($m=1$) siempre tiene $r=1$. Por eso el defecto solo puede aparecer cuando hay valores propios \emph{repetidos}.
+\end{remark}
+
+En el caso defectuoso el Teorema~\ref{thm:n-indep} entrega solo $r$ soluciones independientes para $\lambda$, de modo que hay que encontrar $m-r$ soluciones adicionales. Empecemos con un ejemplo.
+
+\begin{example}\label{ex:nodo1}
+Encuentre la soluci\'on general de
+\begin{equation}\label{eq:nodo1}
+\mathbf{x}' = A\mathbf{x}, \qquad A = \begin{bmatrix} 0 & 1 \\ -9 & 6 \end{bmatrix}.
+\end{equation}
+
+\textbf{Soluci\'on:} \emph{Paso 1: aplicamos la t\'ecnica de la secci\'on anterior.} El polinomio caracter\'istico es
+\[
+\det(A-\lambda I)=\lambda^2-6\lambda+9=(\lambda-3)^2,
+\]
+as\'i que $\lambda=3$ es el \'unico valor propio, con $m=2$. El sistema $(A-3I)\mathbf v=\mathbf 0$ se reduce a $-3v_1+v_2=0$, de modo que los vectores propios son m\'ultiplos de $\mathbf v_0=(1,3)$ y $r=1$. Luego $A$ es defectuosa y obtenemos una sola soluci\'on independiente:
+\begin{equation}\label{eq:x0-nodo1}
+\mathbf{x}_0(t) = e^{3t} \begin{bmatrix} 1 \\ 3 \end{bmatrix}.
+\end{equation}
+
+\emph{Paso 2: buscamos la segunda soluci\'on por eliminaci\'on.} Escrito por componentes, el sistema es
+\[
+x_1' = x_2, \qquad x_2' = -9x_1 + 6x_2.
+\]
+Derivando la primera ecuaci\'on y sustituyendo la segunda resulta $x_1''=6x_1'-9x_1$, es decir, $(D-3)^2x_1=0$. Por lo tanto
+\[
+x_1(t) = c_1 e^{3t} + c_2 t e^{3t}, \qquad x_2(t)=x_1'(t) = 3c_1 e^{3t} + c_2 e^{3t}(3t + 1).
+\]
+
+\emph{Paso 3: ordenamos en forma vectorial.}
+\[
+\mathbf{x}(t) = \begin{bmatrix} c_1 e^{3t} + c_2 t e^{3t} \\ 3c_1 e^{3t} + c_2 e^{3t}(3t + 1) \end{bmatrix}
+= c_1 e^{3t} \begin{bmatrix} 1 \\ 3 \end{bmatrix} + c_2 e^{3t} \left\{ \begin{bmatrix} 0 \\ 1 \end{bmatrix} + t \begin{bmatrix} 1 \\ 3 \end{bmatrix} \right\}.
+\]
+Dos soluciones linealmente independientes son entonces
+\[
+\mathbf{x}_0(t) = e^{3t} \begin{bmatrix} 1 \\ 3 \end{bmatrix} \quad \text{y} \quad \mathbf{x}_1(t) = e^{3t} \left\{ \begin{bmatrix} 0 \\ 1 \end{bmatrix} + t \begin{bmatrix} 1 \\ 3 \end{bmatrix} \right\}. \quad \square
+\]
+\end{example}
+
+La soluci\'on $\mathbf{x}_0$ coincide con \eqref{eq:x0-nodo1}. Lo importante es la forma de la segunda: aparece un factor $t$ multiplicando al vector propio,
+\[
+\mathbf{x}_1(t) = e^{\lambda t}(\mathbf{v}_1 + t\mathbf{v}_0), \qquad \lambda=3,\ \mathbf v_0=(1,3),\ \mathbf v_1=(0,1).
+\]
+
+\begin{remark}
+Este fen\'omeno ya lo conoc\'ias. El sistema del Ejemplo~\ref{ex:nodo1} es la versi\'on en sistema de la EDO $y''-6y'+9y=0$ (con $x_1=y$, $x_2=y'$), cuyo polinomio caracter\'istico $(r-3)^2$ tiene una ra\'iz doble. En ese caso la segunda soluci\'on es $te^{3t}$, y es exactamente la primera componente de $\mathbf x_1$. El Ejemplo~\ref{ex:defectuosa} de la secci\'on anterior es otro caso del mismo tipo.
+\end{remark}
+
+La Figura~\ref{fig:te-comp} muestra las funciones que aparecen: el factor $t$ hace que $te^{3t}$ cambie de signo en $t=0$ y que, para $t$ grande, crezca m\'as r\'apido que $e^{3t}$.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.8\linewidth, height=6cm, xlabel=$t$, domain=-1:0.8, samples=120,
+  axis lines=left, ymin=-2, ymax=12, legend pos=north west,
+  legend style={font=\small}, every axis plot/.append style={thick}]
+\addplot[bbeblue]{exp(3*x)};
+\addplot[bbered]{x*exp(3*x)};
+\addplot[bbegreen]{(1+3*x)*exp(3*x)};
+\legend{$e^{3t}$, $te^{3t}$, $(1+3t)e^{3t}$}
+\end{axis}
+\end{tikzpicture}
+\caption{Funciones del Ejemplo~\ref{ex:nodo1}: $\mathbf x_0$ tiene primera componente $e^{3t}$; $\mathbf x_1$ tiene componentes $te^{3t}$ y $(1+3t)e^{3t}$.}
+\label{fig:te-comp}
+\end{figure}
+
+\textbf{De la observaci\'on a la teor\'ia.} Como primer paso hacia el caso general, supongamos que $A$ ($n\times n$) tiene un \'unico valor propio $\lambda$ de multiplicidad $n$, y que el espacio propio tiene dimensi\'on $n-1$. Si $\mathbf{v}_0^{(1)}, \dots, \mathbf{v}_0^{(n-1)}$ son vectores propios independientes, obtenemos $n-1$ soluciones
+\[
+\mathbf{x}_0^{(i)}(t) = e^{\lambda t}\mathbf{v}_0^{(i)}, \qquad i = 1, \dots, n - 1,
+\]
+y buscamos una soluci\'on adicional con la forma que vimos en el ejemplo:
+\[
+\mathbf{x}_1(t) = e^{\lambda t}(\mathbf{v}_1 + t\mathbf{v}_0).
+\]
+Derivando,
+\[
+\mathbf{x}_1' = e^{\lambda t}\big[(\lambda\mathbf{v}_1 + \mathbf{v}_0) + \lambda t\mathbf{v}_0\big],
+\]
+y la igualdad $\mathbf{x}_1' = A\mathbf{x}_1$ equivale a
+\[
+(\lambda\mathbf{v}_1 + \mathbf{v}_0) + \lambda t\mathbf{v}_0 = A\mathbf{v}_1 + t A\mathbf{v}_0.
+\]
+Como debe valer para todo $t$ del intervalo, igualamos los coeficientes de cada potencia de $t$:
+\begin{align*}
+A\mathbf{v}_0 &= \lambda\mathbf{v}_0, \\
+A\mathbf{v}_1 &= \lambda\mathbf{v}_1 + \mathbf{v}_0,
+\end{align*}
+o, reordenando,
+\begin{align}
+(A - \lambda I)\mathbf{v}_0 &= \mathbf{0}, \label{eq:cad0}\\
+(A - \lambda I)\mathbf{v}_1 &= \mathbf{v}_0. \label{eq:cad1}
+\end{align}
+La ecuaci\'on \eqref{eq:cad0} dice que $\mathbf{v}_0$ es un vector propio, como esper\'abamos. La ecuaci\'on \eqref{eq:cad1} es un sistema no homog\'eneo para $\mathbf v_1$ que \emph{a priori} podr\'ia no tener soluci\'on. Se puede probar que con una elecci\'on adecuada de $\mathbf v_0$ s\'i la tiene, pero hay un camino m\'as limpio: multiplicamos \eqref{eq:cad1} por $A-\lambda I$ y usamos \eqref{eq:cad0},
+\begin{equation}\label{eq:cad2}
+(A - \lambda I)^2\mathbf{v}_1 = \mathbf{0}.
+\end{equation}
+
+\begin{definition}
+Un vector $\mathbf v_1$ tal que $(A-\lambda I)^2\mathbf v_1=\mathbf 0$ pero $(A-\lambda I)\mathbf v_1\neq\mathbf 0$ se llama \textbf{vector propio generalizado} de $A$ asociado a $\lambda$.
+\end{definition}
+
+La idea es invertir el orden: elegimos primero $\mathbf v_1$ y de \'el obtenemos $\mathbf v_0$, mediante
+\[
+\mathbf{v}_0 = (A - \lambda I)\mathbf{v}_1.
+\]
+Este $\mathbf v_0$ es un vector propio, pues $(A - \lambda I)\mathbf{v}_0 = (A - \lambda I)^2\mathbf{v}_1 = \mathbf{0}$, y no es nulo porque $(A-\lambda I)\mathbf v_1\neq\mathbf 0$. La Figura~\ref{fig:cadena} muestra la cadena que se forma: cada multiplicaci\'on por $A-\lambda I$ acerca el vector al vector propio, y el vector propio se anula.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  caja/.style={draw=bbe, fill=bbe!8!white, text=bbe, minimum width=1.5cm, minimum height=0.9cm, font=\small},
+  flecha/.style={-{Stealth[length=6pt]}, draw=bbe},
+  etiqueta/.style={font=\scriptsize\sffamily, text=bbe}]
+\node[caja] (vk) {$\mathbf v_k$};
+\node[caja, right=2.3cm of vk] (vk1) {$\mathbf v_{k-1}$};
+\node[right=1.3cm of vk1] (pts) {$\cdots$};
+\node[caja, right=1.3cm of pts] (v0) {$\mathbf v_0$};
+\node[caja, right=2.3cm of v0] (cero) {$\mathbf 0$};
+\draw[flecha] (vk) -- node[above, etiqueta]{$A-\lambda I$} (vk1);
+\draw[flecha] (vk1) -- (pts);
+\draw[flecha] (pts) -- (v0);
+\draw[flecha] (v0) -- node[above, etiqueta]{$A-\lambda I$} (cero);
+\node[etiqueta, below=0.15cm of vk]{generalizado};
+\node[etiqueta, below=0.15cm of v0]{propio};
+\end{tikzpicture}
+\caption{Ciclo de vectores propios generalizados. En el Ejemplo~\ref{ex:nodo1} ($k=1$) la cadena es $\mathbf v_1=(0,1)\to\mathbf v_0=(1,3)\to\mathbf 0$.}
+\label{fig:cadena}
+\end{figure}
+
+En resumen:
+
+\begin{theorem}\label{thm:ciclo2}
+Sea $\lambda$ un valor propio de $A$ y sea $\mathbf v_1$ un vector con
+\[
+(A-\lambda I)^2\mathbf v_1=\mathbf 0, \qquad (A-\lambda I)\mathbf v_1\neq\mathbf 0, \qquad \mathbf v_0=(A-\lambda I)\mathbf v_1.
+\]
+Entonces $\mathbf{x}_0(t)=e^{\lambda t}\mathbf v_0$ y $\mathbf{x}_1(t) = e^{\lambda t}(\mathbf{v}_1 + t\mathbf{v}_0)$ son soluciones linealmente independientes de $\mathbf{x}' = A\mathbf{x}$.
+\end{theorem}
+
+Si adem\'as $A$ tiene un solo valor propio de multiplicidad $n$ y espacio propio de dimensi\'on $n-1$, completamos $\mathbf v_0$ a una base $\mathbf v_0,\mathbf v_0^{(2)},\dots,\mathbf v_0^{(n-1)}$ del espacio propio, y las $n$ soluciones $\mathbf x_1$, $e^{\lambda t}\mathbf v_0$, $e^{\lambda t}\mathbf v_0^{(2)},\dots,e^{\lambda t}\mathbf v_0^{(n-1)}$ son linealmente independientes en cualquier intervalo.
+
+\begin{note}
+En esa situaci\'on se tiene $(A-\lambda I)^2=0$ (por la forma de Jordan de $A$), de modo que la condici\'on \eqref{eq:cad2} se cumple para cualquier $\mathbf v_1$: basta pedir $(A-\lambda I)\mathbf v_1\neq\mathbf 0$. Es lo que haremos en los ejemplos.
+\end{note}
+
+La Tabla~\ref{tab:receta-ciclo2} resume el procedimiento y lo aplica al ejemplo que sigue.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{>{\bfseries\color{bbe}}c p{.36\linewidth} p{.40\linewidth}}
+\rowcolor{bbe!15}
+\textcolor{bbe}{Paso} & \textcolor{bbe}{Acci\'on} & \textcolor{bbe}{En el Ejemplo~\ref{ex:nodo2}} \\
+1 & Hallar $\lambda$ y comparar $m$ con $r$. & $\lambda=2$, $m=2$, $r=1$: defectuosa \\
+2 & Calcular $A-\lambda I$ (y su cuadrado). & $A-2I=\begin{bmatrix}4&-8\\2&-4\end{bmatrix}$, $(A-2I)^2=0$ \\
+3 & Elegir $\mathbf v_1$ con $(A-\lambda I)\mathbf v_1\neq\mathbf 0$. & $\mathbf v_1=(1,0)$ \\
+4 & Calcular $\mathbf v_0=(A-\lambda I)\mathbf v_1$. & $\mathbf v_0=(4,2)$ \\
+5 & Escribir $\mathbf x_0=e^{\lambda t}\mathbf v_0$ y $\mathbf x_1=e^{\lambda t}(\mathbf v_1+t\mathbf v_0)$. & $e^{2t}(4,2)$ y $e^{2t}(1+4t,2t)$ \\
+\end{tabular}
+\caption{Receta para un valor propio defectuoso con un ciclo de longitud $2$.}
+\label{tab:receta-ciclo2}
+\end{table}
+
+\begin{example}\label{ex:nodo2}
+Resuelva $\mathbf{x}' = A\mathbf{x}$ si $A = \begin{bmatrix} 6 & -8 \\ 2 & -2 \end{bmatrix}$.
+
+\noindent \textbf{Soluci\'on:} \emph{Paso 1.} Calculamos
+\[
+\det(A - \lambda I) = \begin{vmatrix} 6-\lambda & -8 \\ 2 & -2-\lambda \end{vmatrix} = (\lambda - 2)^2,
+\]
+as\'i que solo hay un valor propio, $\lambda = 2$, con $m=2$. Los vectores propios son de la forma $\mathbf{v} = r(2, 1)$: el espacio propio es unidimensional ($r=1$) y $A$ es defectuosa. Por el Teorema~\ref{thm:ciclo2} hay una segunda soluci\'on $\mathbf x_1(t)=e^{2t}(\mathbf v_1+t\mathbf v_0)$.
+
+\emph{Pasos 2 y 3.} Tenemos
+\[
+A - 2I = \begin{bmatrix} 4 & -8 \\ 2 & -4 \end{bmatrix} \quad \text{y} \quad (A - 2I)^2 = 0_2,
+\]
+as\'i que cualquier $\mathbf v_1$ con $(A-2I)\mathbf v_1\neq\mathbf 0$ sirve. Por simplicidad tomamos $\mathbf{v}_1 = (1, 0)$.
+
+\emph{Paso 4.}
+\[
+\mathbf{v}_0 = (A-2I)\mathbf v_1=\begin{bmatrix} 4 & -8 \\ 2 & -4 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} 4 \\ 2 \end{bmatrix}.
+\]
+
+\emph{Paso 5.} Dos soluciones linealmente independientes son
+\[
+\mathbf{x}_0(t) = e^{2t} \begin{bmatrix} 4 \\ 2 \end{bmatrix} \quad \text{y} \quad \mathbf{x}_1(t) = e^{2t} \left\{ \begin{bmatrix} 1 \\ 0 \end{bmatrix} + t \begin{bmatrix} 4 \\ 2 \end{bmatrix} \right\} = e^{2t} \begin{bmatrix} 1 + 4t \\ 2t \end{bmatrix},
+\]
+y la soluci\'on general es
+\[
+\mathbf{x}(t) = c_1 e^{2t} \begin{bmatrix} 4 \\ 2 \end{bmatrix} + c_2 e^{2t} \begin{bmatrix} 1 + 4t \\ 2t \end{bmatrix} = \begin{bmatrix} e^{2t}[4c_1 + c_2(1 + 4t)] \\ e^{2t}(2c_1 + 2c_2t) \end{bmatrix}. \quad \square
+\]
+\end{example}
+
+\begin{note}
+Otra elecci\'on de $\mathbf v_1$ (por ejemplo $(0,1)$) da otro par $\mathbf x_0$, $\mathbf x_1$, pero genera el mismo espacio de soluciones: $\mathbf v_0$ cambia por un m\'ultiplo de s\'i mismo y $\mathbf x_1$ cambia en un m\'ultiplo de $\mathbf x_0$.
+\end{note}
+
+La Figura~\ref{fig:nodos} muestra las trayectorias de los dos ejemplos en el plano de fases. Como $\lambda>0$, todas se alejan del origen al avanzar $t$, y tanto hacia el futuro como hacia el pasado se alinean con la recta propia (verde); la diferencia con el caso no defectuoso es que aqu\'i hay una \'unica recta propia y las dem\'as trayectorias se curvan para acercarse a ella. Este tipo de origen se llama \textbf{nodo impropio}.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.48\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbenodo, xmin=-3, xmax=3, ymin=-6, ymax=6]
+\addplot[bbegreen, very thick, domain=0:2, samples=2, bbeflecha]({x},{3*x});
+\addplot[bbegreen, very thick, domain=0:2, samples=2, bbeflecha]({-x},{-3*x});
+\foreach \a/\b in {0/0.4, 0/-0.4, 0/1, 0/-1, 0.4/1, -0.4/-1, 0.4/-1, -0.4/1} {
+  \addplot[bbeblue, domain=-2.5:0.5, samples=300, bbeflecha]
+    ({exp(3*x)*((\a)+(\b)*x)},{exp(3*x)*(3*(\a)+(\b)*(1+3*x))});
+}
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:nodo1}: $\lambda=3$, recta propia $\mathbf v_0=(1,3)$.}
+\end{subfigure}
+\hfill
+\begin{subfigure}{.48\linewidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[bbenodo, xmin=-6, xmax=6, ymin=-3, ymax=3]
+\addplot[bbegreen, very thick, domain=0:6, samples=2, bbeflecha]({x},{x/2});
+\addplot[bbegreen, very thick, domain=0:6, samples=2, bbeflecha]({-x},{-x/2});
+\foreach \a/\b in {0/0.4, 0/-0.4, 0/1, 0/-1, 0.4/1, -0.4/-1, 0.4/-1, -0.4/1} {
+  \addplot[bbeblue, domain=-2.5:0.6, samples=300, bbeflecha]
+    ({exp(2*x)*(4*(\a)+(\b)*(1+4*x))},{exp(2*x)*(2*(\a)+2*(\b)*x)});
+}
+\end{axis}
+\end{tikzpicture}
+\caption{Ejemplo~\ref{ex:nodo2}: $\lambda=2$, recta propia $\mathbf v_0=(2,1)$.}
+\end{subfigure}
+\caption{Nodos impropios (inestables) de dos sistemas con un valor propio defectuoso. Las flechas indican el sentido de $t$ creciente. Los ejes tienen escalas distintas, para que se aprecie la forma de las trayectorias.}
+\label{fig:nodos}
+\end{figure}
+
+Un ejemplo con una matriz de $3\times 3$, aplicando la misma t\'ecnica:
+
+\begin{example}\label{ex:3x3}
+Determine la soluci\'on general de $\mathbf{x}' = A\mathbf{x}$ si $A = \begin{bmatrix} 5 & 2 & -1 \\ 1 & 6 & -1 \\ 3 & 6 & 1 \end{bmatrix}$.
+
+\noindent \textbf{Soluci\'on:} \emph{Valores propios.} Un c\'alculo breve muestra que
+\[
+\det(A - \lambda I) = \begin{vmatrix} 5-\lambda & 2 & -1 \\ 1 & 6-\lambda & -1 \\ 3 & 6 & 1-\lambda \end{vmatrix} = -(\lambda - 4)^3,
+\]
+as\'i que $A$ tiene un solo valor propio, $\lambda = 4$, con $m=3$.
+
+\emph{Vectores propios.} Los vectores propios son de la forma
+\begin{equation}\label{eq:vp3x3}
+\mathbf{v} = (-2a+b,\, a,\, b) = a(-2, 1, 0) + b(1, 0, 1),
+\end{equation}
+es decir, el espacio propio tiene dimensi\'on $r=2<3$. Solo se pueden construir dos soluciones independientes a partir de vectores propios, y falta $m-r=1$ soluci\'on. La buscamos de la forma $\mathbf{x}_1(t) = e^{4t}(\mathbf{v}_1 + t\mathbf{v}_0)$.
+
+\emph{Vector generalizado.} Aqu\'i
+\[
+A - 4I = \begin{bmatrix} 1 & 2 & -1 \\ 1 & 2 & -1 \\ 3 & 6 & -3 \end{bmatrix} \quad \text{y} \quad (A - 4I)^2 = 0_3,
+\]
+as\'i que podemos tomar cualquier $\mathbf v_1$ con $(A-4I)\mathbf v_1\neq\mathbf 0$. Por simplicidad, $\mathbf{v}_1 = (1, 0, 0)$. Entonces
+\[
+\mathbf{v}_0 = (A-4I)\mathbf v_1 = \begin{bmatrix} 1 & 2 & -1 \\ 1 & 2 & -1 \\ 3 & 6 & -3 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \\ 3 \end{bmatrix},
+\]
+que es un vector propio (verifica \eqref{eq:vp3x3} con $a=1$, $b=3$ o, directamente, $1+2-3=0$). Esto produce las soluciones
+\[
+\mathbf{x}_0^{(1)}(t) = e^{4t} \begin{bmatrix} 1 \\ 1 \\ 3 \end{bmatrix} \quad \text{y} \quad \mathbf{x}_1^{(1)}(t) = e^{4t} \left\{ \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix} + t \begin{bmatrix} 1 \\ 1 \\ 3 \end{bmatrix} \right\} = e^{4t} \begin{bmatrix} 1 + t \\ t \\ 3t \end{bmatrix}.
+\]
+
+\emph{La tercera soluci\'on.} Elegimos un segundo vector propio que no sea proporcional a $\mathbf v_0$; de \eqref{eq:vp3x3} sirve $\mathbf{v}_0^{(2)} = (-2, 1, 0)$, que da $\mathbf{x}_0^{(2)}(t) = e^{4t}(-2,1,0)$.
+
+\emph{Soluci\'on general.}
+\[
+\mathbf{x}(t) = c_1 e^{4t} \begin{bmatrix} 1 \\ 1 \\ 3 \end{bmatrix} + c_2 e^{4t} \begin{bmatrix} 1 + t \\ t \\ 3t \end{bmatrix} + c_3 e^{4t} \begin{bmatrix} -2 \\ 1 \\ 0 \end{bmatrix}
+= e^{4t} \begin{bmatrix} c_1 + c_2(1 + t) - 2c_3 \\ c_1 + c_2 t + c_3 \\ 3c_1 + 3c_2 t \end{bmatrix}. \quad \square
+\]
+\end{example}
+
+La Figura~\ref{fig:plano3d} muestra la geometr\'ia de este ejemplo: los vectores propios llenan un \emph{plano} (la ecuaci\'on $v_1+2v_2-v_3=0$), y el vector generalizado $\mathbf v_1$ es el que queda fuera de \'el; al aplicarle $A-4I$ cae dentro del plano, en $\mathbf v_0$.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x={(-0.7cm,-0.5cm)}, y={(1cm,0cm)}, z={(0cm,0.7cm)}, >={Stealth[length=6pt]}]
+% plano de vectores propios: z = x + 2y
+\fill[bbeblue!20, opacity=0.6] (-2,-1.2,-4.4) -- (2,-1.2,-0.4) -- (2,1.2,4.4) -- (-2,1.2,0.4) -- cycle;
+\draw[bbeblue!60, thin] (-2,-1.2,-4.4) -- (2,-1.2,-0.4) -- (2,1.2,4.4) -- (-2,1.2,0.4) -- cycle;
+% ejes
+\draw[->, thin, bbegray] (0,0,0) -- (3,0,0) node[below left, text=bbegray] {$v_1$};
+\draw[->, thin, bbegray] (0,0,0) -- (0,3,0) node[right, text=bbegray] {$v_2$};
+\draw[->, thin, bbegray] (0,0,0) -- (0,0,5.4) node[above, text=bbegray] {$v_3$};
+% vectores
+\draw[->, very thick, bbegreen] (0,0,0) -- (1,1,3) node[above, text=bbegreen, font=\small] {$\mathbf v_0=(1,1,3)$};
+\draw[->, very thick, bbegreen] (0,0,0) -- (-2,1,0) node[right, text=bbegreen, font=\small] {$\mathbf v_0^{(2)}=(-2,1,0)$};
+\draw[->, very thick, bbered] (0,0,0) -- (1,0,0) node[below left, text=bbered, font=\small] {$\mathbf v_1=(1,0,0)$};
+\end{tikzpicture}
+\caption{Espacio propio de $\lambda=4$ en el Ejemplo~\ref{ex:3x3}: el plano $v_1+2v_2-v_3=0$ (azul), dos vectores propios (verde) y el vector generalizado $\mathbf v_1$ (rojo), que no est\'a en el plano.}
+\label{fig:plano3d}
+\end{figure}
+
+La Tabla~\ref{tab:resumen-defectuosos} compara los tres ejemplos.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{>{\bfseries}l c c c c p{.42\linewidth}}
+\rowcolor{bbe!15}
+\textcolor{bbe}{Ejemplo} & \textcolor{bbe}{$\lambda$} & \textcolor{bbe}{$m$} & \textcolor{bbe}{$r$} & \textcolor{bbe}{$m-r$} & \textcolor{bbe}{Ciclos} \\
+\ref{ex:nodo1} & $3$ & $2$ & $1$ & $1$ & $\mathbf v_1=(0,1)\to\mathbf v_0=(1,3)\to\mathbf 0$ \\
+\ref{ex:nodo2} & $2$ & $2$ & $1$ & $1$ & $\mathbf v_1=(1,0)\to\mathbf v_0=(4,2)\to\mathbf 0$ \\
+\ref{ex:3x3} & $4$ & $3$ & $2$ & $1$ & $(1,0,0)\to(1,1,3)\to\mathbf 0$ \newline $(-2,1,0)\to\mathbf 0$ \\
+\end{tabular}
+\caption{Estructura de ciclos en los ejemplos: hay tantos ciclos como vectores propios independientes ($r$).}
+\label{tab:resumen-defectuosos}
+\end{table}
+
+\textbf{El caso general.} Cerramos esta parte con el teorema que resuelve este caso y todos los anteriores. El enunciado parece pesado, pero dice algo simple: para cada valor propio se arman $r$ \emph{ciclos} como el de la Figura~\ref{fig:cadena}, y cada ciclo de $k_i+1$ vectores aporta $k_i+1$ soluciones.
+
+\begin{theorem}\label{thm:ciclos}
+Sea $A$ una matriz de $n \times n$.
+
+\begin{enumerate}
+    \item Suponga que el valor propio $\lambda$ tiene multiplicidad $m$ y que el espacio propio correspondiente tiene dimensi\'on $r \le m$. Entonces existen $m$ soluciones linealmente independientes para $\mathbf{x}' = A\mathbf{x}$ que se pueden construir en $r$ ciclos (uno para cada $i$ con $1 \le i \le r$) de la forma
+    \begin{align}
+    \mathbf{x}_0^{(i)}(t) &= e^{\lambda t}\mathbf{v}_0^{(i)}, \notag \\
+    \mathbf{x}_1^{(i)}(t) &= e^{\lambda t}\left(\mathbf{v}_1^{(i)} + t\mathbf{v}_0^{(i)}\right), \notag \\
+    \mathbf{x}_2^{(i)}(t) &= e^{\lambda t}\left(\mathbf{v}_2^{(i)} + t\mathbf{v}_1^{(i)} + \frac{1}{2!}t^2\mathbf{v}_0^{(i)}\right), \notag \\
+    &\;\;\vdots \notag \\
+    \mathbf{x}_{k_i}^{(i)}(t) &= e^{\lambda t}\left(\mathbf{v}_{k_i}^{(i)} + t\mathbf{v}_{k_i - 1}^{(i)} + \dots + \frac{1}{k_i!}t^{k_i}\mathbf{v}_0^{(i)}\right), \label{eq:ciclo-sol}
+    \end{align}
+    donde cada $k_i \ge 0$ y $k_1 + k_2 + \dots + k_r = m - r$. Para cada $i$, los vectores $\mathbf{v}_0^{(i)}, \dots, \mathbf{v}_{k_i}^{(i)}$ se determinan as\'i: se elige $\mathbf{v}_{k_i}^{(i)}$ como cualquier vector que satisfaga
+    \begin{equation}\label{eq:ciclo-cond}
+    (A - \lambda I)^{k_i + 1}\mathbf{v}_{k_i}^{(i)} = \mathbf{0}, \qquad (A - \lambda I)^{k_i}\mathbf{v}_{k_i}^{(i)} \neq \mathbf{0},
+    \end{equation}
+    y luego
+    \begin{align}
+    \mathbf{v}_{k_i - 1}^{(i)} &= (A - \lambda I)\mathbf{v}_{k_i}^{(i)}, \notag \\
+    \mathbf{v}_{k_i - 2}^{(i)} &= (A - \lambda I)^2\mathbf{v}_{k_i}^{(i)}, \notag \\
+    &\;\;\vdots \notag \\
+    \mathbf{v}_1^{(i)} &= (A - \lambda I)^{k_i - 1}\mathbf{v}_{k_i}^{(i)}, \notag \\
+    \mathbf{v}_0^{(i)} &= (A - \lambda I)^{k_i}\mathbf{v}_{k_i}^{(i)}. \notag
+    \end{align}
+    La colecci\'on de todas las soluciones $\mathbf{x}_j^{(i)}(t)$ (para $1 \le i \le r$ y $0 \le j \le k_i$) es un conjunto linealmente independiente de $m$ soluciones para $\mathbf{x}' = A\mathbf{x}$.
+
+    \item Aplicar los resultados de (1) a cada valor propio de $A$ genera un conjunto de $n$ soluciones para $\mathbf{x}' = A\mathbf{x}$ que son linealmente independientes en cualquier intervalo.
+\end{enumerate}
+\end{theorem}
+
+Para leer el teorema conviene tener a mano la Tabla~\ref{tab:lectura-teorema}, y para ver qu\'e puede ocurrir en la pr\'actica la Tabla~\ref{tab:estructuras}, que lista las estructuras posibles cuando $m=3$.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{>{\bfseries}l l}
+\rowcolor{bbe!15}
+\textcolor{bbe}{S\'imbolo} & \textcolor{bbe}{Significado} \\
+$m$ & multiplicidad de $\lambda$ \\
+$r$ & dimensi\'on del espacio propio; es el n\'umero de ciclos \\
+$k_i$ & el ciclo $i$ tiene $k_i+1$ vectores y aporta $k_i+1$ soluciones \\
+$k_1+\dots+k_r=m-r$ & total de soluciones ``extra'' que no son de la forma $e^{\lambda t}\mathbf v$ \\
+$\mathbf v_0^{(i)}$ & vector propio; comienza el ciclo $i$ \\
+$\mathbf v_{k_i}^{(i)}$ & vector generalizado de mayor orden; se elige primero con \eqref{eq:ciclo-cond} \\
+\end{tabular}
+\caption{Gu\'ia de lectura del Teorema~\ref{thm:ciclos}.}
+\label{tab:lectura-teorema}
+\end{table}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c c c l}
+\rowcolor{bbe!15}
+\textcolor{bbe}{$r$} & \textcolor{bbe}{$(k_1,\dots,k_r)$} & \textcolor{bbe}{Tama\~nos de los ciclos} & \textcolor{bbe}{Soluciones} \\
+$3$ & $(0,0,0)$ & $1,1,1$ & tres de la forma $e^{\lambda t}\mathbf v$ (caso no defectuoso) \\
+$2$ & $(1,0)$ & $2,1$ & dos de la forma $e^{\lambda t}\mathbf v$ y una con factor $t$ (Ejemplo~\ref{ex:3x3}) \\
+$1$ & $(2)$ & $3$ & $e^{\lambda t}\mathbf v_0$, $e^{\lambda t}(\mathbf v_1+t\mathbf v_0)$ y una con $t^2$ \\
+\end{tabular}
+\caption{Estructuras de ciclos posibles para un valor propio con $m=3$.}
+\label{tab:estructuras}
+\end{table}
+
+\begin{remark}
+\begin{enumerate}
+    \item Si $k_i = 0$ para todo $i$ y todo valor propio, entonces $m=r$ en cada uno: es el caso no defectuoso, y el teorema coincide con los resultados de la secci\'on anterior.
+
+    \item La demostraci\'on se apoya en la forma can\'onica de Jordan. Para quienes les interese: $r$ es el n\'umero de bloques de Jordan de $\lambda$, los n\'umeros $k_i + 1$ son los tama\~nos de esos bloques, y cada colecci\'on ordenada $\{\mathbf{v}_0^{(i)}, \dots, \mathbf{v}_{k_i}^{(i)}\}$ es un ciclo de vectores propios generalizados de $A$.
+\end{enumerate}
+\end{remark}
+
+\subsection{Variaci\'on de par\'ametros}
+
+Hasta ahora todos los sistemas eran homog\'eneos. Agregamos ahora un t\'ermino de forzamiento $\mathbf b(t)$ y consideramos
+\begin{equation}\label{eq:vp-nohom}
+\mathbf{x}'(t) = A(t)\mathbf{x}(t) + \mathbf{b}(t),
+\end{equation}
+donde $A$ es una funci\'on matricial de $n \times n$ y $\mathbf{b}$ es una funci\'on vectorial de $n$ componentes. La ecuaci\'on homog\'enea asociada es
+\begin{equation}\label{eq:vp-hom}
+\mathbf{x}'(t) = A(t)\mathbf{x}(t).
+\end{equation}
+
+Como en el caso de una sola ecuaci\'on lineal, toda soluci\'on de \eqref{eq:vp-nohom} es de la forma
+\[
+\mathbf{x}(t) = c_1\mathbf{x}_1(t) + c_2\mathbf{x}_2(t) + \dots + c_n\mathbf{x}_n(t) + \mathbf{x}_p(t),
+\]
+donde $\mathbf{x}_1, \dots, \mathbf{x}_n$ son $n$ soluciones linealmente independientes de \eqref{eq:vp-hom} y $\mathbf{x}_p$ es una \textit{soluci\'on particular} de \eqref{eq:vp-nohom}. La Tabla~\ref{tab:vp-estructura} ordena las dos piezas.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{>{\bfseries}l l l}
+\rowcolor{bbe!15}
+ & \textcolor{bbe}{Homog\'eneo $\mathbf x'=A\mathbf x$} & \textcolor{bbe}{No homog\'eneo $\mathbf x'=A\mathbf x+\mathbf b$} \\
+Soluci\'on general & $\mathbf x_h=X(t)\mathbf c=\sum c_k\mathbf x_k$ & $\mathbf x=\mathbf x_h+\mathbf x_p$ \\
+Qu\'e se necesita & $n$ soluciones independientes & adem\'as, una soluci\'on particular $\mathbf x_p$ \\
+C\'omo se obtiene & valores y vectores propios (ciclos si hace falta) & variaci\'on de par\'ametros \\
+\end{tabular}
+\caption{Estructura de las soluciones del caso no homog\'eneo.}
+\label{tab:vp-estructura}
+\end{table}
+
+En esta secci\'on obtenemos $\mathbf x_p$ suponiendo que ya conocemos $n$ soluciones independientes de \eqref{eq:vp-hom}.
+
+\begin{theorem}[Variaci\'on de par\'ametros]\label{thm:vp}
+Sea $A(t)$ una funci\'on matricial de $n \times n$ y sea $\mathbf{b}(t)$ un vector columna de $n$ componentes, ambos continuos en un intervalo $I$. Si $X(t) = [\mathbf{x}_1(t), \dots, \mathbf{x}_n(t)]$ es una matriz fundamental para $\mathbf{x}'(t) = A(t)\mathbf{x}(t)$, entonces una soluci\'on particular de
+\[
+\mathbf{x}'(t) = A(t)\mathbf{x}(t) + \mathbf{b}(t)
+\]
+es
+\[
+\mathbf{x}_p(t) = X(t)\mathbf{u}(t),
+\]
+donde $\mathbf{u}(t)$ satisface
+\[
+X(t)\mathbf{u}'(t) = \mathbf{b}(t).
+\]
+Expl\'icitamente,
+\[
+\mathbf{x}_p(t) = X(t) \int^t X^{-1}(s)\mathbf{b}(s) \, ds.
+\]
+\end{theorem}
+
+\begin{remark}
+\begin{enumerate}
+    \item No hace falta memorizar la f\'ormula. Basta recordar que una soluci\'on particular es
+    \[
+    \mathbf{x}_p(t) = X\mathbf{u},
+    \]
+    donde $X$ es una matriz fundamental del sistema homog\'eneo y $\mathbf{u}'$ se obtiene resolviendo el sistema lineal
+    \begin{equation}\label{eq:Xu}
+    X\mathbf{u}' = \mathbf{b}.
+    \end{equation}
+
+    \item La demostraci\'on usa $X^{-1}$ para tener una f\'ormula simple, pero en la pr\'actica se puede usar cualquier m\'etodo para resolver sistemas lineales. Para sistemas de $2 \times 2$ la regla de Cramer es muy efectiva (tambi\'en sirve la matriz adjunta para calcular $X^{-1}$). Para sistemas mayores es m\'as eficiente usar eliminaci\'on gaussiana en \eqref{eq:Xu} y luego integrar $\mathbf u'$.
+\end{enumerate}
+\end{remark}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{>{\bfseries\color{bbe}}c p{.36\linewidth} p{.40\linewidth}}
+\rowcolor{bbe!15}
+\textcolor{bbe}{Paso} & \textcolor{bbe}{Acci\'on} & \textcolor{bbe}{En el Ejemplo~\ref{ex:vp-part}} \\
+1 & Resolver el sistema homog\'eneo y armar $X(t)$. & $X=\begin{bmatrix}e^t&-e^{3t}\\e^t&e^{3t}\end{bmatrix}$ \\
+2 & Plantear $X\mathbf u'=\mathbf b$. & $X\mathbf u'=(0,\,4e^t)$ \\
+3 & Resolver para $\mathbf u'$ (Cramer si $n=2$). & $u_1'=2$, \; $u_2'=2e^{-2t}$ \\
+4 & Integrar $\mathbf u'$ (constantes en cero). & $u_1=2t$, \; $u_2=-e^{-2t}$ \\
+5 & Calcular $\mathbf x_p=X\mathbf u$; si hay PVI, imponer la condici\'on a $\mathbf x=X\mathbf c+\mathbf x_p$. & $\mathbf x_p=e^t(2t+1,\,2t-1)$ \\
+\end{tabular}
+\caption{Receta de variaci\'on de par\'ametros.}
+\label{tab:vp-receta}
+\end{table}
+
+A continuaci\'on aplicamos el m\'etodo a dos problemas. En el primero buscamos solo la soluci\'on particular; en el segundo resolvemos un PVI completo, reuniendo lo trabajado hasta ahora.
+
+\begin{example}\label{ex:vp-part}
+Determine una soluci\'on particular del sistema $\mathbf x'=A\mathbf x+\mathbf b$, donde
+\[
+A = \begin{bmatrix} 2 & -1 \\ -1 & 2 \end{bmatrix}, \qquad \mathbf{b} = \begin{bmatrix} 0 \\ 4e^t \end{bmatrix}.
+\]
+
+\textbf{Soluci\'on:} \emph{Paso 1: sistema homog\'eneo.} El polinomio caracter\'istico es
+\[
+\det(A - \lambda I) = (2-\lambda)^2 - 1 = \lambda^2 - 4\lambda + 3 = (\lambda - 1)(\lambda - 3),
+\]
+de modo que $\lambda_1 = 1$ y $\lambda_2 = 3$.
+
+Para $\lambda_1 = 1$: $(A - I)\mathbf{v}=\mathbf 0$ da $v_1 - v_2 = 0$, es decir, $\mathbf{v}_1 = (1,1)$.
+
+Para $\lambda_2 = 3$: $(A - 3I)\mathbf{v}=\mathbf 0$ da $-v_1 - v_2 = 0$, es decir, $\mathbf{v}_2 = (-1,1)$.
+
+Dos soluciones independientes del sistema homog\'eneo son
+\[
+\mathbf{x}_1(t) = e^t \begin{bmatrix} 1 \\ 1 \end{bmatrix} \quad \text{y} \quad \mathbf{x}_2(t) = e^{3t} \begin{bmatrix} -1 \\ 1 \end{bmatrix},
+\]
+y una matriz fundamental es
+\[
+X(t) = \begin{bmatrix} e^t & -e^{3t} \\ e^t & e^{3t} \end{bmatrix}.
+\]
+
+\emph{Pasos 2 y 3: planteamos $X\mathbf{u}'=\mathbf b$ y lo resolvemos.} El determinante es
+\[
+\det X(t) = e^t e^{3t} - (-e^{3t})e^t = 2e^{4t},
+\]
+y por la regla de Cramer
+\[
+u_1'(t) = \frac{\begin{vmatrix} 0 & -e^{3t} \\ 4e^t & e^{3t} \end{vmatrix}}{2e^{4t}} = \frac{4e^{4t}}{2e^{4t}} = 2, \qquad
+u_2'(t) = \frac{\begin{vmatrix} e^t & 0 \\ e^t & 4e^t \end{vmatrix}}{2e^{4t}} = \frac{4e^{2t}}{2e^{4t}} = 2e^{-2t}.
+\]
+
+\emph{Paso 4: integramos} (con constantes de integraci\'on cero):
+\[
+u_1(t) = 2t, \qquad u_2(t) = -e^{-2t}, \qquad \text{es decir,} \qquad \mathbf{u}(t) = \begin{bmatrix} 2t \\ -e^{-2t} \end{bmatrix}.
+\]
+
+\emph{Paso 5: soluci\'on particular.}
+\[
+\mathbf{x}_p(t) = X(t)\mathbf{u}(t) = \begin{bmatrix} e^t & -e^{3t} \\ e^t & e^{3t} \end{bmatrix} \begin{bmatrix} 2t \\ -e^{-2t} \end{bmatrix}
+= \begin{bmatrix} 2te^t + e^t \\ 2te^t - e^t \end{bmatrix}
+= e^t \begin{bmatrix} 2t + 1 \\ 2t - 1 \end{bmatrix}. \quad \square
+\]
+\end{example}
+
+\begin{note}
+Verificaci\'on: $\mathbf x_p'=e^t(2t+3,\,2t+1)$ y $A\mathbf x_p+\mathbf b=e^t\big(2(2t+1)-(2t-1),\ -(2t+1)+2(2t-1)+4\big)=e^t(2t+3,\,2t+1)$.
+\end{note}
+
+La Figura~\ref{fig:vp-fase} muestra el significado de este resultado: las soluciones homog\'eneas (gris) son las trayectorias del sistema sin forzamiento, y $\mathbf x_p$ (rojo) es una trayectoria particular del sistema forzado. Cualquier otra soluci\'on del sistema forzado se obtiene sumando a $\mathbf x_p$ una soluci\'on homog\'enea.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[bberetrato, width=.7\linewidth, xmin=-8, xmax=8, ymin=-8, ymax=8,
+  legend pos=south east, legend style={font=\small}]
+\foreach \a/\b in {1/0, -1/0, 0/0.05, 0/-0.05, 1/0.05, 1/-0.05, -1/0.05, -1/-0.05} {
+  \addplot[bbegray!55, thin, forget plot, domain=-2:1.4, samples=200, bbeflecha]
+    ({(\a)*exp(x)-(\b)*exp(3*x)},{(\a)*exp(x)+(\b)*exp(3*x)});
+}
+\addlegendimage{bbegray!55, thick}
+\addlegendentry{$\mathbf x_h$ (homog\'eneas)}
+\addplot[bbered, very thick, domain=-3:1.05, samples=200, bbeflecha]
+  ({exp(x)*(2*x+1)},{exp(x)*(2*x-1)});
+\addlegendentry{$\mathbf x_p$}
+\end{axis}
+\end{tikzpicture}
+\caption{Retrato de fase del Ejemplo~\ref{ex:vp-part}. Los autovalores $1$ y $3$ son positivos: todas las trayectorias homog\'eneas se alejan del origen.}
+\label{fig:vp-fase}
+\end{figure}
+
+\begin{example}\label{ex:vp-pvi}
+Resuelva el problema de valor inicial
+\[
+\mathbf{x}'(t) = A\mathbf{x}(t) + \mathbf{b}(t), \qquad \mathbf{x}(0) = \begin{bmatrix} 3 \\ 0 \end{bmatrix},
+\]
+si
+\[
+A = \begin{bmatrix} 1 & 2 \\ 4 & 3 \end{bmatrix} \quad \text{y} \quad \mathbf{b}(t) = \begin{bmatrix} 12e^{3t} \\ 18e^{2t} \end{bmatrix}.
+\]
+
+\noindent \textbf{Soluci\'on:} \emph{Sistema homog\'eneo.} Tenemos
+\[
+\det(A - \lambda I) = (\lambda - 5)(\lambda + 1),
+\]
+de modo que $\lambda_1 = -1$ y $\lambda_2 = 5$, con vectores propios
+\[
+\mathbf{v}_1 = \begin{bmatrix} -1 \\ 1 \end{bmatrix} \quad \text{y} \quad \mathbf{v}_2 = \begin{bmatrix} 1 \\ 2 \end{bmatrix}.
+\]
+Luego $\mathbf{x}_1(t) = e^{-t}(-1,1)$ y $\mathbf{x}_2(t) = e^{5t}(1,2)$, y una matriz fundamental es
+\[
+X(t) = \begin{bmatrix} -e^{-t} & e^{5t} \\ e^{-t} & 2e^{5t} \end{bmatrix}.
+\]
+
+\emph{Soluci\'on particular.} Por el Teorema~\ref{thm:vp}, $\mathbf{x}_p = X\mathbf{u}$ con $X\mathbf{u}' = \mathbf{b}$. Como $\det X(t) = -3e^{4t}$, la regla de Cramer da
+\[
+u_1'(t) = \frac{\begin{vmatrix} 12e^{3t} & e^{5t} \\ 18e^{2t} & 2e^{5t} \end{vmatrix}}{-3e^{4t}} = -8e^{4t} + 6e^{3t}, \qquad
+u_2'(t) = \frac{\begin{vmatrix} -e^{-t} & 12e^{3t} \\ e^{-t} & 18e^{2t} \end{vmatrix}}{-3e^{4t}} = 6e^{-3t} + 4e^{-2t}.
+\]
+Integrando (constantes en cero),
+\[
+\mathbf{u}(t) = \begin{bmatrix} -2e^{4t} + 2e^{3t} \\ -2e^{-3t} - 2e^{-2t} \end{bmatrix},
+\]
+y entonces
+\[
+\mathbf{x}_p(t) = X(t)\mathbf{u}(t) = \begin{bmatrix} -e^{-t} & e^{5t} \\ e^{-t} & 2e^{5t} \end{bmatrix} \begin{bmatrix} -2e^{4t} + 2e^{3t} \\ -2e^{-3t} - 2e^{-2t} \end{bmatrix} = \begin{bmatrix} -4e^{2t} \\ -2e^{2t} - 6e^{3t} \end{bmatrix}.
+\]
+
+\emph{Soluci\'on general.}
+\begin{equation}\label{eq:vp-sol-gen}
+\mathbf{x}(t) = c_1 e^{-t} \begin{bmatrix} -1 \\ 1 \end{bmatrix} + c_2 e^{5t} \begin{bmatrix} 1 \\ 2 \end{bmatrix} - \begin{bmatrix} 4e^{2t} \\ 2e^{2t} + 6e^{3t} \end{bmatrix}
+= \begin{bmatrix} -c_1 e^{-t} + c_2 e^{5t} - 4e^{2t} \\ c_1 e^{-t} + 2c_2 e^{5t} - 2(e^{2t} + 3e^{3t}) \end{bmatrix}.
+\end{equation}
+
+\emph{Condici\'on inicial.} Como $\mathbf x_p(0)=(-4,-8)$, la condici\'on $\mathbf{x}(0) = (3,0)$ requiere
+\[
+c_1 \begin{bmatrix} -1 \\ 1 \end{bmatrix} + c_2 \begin{bmatrix} 1 \\ 2 \end{bmatrix} - \begin{bmatrix} 4 \\ 8 \end{bmatrix} = \begin{bmatrix} 3 \\ 0 \end{bmatrix},
+\]
+es decir,
+\[
+-c_1 + c_2 = 7 \quad \text{y} \quad c_1 + 2c_2 = 8,
+\]
+de donde $c_1 = -2$ y $c_2 = 5$. Sustituyendo en \eqref{eq:vp-sol-gen},
+\[
+\mathbf{x}(t) = \begin{bmatrix} 2e^{-t} + 5e^{5t} - 4e^{2t} \\ -2e^{-t} + 10e^{5t} - 2(e^{2t} + 3e^{3t}) \end{bmatrix}. \quad \square
+\]
+\end{example}
+
+En la Figura~\ref{fig:vp-pvi} se ve la soluci\'on del PVI y la parte particular. Para $t$ grande domina $e^{5t}$, el t\'ermino de la soluci\'on homog\'enea asociado al valor propio mayor, y el efecto del forzamiento queda en segundo plano.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.8\linewidth, height=6.4cm, xlabel=$t$, domain=0:0.6, samples=100,
+  xtick distance=0.1, scaled x ticks=false, axis lines=left, legend pos=north west, legend style={font=\small},
+  every axis plot/.append style={thick}]
+\addplot[bbeblue]{2*exp(-x)+5*exp(5*x)-4*exp(2*x)};
+\addplot[bbered]{-2*exp(-x)+10*exp(5*x)-2*exp(2*x)-6*exp(3*x)};
+\addplot[bbeblue, dashed]{-4*exp(2*x)};
+\addplot[bbered, dashed]{-2*exp(2*x)-6*exp(3*x)};
+\legend{$x_1(t)$, $x_2(t)$, $x_{p,1}(t)$, $x_{p,2}(t)$}
+\end{axis}
+\end{tikzpicture}
+\caption{Soluci\'on del PVI del Ejemplo~\ref{ex:vp-pvi} (l\'inea continua) y su soluci\'on particular $\mathbf x_p$ (l\'inea punteada), con $\mathbf x(0)=(3,0)$.}
+\label{fig:vp-pvi}
+\end{figure}
+
+Finalmente, para quienes prefieren una f\'ormula cerrada:
+
+\begin{theorem}\label{thm:formula}
+Sea $X(t)$ una matriz fundamental para el sistema $\mathbf{x}' = A(t)\mathbf{x}(t)$, donde $A(t)$ es una funci\'on matricial de $n \times n$. La soluci\'on del problema de valor inicial
+\[
+\mathbf{x}'(t) = A(t)\mathbf{x}(t) + \mathbf{b}(t), \qquad \mathbf{x}(t_0) = \mathbf{x}_0
+\]
+puede escribirse como
+\[
+\mathbf{x}(t) = X(t)X^{-1}(t_0)\mathbf{x}_0 + X(t)\int_{t_0}^t X^{-1}(s)\mathbf{b}(s) \, ds.
+\]
+\end{theorem}
+
+Con esta secci\'on completamos el panorama para $\mathbf x'=A\mathbf x+\mathbf b$ con $A$ constante, salvo el caso de valores propios complejos. La Tabla~\ref{tab:mapa} lo resume.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{>{\bfseries}l l l c}
+\rowcolor{bbe!15}
+\textcolor{bbe}{Situaci\'on} & \textcolor{bbe}{Forma de las soluciones} & \textcolor{bbe}{Retrato de fase} & \textcolor{bbe}{Figura}\\
+$A$ no defectuosa, reales & $e^{\lambda_k t}\mathbf v_k$ & silla o nodo & \ref{fig:silla} \\
+$A$ defectuosa & $e^{\lambda t}(\mathbf v_1+t\mathbf v_0)$, \dots (ciclos) & nodo impropio & \ref{fig:nodos} \\
+Valores propios complejos & $e^{\alpha t}(\cos\beta t,\ \sin\beta t)$ & espiral & \ref{fig:espiral} \\
+No homog\'eneo $\mathbf b\neq\mathbf 0$ & $\mathbf x=X\mathbf c+\mathbf x_p$ & $\mathbf x_p$ sobre las homog\'eneas & \ref{fig:vp-fase} \\
+\end{tabular}
+\caption{Resumen de los casos para $\mathbf x'=A\mathbf x+\mathbf b$ con $A$ constante.}
+\label{tab:mapa}
+\end{table}

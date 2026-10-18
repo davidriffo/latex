@@ -1,0 +1,430 @@
+%% ============================================================
+%% SECCIÓN DE PRÁCTICA — Sistemas lineales de primer orden
+%% Para anexar al final de sistemas_1.tex (clase bb2/bbe).
+%% Niveles: \est{1} directo · \est{2} intermedio · \est{3} avanzado
+%% ============================================================
+\providecommand{\est}[1]{\textcolor{bbeamber}{\ifcase#1\or\ding{72}\or\ding{72}\ding{72}\or\ding{72}\ding{72}\ding{72}\fi}}
+
+\newpage
+\subsection{Práctica: sistemas lineales de primer orden}
+
+Esta colección de problemas recorre, en el mismo orden, todos los contenidos del apunte: definiciones y verificación de soluciones, método de eliminación, reducción a sistemas de primer orden, formulación vectorial y Wronskiano, teoría general, y el método de valores y vectores propios. Cada ejercicio indica su nivel de dificultad:
+
+\begin{itemize}
+    \item[] \est{1} \textbf{Directo:} aplicación inmediata de una definición, un teorema o un procedimiento visto.
+    \item[] \est{2} \textbf{Intermedio:} combina varios pasos o requiere elegir el método y justificar.
+    \item[] \est{3} \textbf{Avanzado:} demostraciones, casos con estructura especial o problemas de modelación.
+\end{itemize}
+
+Al final de la sección se entregan las respuestas (y sugerencias para las demostraciones). Se recomienda intentar cada ejercicio antes de consultarlas.
+
+%% -----------------------------------------------------------
+\subsubsection*{Bloque A. Sistemas lineales: clasificación y verificación}
+
+\begin{exercise}[\est{1}]\label{ex:A1}
+Indique si cada sistema es lineal. En caso afirmativo, diga si es homogéneo o no homogéneo y si sus coeficientes son constantes.
+\begin{enumerate}[a]
+    \item $x_1' = t\,x_1 + x_2, \quad x_2' = x_1 - 3x_2.$
+    \item $x_1' = x_1 + \sin t, \quad x_2' = e^t x_1 - x_2 + t.$
+    \item $x_1' = x_1x_2 + t, \quad x_2' = x_1 - x_2.$
+    \item $x_1' = -x_1 + 3x_2, \quad x_2' = 2x_1.$
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{1}]\label{ex:A2}
+Verifique que $x_1(t) = 2e^{2t} + e^{-t}$, $x_2(t) = e^{2t} + 2e^{-t}$ es una solución del sistema
+\[
+x_1' = 3x_1 - 2x_2, \qquad x_2' = 2x_1 - 2x_2
+\]
+en $(-\infty,\infty)$.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:A3}
+Considere el sistema $x_1' = x_2$, $x_2' = 6x_1 + x_2$.
+\begin{enumerate}[a]
+    \item Determine todos los valores de $r$ para los cuales $\mathbf{x}(t) = e^{rt}\begin{pmatrix}1\\ r\end{pmatrix}$ es solución.
+    \item Calcule el Wronskiano de las dos soluciones obtenidas y escriba la solución general.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:A4}
+Considere el sistema no homogéneo
+\[
+x_1' = 2x_1 + x_2 - 4, \qquad x_2' = x_1 + 2x_2 - 5.
+\]
+\begin{enumerate}[a]
+    \item Encuentre una solución constante $x_1(t)=a$, $x_2(t)=b$.
+    \item Resuelva el sistema homogéneo asociado.
+    \item Escriba la solución general del sistema no homogéneo y justifique por qué es solución.
+\end{enumerate}
+\end{exercise}
+
+%% -----------------------------------------------------------
+\subsubsection*{Bloque B. Método de eliminación (operador $D$)}
+
+\begin{exercise}[\est{1}]\label{ex:B1}
+Resuelva por eliminación: $\;x_1' = x_1 + x_2, \quad x_2' = 4x_1 + x_2.$
+\end{exercise}
+
+\begin{exercise}[\est{1}]\label{ex:B2}
+Resuelva por eliminación: $\;x_1' = 2x_1 - 3x_2, \quad x_2' = x_1 - 2x_2.$
+\end{exercise}
+
+\begin{exercise}[\est{1}]\label{ex:B3}
+Resuelva por eliminación: $\;x_1' = 4x_1 + 2x_2, \quad x_2' = -x_1 + x_2.$
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:B4}
+Resuelva el problema de valor inicial
+\[
+x_1' = 2x_2, \quad x_2' = x_1 + x_2, \qquad x_1(0) = 3,\; x_2(0) = 0.
+\]
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:B5}
+Resuelva el sistema no homogéneo
+\[
+x_1' = -2x_1 + x_2 + t, \qquad x_2' = -2x_1 + x_2 + 1.
+\]
+\emph{Sugerencia:} al eliminar, la ecuación de segundo orden resultante tiene término forzante polinomial.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:B6}
+Resuelva el sistema no homogéneo
+\[
+x_1' = x_1 + 2x_2 + 5e^{4t}, \qquad x_2' = 2x_1 + x_2.
+\]
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:B7}
+Resuelva el sistema no homogéneo
+\[
+x_1' = x_1 + x_2 + e^{2t}, \qquad x_2' = 3x_1 - x_2 + 5e^{2t}.
+\]
+\emph{Observación:} el exponente del forzante coincide con una raíz del polinomio auxiliar; revise cómo se modifica la forma de la solución particular.
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:B8}
+Sea el sistema homogéneo con coeficientes constantes $x_1' = a\,x_1 + b\,x_2$, $\;x_2' = c\,x_1 + d\,x_2$.
+\begin{enumerate}[a]
+    \item Mediante el operador $D$, pruebe que $x_1$ satisface
+    \[
+        x_1'' - (a+d)\,x_1' + (ad - bc)\,x_1 = 0.
+    \]
+    \item Compare el polinomio auxiliar obtenido con $\det(A - \lambda I)$, donde $A = \begin{pmatrix} a & b\\ c & d\end{pmatrix}$. ¿Qué observa?
+    \item Si $ad - bc < 0$, pruebe que $A$ tiene un valor propio real positivo y deduzca que existen soluciones no acotadas cuando $t \to \infty$.
+\end{enumerate}
+\end{exercise}
+
+%% -----------------------------------------------------------
+\subsubsection*{Bloque C. Forma vectorial y reducción a primer orden}
+
+\begin{exercise}[\est{1}]\label{ex:C1}
+Escriba cada sistema en la forma $\mathbf{x}' = A(t)\mathbf{x} + \mathbf{b}(t)$, indicando $A$ y $\mathbf{b}$.
+\begin{enumerate}[a]
+    \item $x_1' = 3x_1 - x_2 + t, \quad x_2' = 2x_1 + 5x_2 - e^t.$
+    \item $x_1' = x_2, \quad x_2' = -x_3, \quad x_3' = x_1.$
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{1}]\label{ex:C2}
+Convierta $y'' + 2t\,y' + y = \cos t$ en un sistema lineal de primer orden.
+\end{exercise}
+
+\begin{exercise}[\est{1}]\label{ex:C3}
+Convierta $y'' + a\,y' + b\,y = F(t)$, con $a,b$ constantes, en un sistema de primer orden y escríbalo en forma vectorial.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:C4}
+Convierta en un sistema de primer orden: $\;y''' + t^2 y' - e^t y = t.$
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:C5}
+Convierta en un sistema lineal de primer orden:
+\[
+\frac{dx}{dt} - t\,y = \cos t, \qquad \frac{d^2y}{dt^2} - \frac{dx}{dt} + x = e^t.
+\]
+\emph{Sugerencia:} necesitará tres variables.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:C6}
+El proceso también puede invertirse. Dado el sistema
+\[
+x_1' = x_2, \qquad x_2' = x_3, \qquad x_3' = 2x_1 - x_2 + 3x_3 + e^t,
+\]
+\begin{enumerate}[a]
+    \item encuentre la ecuación de tercer orden que satisface $y = x_1$;
+    \item compare su polinomio auxiliar con $\det(\lambda I - A)$, donde $A$ es la matriz del sistema.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:C7}
+Sea la ecuación $y'' + a(t)\,y' + b(t)\,y = 0$, con $a,b$ funciones de $t$.
+\begin{enumerate}[a]
+    \item Pruebe que equivale al sistema $\mathbf{x}' = A\mathbf{x}$, con $A = \begin{pmatrix} 0 & 1\\ -b & -a\end{pmatrix}$ y $x_1 = y$, $x_2 = y'$.
+    \item Si $y_1 = f_1(t)$ e $y_2 = f_2(t)$ resuelven la ecuación, pruebe que $\mathbf{x}_i = (f_i, f_i')^{T}$ resuelven el sistema.
+    \item Pruebe que $W[\mathbf{x}_1,\mathbf{x}_2](t) = W[y_1,y_2](t)$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:C8}
+Dos masas $m_1$ y $m_2$ acopladas por resortes (constantes $k_1$ y $k_2$) satisfacen
+\begin{align*}
+    m_1 x'' &= -k_1 x + k_2 (y - x), \\
+    m_2 y'' &= -k_2 (y - x),
+\end{align*}
+con $x(0) = \alpha_1$, $x'(0) = \alpha_2$, $y(0) = \alpha_3$, $y'(0) = \alpha_4$. Convierta el problema en un problema de valor inicial para un sistema lineal de primer orden de cuatro ecuaciones. Escriba la matriz $A$ y el vector de condiciones iniciales en las nuevas variables.
+\end{exercise}
+
+%% -----------------------------------------------------------
+\subsubsection*{Bloque D. Wronskiano, conjuntos fundamentales y teoría general}
+
+\begin{exercise}[\est{1}]\label{ex:D1}
+Sean $\mathbf{x}_1(t) = \begin{pmatrix}1\\ t\end{pmatrix}$ y $\mathbf{x}_2(t) = \begin{pmatrix}t\\ 1\end{pmatrix}$.
+\begin{enumerate}[a]
+    \item Calcule $W[\mathbf{x}_1,\mathbf{x}_2](t)$.
+    \item ¿Son linealmente independientes en $\mathbb{R}$? Observe que $W(1)=0$; explique por qué esto no contradice su conclusión.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{1}]\label{ex:D2}
+Sean $\mathbf{x}_1,\mathbf{x}_2$ soluciones de $\mathbf{x}' = A(t)\mathbf{x}$. Pruebe que $c_1\mathbf{x}_1 + c_2\mathbf{x}_2$ también es solución para cualesquiera constantes $c_1,c_2$.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:D3}
+Sean
+\[
+\mathbf{x}_1(t) = \begin{pmatrix} e^{4t}\\ 2e^{4t}\end{pmatrix}, \quad \mathbf{x}_2(t) = \begin{pmatrix} 3e^{-t}\\ e^{-t}\end{pmatrix}, \quad A = \begin{pmatrix} -2 & 3\\ -2 & 5\end{pmatrix}.
+\]
+Pruebe que $\mathbf{x}_1,\mathbf{x}_2$ son soluciones de $\mathbf{x}' = A\mathbf{x}$, verifique que forman un conjunto fundamental, escriba la solución general y halle la solución que cumple $\mathbf{x}(0) = (-2,\,1)^T$.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:D4}
+Sea $A(t) = \begin{pmatrix} 1/t & 0\\ 0 & 1\end{pmatrix}$ en el intervalo $I = (0,\infty)$. Verifique que
+\[
+\mathbf{x}_1(t) = \begin{pmatrix} 2t\\ e^t\end{pmatrix}, \qquad \mathbf{x}_2(t) = \begin{pmatrix} 0\\ 3e^t\end{pmatrix}
+\]
+forman un conjunto fundamental de $\mathbf{x}' = A(t)\mathbf{x}$ en $I$ y escriba la solución general. ¿Por qué debe excluirse $t = 0$ del intervalo?
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:D5}
+Sea $\mathbf{x}_p$ una solución de $\mathbf{x}' = A(t)\mathbf{x} + \mathbf{b}(t)$, con $\mathbf{b} \not\equiv \mathbf{0}$.
+\begin{enumerate}[a]
+    \item Pruebe que la diferencia de dos soluciones del sistema no homogéneo es solución del sistema homogéneo.
+    \item Pruebe que el conjunto de soluciones del sistema no homogéneo \emph{no} es un subespacio de $V_n(I)$.
+    \item Concluya que toda solución es de la forma $\mathbf{x}_p + c_1\mathbf{x}_1 + \cdots + c_n\mathbf{x}_n$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:D6}
+Sea $\mathbf{x}$ una solución de $\mathbf{x}' = A(t)\mathbf{x}$ con $A$ continua en $I$. Si $\mathbf{x}(t_0) = \mathbf{0}$ para algún $t_0 \in I$, pruebe que $\mathbf{x}(t) = \mathbf{0}$ para todo $t \in I$.
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:D7}
+Sean $\mathbf{x}_1,\mathbf{x}_2$ soluciones de $\mathbf{x}' = A(t)\mathbf{x}$, con $A(t)$ de $2\times 2$ continua en $I$, y sea $W(t) = W[\mathbf{x}_1,\mathbf{x}_2](t)$.
+\begin{enumerate}[a]
+    \item Pruebe que $W'(t) = \operatorname{tr}A(t)\; W(t)$.
+    \item Concluya que $W \equiv 0$ en $I$ o $W(t) \ne 0$ para todo $t \in I$.
+    \item Compruebe la fórmula con el Ejercicio~\ref{ex:D3}.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:D8}
+Sean $\mathbf{x}_1,\dots,\mathbf{x}_n$ soluciones de $\mathbf{x}' = A(t)\mathbf{x}$ en $I$, con $A$ continua. Pruebe que si $W[\mathbf{x}_1,\dots,\mathbf{x}_n](t_0) = 0$ para algún $t_0 \in I$, entonces las soluciones son linealmente dependientes en todo $I$. \emph{Sugerencia:} use los Ejercicios~\ref{ex:D2} y~\ref{ex:D6}.
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:D9}
+Fije $t_0 \in I$ y considere la aplicación $T$ que a cada solución $\mathbf{x}$ de $\mathbf{x}' = A(t)\mathbf{x}$ le asigna el vector $T(\mathbf{x}) = \mathbf{x}(t_0) \in \mathbb{R}^n$. Pruebe que $T$ es lineal, inyectiva y sobreyectiva, y deduzca que el espacio de soluciones tiene dimensión $n$. \emph{Sugerencia:} use el teorema de existencia y unicidad.
+\end{exercise}
+
+%% -----------------------------------------------------------
+\subsubsection*{Bloque E. Método de valores y vectores propios (matriz no defectuosa)}
+
+\begin{exercise}[\est{1}]\label{ex:E1}
+Determine la solución general de $\mathbf{x}' = A\mathbf{x}$ para $A = \begin{pmatrix} -2 & -7\\ -1 & 4\end{pmatrix}$.
+\end{exercise}
+
+\begin{exercise}[\est{1}]\label{ex:E2}
+Determine la solución general de $\mathbf{x}' = A\mathbf{x}$ para $A = \begin{pmatrix} 1 & 2\\ 3 & 0\end{pmatrix}$.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:E3}
+Resuelva el problema de valor inicial $\mathbf{x}' = A\mathbf{x}$, $\mathbf{x}(0) = (3,\,0)^T$, con $A = \begin{pmatrix} -1 & 4\\ 2 & -3\end{pmatrix}$.
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:E4}
+Determine la solución general de $\mathbf{x}' = A\mathbf{x}$ para
+\[
+A = \begin{pmatrix} 2 & 0 & 0\\ 0 & 5 & -7\\ 0 & 2 & -4\end{pmatrix}.
+\]
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:E5}
+Determine la solución general de $\mathbf{x}' = A\mathbf{x}$ para
+\[
+A = \begin{pmatrix} 2 & 0 & 3\\ 0 & -4 & 0\\ 3 & 0 & 2\end{pmatrix}.
+\]
+¿Qué ventaja ofrece la estructura de $A$ para reducir el trabajo?
+\end{exercise}
+
+\begin{exercise}[\est{2}]\label{ex:E6}
+Sea $\mathbf{v}$ un vector propio de $A$ con valor propio $\lambda$. Pruebe que la solución del problema de valor inicial $\mathbf{x}' = A\mathbf{x}$, $\mathbf{x}(0) = \mathbf{v}$, es $\mathbf{x}(t) = e^{\lambda t}\mathbf{v}$.
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:E7}
+Sea $A = \begin{pmatrix} 2 & 1 & 1\\ 1 & 2 & 1\\ 1 & 1 & 2\end{pmatrix}$.
+\begin{enumerate}[a]
+    \item Halle sus valores propios y la multiplicidad de cada uno.
+    \item Halle un conjunto de tres vectores propios linealmente independientes y escriba la solución general de $\mathbf{x}' = A\mathbf{x}$.
+    \item Resuelva el problema de valor inicial con $\mathbf{x}(0) = (3,0,0)^T$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:E8}
+Sea $A = \begin{pmatrix} -1 & 0 & 0\\ 1 & 5 & -1\\ 1 & 6 & -2\end{pmatrix}$.
+\begin{enumerate}[a]
+    \item Muestre que $\lambda = -1$ tiene multiplicidad $2$ y compruebe que posee dos vectores propios linealmente independientes (¿qué ocurriría si solo existiera uno?).
+    \item Escriba la solución general de $\mathbf{x}' = A\mathbf{x}$.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:E9}
+Resuelva el problema de valor inicial $\mathbf{x}' = A\mathbf{x}$, $\mathbf{x}(0) = (-4,\,4,\,4)^T$, con
+\[
+A = \begin{pmatrix} 2 & -1 & 3\\ 3 & 1 & 0\\ 2 & -1 & 3\end{pmatrix}.
+\]
+\emph{Observación:} uno de los valores propios es nulo; interprete la solución constante que aparece.
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:E10}
+Construya una matriz real $A$ de $2\times 2$ con valores propios $2$ y $-3$ y vectores propios asociados $(1,1)^T$ y $(1,2)^T$ (\emph{sugerencia:} $A = PDP^{-1}$). Escriba la solución general de $\mathbf{x}' = A\mathbf{x}$ y la solución con $\mathbf{x}(0) = (1,0)^T$.
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:E11}
+Sea $A$ una matriz real de $2\times2$, no defectuosa, con valores propios reales $\lambda_1,\lambda_2$.
+\begin{enumerate}[a]
+    \item Pruebe que toda solución de $\mathbf{x}' = A\mathbf{x}$ cumple $\lim_{t\to\infty}\mathbf{x}(t) = \mathbf{0}$ si y solo si $\lambda_1 < 0$ y $\lambda_2 < 0$.
+    \item Pruebe que esto equivale a $\operatorname{tr}A < 0$ y $\det A > 0$.
+\end{enumerate}
+\end{exercise}
+
+%% -----------------------------------------------------------
+\subsubsection*{Bloque F. Modelación}
+
+\begin{exercise}[\est{2}]\label{ex:F1}
+Dos tanques, $A$ y $B$, de $100$ L cada uno, están conectados por dos bombas que intercambian $5$ L/min en cada sentido. Sea $x_1(t)$ y $x_2(t)$ la cantidad (kg) de sal en $A$ y $B$, respectivamente. Inicialmente $A$ contiene $20$ kg de sal y $B$ solo agua pura.
+\begin{enumerate}[a]
+    \item Plantee el sistema de ecuaciones diferenciales para $x_1$ y $x_2$.
+    \item Resuelva el problema de valor inicial.
+    \item Determine $\lim_{t\to\infty}x_1(t)$ y $\lim_{t\to\infty}x_2(t)$ e interprete el resultado.
+\end{enumerate}
+\end{exercise}
+
+\begin{exercise}[\est{3}]\label{ex:F2}
+Repita el ejercicio anterior si el tanque $A$ es de $100$ L, el tanque $B$ es de $50$ L, el intercambio sigue siendo de $5$ L/min en cada sentido, y las condiciones iniciales son $x_1(0) = 30$ kg y $x_2(0) = 0$.
+\begin{enumerate}[a]
+    \item Plantee y resuelva el problema de valor inicial.
+    \item Pruebe que $x_1(t) + x_2(t)$ es constante y calcule las concentraciones límite en cada tanque. ¿Qué observa?
+\end{enumerate}
+\end{exercise}
+
+%% ===========================================================
+\newpage
+\subsection{Respuestas y sugerencias}
+
+\noindent\emph{Las constantes $c_1, c_2, c_3$ son arbitrarias. En los ejercicios de demostración se entrega solo una idea de la prueba.}
+
+\vspace{1ex}
+\subsubsection*{Bloque A}
+\noindent\textbf{\ref{ex:A1}.} (a) Lineal, homogéneo, coeficientes variables. (b) Lineal, no homogéneo, coeficientes variables. (c) No lineal (aparece el producto $x_1x_2$). (d) Lineal, homogéneo, coeficientes constantes.
+
+\noindent\textbf{\ref{ex:A2}.} $x_1' = 4e^{2t} - e^{-t} = 3x_1 - 2x_2$ \; y \; $x_2' = 2e^{2t} - 2e^{-t} = 2x_1 - 2x_2$.
+
+\noindent\textbf{\ref{ex:A3}.} (a) $r^2 = 6 + r$, luego $r = 3$ o $r = -2$. (b) $W = -5e^{t} \neq 0$; $\mathbf{x}(t) = c_1 e^{3t}\begin{pmatrix}1\\3\end{pmatrix} + c_2 e^{-2t}\begin{pmatrix}1\\-2\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:A4}.} (a) $a = 1,\ b = 2$. (b) $\mathbf{x}_h = c_1 e^{3t}\begin{pmatrix}1\\1\end{pmatrix} + c_2 e^{t}\begin{pmatrix}1\\-1\end{pmatrix}$. (c) $\mathbf{x} = \begin{pmatrix}1\\2\end{pmatrix} + \mathbf{x}_h$.
+
+\subsubsection*{Bloque B}
+\noindent\textbf{\ref{ex:B1}.} $x_1 = c_1e^{3t} + c_2e^{-t}$, \; $x_2 = 2c_1e^{3t} - 2c_2e^{-t}$.
+
+\noindent\textbf{\ref{ex:B2}.} $x_1 = 3c_1e^{t} + c_2e^{-t}$, \; $x_2 = c_1e^{t} + c_2e^{-t}$.
+
+\noindent\textbf{\ref{ex:B3}.} $x_1 = c_1e^{2t} + 2c_2e^{3t}$, \; $x_2 = -c_1e^{2t} - c_2e^{3t}$.
+
+\noindent\textbf{\ref{ex:B4}.} $x_1 = e^{2t} + 2e^{-t}$, \; $x_2 = e^{2t} - e^{-t}$.
+
+\noindent\textbf{\ref{ex:B5}.} $x_1 = c_1 + c_2e^{-t} - \tfrac12 t^2 + 3t - 3$, \; $x_2 = 2c_1 + c_2e^{-t} - t^2 + 4t - 3$.
+
+\noindent\textbf{\ref{ex:B6}.} $x_1 = -c_1e^{-t} + c_2e^{3t} + 3e^{4t}$, \; $x_2 = c_1e^{-t} + c_2e^{3t} + 2e^{4t}$.
+
+\noindent\textbf{\ref{ex:B7}.} $x_1 = c_1e^{-2t} + \left(c_2 + 2t - \tfrac14\right)e^{2t}$, \; $x_2 = -3c_1e^{-2t} + \left(c_2 + 2t + \tfrac34\right)e^{2t}$.
+
+\noindent\textbf{\ref{ex:B8}.} (a) Aplique $D - d$ a $(D-a)x_1 - b x_2 = 0$, multiplique la otra ecuación por $b$ y sume. (b) Es exactamente $\lambda^2 - (a+d)\lambda + (ad - bc) = \det(\lambda I - A)$: los exponentes de la solución son los valores propios. (c) El producto de las raíces es $\det A < 0$, así que son reales y de signos opuestos; si $\lambda > 0$ y $\mathbf{v}$ es un vector propio, $e^{\lambda t}\mathbf{v}$ es una solución no acotada.
+
+\subsubsection*{Bloque C}
+\noindent\textbf{\ref{ex:C1}.} (a) $A = \begin{pmatrix}3&-1\\2&5\end{pmatrix}$, $\mathbf{b} = \begin{pmatrix}t\\-e^t\end{pmatrix}$. (b) $A = \begin{pmatrix}0&1&0\\0&0&-1\\1&0&0\end{pmatrix}$, $\mathbf{b} = \mathbf{0}$.
+
+\noindent\textbf{\ref{ex:C2}.} $x_1 = y,\ x_2 = y'$: \; $x_1' = x_2$, \; $x_2' = -x_1 - 2t\,x_2 + \cos t$.
+
+\noindent\textbf{\ref{ex:C3}.} $\mathbf{x}' = \begin{pmatrix}0&1\\-b&-a\end{pmatrix}\mathbf{x} + \begin{pmatrix}0\\F(t)\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:C4}.} $x_1 = y,\ x_2 = y',\ x_3 = y''$: \; $x_1' = x_2$, \; $x_2' = x_3$, \; $x_3' = e^t x_1 - t^2 x_2 + t$.
+
+\noindent\textbf{\ref{ex:C5}.} $x_1 = x,\ x_2 = y,\ x_3 = y'$: \; $x_1' = t\,x_2 + \cos t$, \; $x_2' = x_3$, \; $x_3' = -x_1 + t\,x_2 + \cos t + e^t$.
+
+\noindent\textbf{\ref{ex:C6}.} (a) $y''' - 3y'' + y' - 2y = e^t$. (b) $\det(\lambda I - A) = \lambda^3 - 3\lambda^2 + \lambda - 2$, el mismo polinomio auxiliar.
+
+\noindent\textbf{\ref{ex:C7}.} (a) Con $x_1 = y$, $x_2 = y'$: $x_1' = x_2$, $x_2' = -b x_1 - a x_2$. (b) Derive $\mathbf{x}_i = (f_i, f_i')^T$ y use que $f_i'' = -a f_i' - b f_i$. (c) $W[\mathbf{x}_1,\mathbf{x}_2] = \begin{vmatrix} f_1 & f_2\\ f_1' & f_2'\end{vmatrix} = W[y_1,y_2]$.
+
+\noindent\textbf{\ref{ex:C8}.} Con $x_1 = x,\ x_2 = x',\ x_3 = y,\ x_4 = y'$:
+\[
+x_1' = x_2,\quad x_2' = -\tfrac{k_1 + k_2}{m_1}x_1 + \tfrac{k_2}{m_1}x_3,\quad x_3' = x_4,\quad x_4' = \tfrac{k_2}{m_2}(x_1 - x_3),
+\]
+con $\mathbf{x}(0) = (\alpha_1,\alpha_2,\alpha_3,\alpha_4)^T$.
+
+\subsubsection*{Bloque D}
+\noindent\textbf{\ref{ex:D1}.} (a) $W = 1 - t^2$. (b) Son independientes porque $W(0) = 1 \ne 0$. El teorema asegura independencia si $W$ no se anula en \emph{algún} punto; que se anule en otros puntos no implica dependencia.
+
+\noindent\textbf{\ref{ex:D2}.} $(c_1\mathbf{x}_1 + c_2\mathbf{x}_2)' = c_1A\mathbf{x}_1 + c_2A\mathbf{x}_2 = A(c_1\mathbf{x}_1 + c_2\mathbf{x}_2)$.
+
+\noindent\textbf{\ref{ex:D3}.} $A\mathbf{x}_1 = 4\mathbf{x}_1$ y $A\mathbf{x}_2 = -\mathbf{x}_2$; $W = -5e^{3t} \ne 0$. $\mathbf{x} = c_1\mathbf{x}_1 + c_2\mathbf{x}_2$. Con la condición inicial, $c_1 = 1$, $c_2 = -1$: $\mathbf{x}(t) = \begin{pmatrix} e^{4t} - 3e^{-t}\\ 2e^{4t} - e^{-t}\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:D4}.} $\mathbf{x}_1' = (2, e^t)^T = A\mathbf{x}_1$ y $\mathbf{x}_2' = (0, 3e^t)^T = A\mathbf{x}_2$; $W = 6te^t \ne 0$ para $t > 0$. $\mathbf{x} = \begin{pmatrix}2c_1t\\ (c_1 + 3c_2)e^t\end{pmatrix}$. En $t = 0$ la entrada $1/t$ de $A$ no es continua, así que no se cumplen las hipótesis del teorema de existencia y unicidad.
+
+\noindent\textbf{\ref{ex:D5}.} (a) Si $\mathbf{x}, \mathbf{y}$ son soluciones, $(\mathbf{x}-\mathbf{y})' = A(\mathbf{x}-\mathbf{y})$. (b) $\mathbf{0}$ no es solución, pues $\mathbf{b} \not\equiv \mathbf{0}$. (c) Aplique (a) con $\mathbf{y} = \mathbf{x}_p$ y exprese $\mathbf{x} - \mathbf{x}_p$ en una base del espacio homogéneo.
+
+\noindent\textbf{\ref{ex:D6}.} $\mathbf{x}$ y $\mathbf{0}$ resuelven el mismo problema de valor inicial con dato $\mathbf{0}$ en $t_0$; por unicidad coinciden.
+
+\noindent\textbf{\ref{ex:D7}.} (a) Con $\mathbf{x}_1 = (a,b)^T$, $\mathbf{x}_2 = (c,d)^T$ y $W = ad - bc$, derive y sustituya $\mathbf{x}_i' = A\mathbf{x}_i$: los términos cruzados se cancelan y queda $(a_{11} + a_{22})W$. (b) Entonces $W(t) = W(t_0)\,e^{\int_{t_0}^{t}\operatorname{tr}A}$. (c) $\operatorname{tr}A = 3$ y $W = -5e^{3t}$, que cumple $W' = 3W$.
+
+\noindent\textbf{\ref{ex:D8}.} Si $W(t_0) = 0$, existen $c_i$ no todos nulos con $\sum c_i\mathbf{x}_i(t_0) = \mathbf{0}$. Por el Ejercicio~\ref{ex:D2}, $\sum c_i\mathbf{x}_i$ es solución y, por el Ejercicio~\ref{ex:D6}, es idénticamente nula en $I$.
+
+\noindent\textbf{\ref{ex:D9}.} Linealidad: evaluar en $t_0$ es lineal. Inyectividad: es el Ejercicio~\ref{ex:D6}. Sobreyectividad: para cada $\mathbf{x}_0 \in \mathbb{R}^n$, el teorema de existencia da una solución con $\mathbf{x}(t_0) = \mathbf{x}_0$. Así, $T$ es un isomorfismo y la dimensión es $n$.
+
+\subsubsection*{Bloque E}
+\noindent\textbf{\ref{ex:E1}.} $\lambda = 5, -3$: \; $\mathbf{x} = c_1e^{5t}\begin{pmatrix}1\\-1\end{pmatrix} + c_2e^{-3t}\begin{pmatrix}7\\1\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:E2}.} $\lambda = 3, -2$: \; $\mathbf{x} = c_1e^{3t}\begin{pmatrix}1\\1\end{pmatrix} + c_2e^{-2t}\begin{pmatrix}2\\-3\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:E3}.} $\lambda = 1, -5$: \; $\mathbf{x}(t) = e^{t}\begin{pmatrix}2\\1\end{pmatrix} + e^{-5t}\begin{pmatrix}1\\-1\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:E4}.} $\lambda = 2, 3, -2$: \; $\mathbf{x} = c_1e^{2t}\begin{pmatrix}1\\0\\0\end{pmatrix} + c_2e^{3t}\begin{pmatrix}0\\7\\2\end{pmatrix} + c_3e^{-2t}\begin{pmatrix}0\\1\\1\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:E5}.} $\lambda = 5, -1, -4$: \; $\mathbf{x} = c_1e^{5t}\begin{pmatrix}1\\0\\1\end{pmatrix} + c_2e^{-t}\begin{pmatrix}1\\0\\-1\end{pmatrix} + c_3e^{-4t}\begin{pmatrix}0\\1\\0\end{pmatrix}$. La variable $x_2$ está desacoplada: basta resolver un bloque de $2\times 2$ y una ecuación escalar.
+
+\noindent\textbf{\ref{ex:E6}.} Por el teorema de la sección, $e^{\lambda t}\mathbf{v}$ es solución y vale $\mathbf{v}$ en $t = 0$; la unicidad concluye.
+
+\noindent\textbf{\ref{ex:E7}.} (a) $\lambda = 4$ (multiplicidad $1$) y $\lambda = 1$ (multiplicidad $2$). (b) $\mathbf{x} = c_1e^{4t}\begin{pmatrix}1\\1\\1\end{pmatrix} + e^{t}\left[c_2\begin{pmatrix}1\\-1\\0\end{pmatrix} + c_3\begin{pmatrix}1\\0\\-1\end{pmatrix}\right]$. (c) $c_1 = c_2 = c_3 = 1$: \; $\mathbf{x}(t) = \begin{pmatrix} e^{4t} + 2e^{t}\\ e^{4t} - e^{t}\\ e^{4t} - e^{t}\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:E8}.} (a) $\lambda = -1$ (doble) y $\lambda = 4$. $A + I$ tiene rango $1$, así que el espacio propio de $\lambda=-1$ tiene dimensión $2$; si fuera $1$, no habría tres vectores propios independientes y el teorema no se aplicaría (matriz defectuosa). (b) $\mathbf{x} = c_1e^{4t}\begin{pmatrix}0\\1\\1\end{pmatrix} + e^{-t}\left[c_2\begin{pmatrix}1\\0\\1\end{pmatrix} + c_3\begin{pmatrix}-6\\1\\0\end{pmatrix}\right]$.
+
+\noindent\textbf{\ref{ex:E9}.} $\lambda = 0, 2, 4$: \; $\mathbf{x}(t) = \begin{pmatrix}-3\\9\\5\end{pmatrix} - 2e^{2t}\begin{pmatrix}1\\3\\1\end{pmatrix} + e^{4t}\begin{pmatrix}1\\1\\1\end{pmatrix}$. El término constante corresponde a $\lambda = 0$: es un vector del núcleo de $A$ (solución de equilibrio).
+
+\noindent\textbf{\ref{ex:E10}.} $A = \begin{pmatrix}7&-5\\10&-8\end{pmatrix}$. Solución general: $\mathbf{x} = c_1e^{2t}\begin{pmatrix}1\\1\end{pmatrix} + c_2e^{-3t}\begin{pmatrix}1\\2\end{pmatrix}$. Con $\mathbf{x}(0) = (1,0)^T$: $c_1 = 2$, $c_2 = -1$, es decir $\mathbf{x}(t) = \begin{pmatrix}2e^{2t} - e^{-3t}\\ 2e^{2t} - 2e^{-3t}\end{pmatrix}$.
+
+\noindent\textbf{\ref{ex:E11}.} (a) Escriba $\mathbf{x} = c_1e^{\lambda_1t}\mathbf{v}_1 + c_2e^{\lambda_2t}\mathbf{v}_2$. Si ambos $\lambda_i < 0$, cada término tiende a $\mathbf{0}$. Recíprocamente, la solución $e^{\lambda_it}\mathbf{v}_i$ tiende a $\mathbf{0}$ solo si $\lambda_i<0$. (b) Con raíces reales, $\lambda_1 + \lambda_2 < 0$ y $\lambda_1\lambda_2 > 0$ equivalen a que ambas sean negativas.
+
+\subsubsection*{Bloque F}
+\noindent\textbf{\ref{ex:F1}.} (a) $x_1' = -0{,}05\,x_1 + 0{,}05\,x_2$, \; $x_2' = 0{,}05\,x_1 - 0{,}05\,x_2$. (b) $x_1(t) = 10 + 10e^{-0{,}1t}$, \; $x_2(t) = 10 - 10e^{-0{,}1t}$. (c) Ambos límites valen $10$ kg: la sal se reparte por igual entre los dos tanques, de igual volumen.
+
+\noindent\textbf{\ref{ex:F2}.} (a) $x_1' = -0{,}05\,x_1 + 0{,}1\,x_2$, \; $x_2' = 0{,}05\,x_1 - 0{,}1\,x_2$, con $x_1(t) = 20 + 10e^{-0{,}15t}$ y $x_2(t) = 10 - 10e^{-0{,}15t}$. (b) $x_1 + x_2 \equiv 30$ kg (su derivada es nula). Los límites son $20$ kg en $A$ y $10$ kg en $B$, es decir, la misma concentración, $0{,}2$ kg/L, en ambos tanques.
