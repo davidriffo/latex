@@ -1,22 +1,36 @@
 # Compila el apunte con LaTeX cada vez que subes cambios a GitHub.
-# Guardar en el repositorio como:  .github/workflows/compilar.yml
+# Guardar en el repositorio como: .github/workflows/compilar.yml
 name: Compilar apunte
 
 on:
-  push:                 # al subir cambios
-  workflow_dispatch:    # y a mano, con el boton "Run workflow"
+  push:
+  workflow_dispatch:
 
 jobs:
   pdf:
     runs-on: ubuntu-latest
     steps:
-      - name: Descargar el repositorio
+      - name: Descargar el repositorio (forzar main)
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Debug: contenido del repositorio antes de compilar
+        run: |
+          echo "PWD: $(pwd)"
+          echo "Listando archivos en la raíz:"
+          ls -la
+          echo "Buscando Apunte.tex (hasta 4 niveles):"
+          find . -maxdepth 4 -type f -iname 'Apunte.tex' -print || true
+          echo "HEAD and branch info:"
+          git rev-parse --abbrev-ref HEAD || true
+          git rev-parse HEAD || true
 
       - name: Compilar con pdfLaTeX (TeX Live completo)
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: Apunte.tex     # <-- CAMBIA esto por el nombre de tu archivo maestro
+          root_file: Apunte.tex
           work_in_root_file_dir: true
 
       - name: Guardar el PDF y el registro
