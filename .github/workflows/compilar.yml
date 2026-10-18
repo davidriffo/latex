@@ -1,40 +1,78 @@
-# Compila el apunte con LaTeX cada vez que subes cambios a GitHub.
-# Guardar en el repositorio como: .github/workflows/compilar.yml
-name: Compilar apunte
+# Compila cada proyecto (carpeta de la raiz) y deja un PDF por proyecto.
+name: Compilar apuntes
 
 on:
   push:
   workflow_dispatch:
 
 jobs:
-  pdf:
+  detectar:
     runs-on: ubuntu-latest
+    outputs:
+      matriz: ${{ steps.m.outputs.matriz }}
+      hay: ${{ steps.m.outputs.hay }}
     steps:
-      - name: Descargar el repositorio
-        uses: actions/checkout@v4
-
-      - name: "Debug: contenido del repositorio antes de compilar"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: m
+        env:
+          EVENTO: ${{ github.event_name }}
+          ANTES: ${{ github.event.before }}
         run: |
-          echo "PWD: $(pwd)"
-          echo "Listando archivos en la raíz:"
-          ls -la
-          echo "Buscando Apunte.tex (hasta 4 niveles):"
-          find . -maxdepth 4 -type f -iname 'Apunte.tex' -print || true
-          echo "HEAD and branch info:"
-          git rev-parse --abbrev-ref HEAD || true
-          git rev-parse HEAD || true
+          python3 - <<'PY'
+          import os, json, re, subprocess
+          todo = True
+          cambiadas = set()
+          antes = os.environ.get("ANTES", "")
+          if os.environ["EVENTO"] == "push" and antes and set(antes) != {"0"}:
+              r = subprocess.run(["git", "diff", "--name-only", antes, "HEAD"],
+                                 capture_output=True, text=True)
+              if r.returncode == 0:
+                  todo = False
+                  for ruta in r.stdout.splitlines():
+                      if "/" not in ruta or ruta.startswith(".github/"):
+                          todo = True   # cambio en la raiz o en el workflow: compilar todo
+                      else:
+                          cambiadas.add(ruta.split("/")[0])
+          incluir = []
+          for d in sorted(os.listdir(".")):
+              if d.startswith(".") or not os.path.isdir(d):
+                  continue
+              if not todo and d not in cambiadas:
+                  continue
+              for f in sorted(os.listdir(d)):
+                  if f.endswith(".tex"):
+                      txt = open(os.path.join(d, f), encoding="utf-8", errors="ignore").read()
+                      if re.search(r"^\s*\\documentclass", txt, re.M):
+                          incluir.append({"dir": d, "root": f, "nombre": d + "-" + f[:-4]})
+          with open(os.environ["GITHUB_OUTPUT"], "a") as o:
+              o.write("matriz=" + json.dumps({"include": incluir}) + "\n")
+              o.write("hay=" + ("true" if incluir else "false") + "\n")
+          print(incluir)
+          PY
 
-      - name: Compilar con pdfLaTeX (TeX Live completo)
+  pdf:
+    needs: detectar
+    if: needs.detectar.outputs.hay == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detectar.outputs.matriz) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compilar ${{ matrix.dir }}/${{ matrix.root }} (TeX Live completo)
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: Apunte.tex
-          work_in_root_file_dir: true
+          root_file: ${{ matrix.root }}
+          working_directory: ${{ matrix.dir }}
 
       - name: Guardar el PDF y el registro
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: apunte-pdf
+          name: ${{ matrix.nombre }}
           path: |
-            *.pdf
-            *.log
+            ${{ matrix.dir }}/*.pdf
+            ${{ matrix.dir }}/*.log
