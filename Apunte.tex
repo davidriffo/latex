@@ -1,0 +1,360 @@
+%% ============================================================================
+%% Apunte_v2.tex -- documento maestro del apunte de Ecuaciones Diferenciales.
+%% Version 2 (octubre 2026). Reemplaza a "Apunte .tex".
+%%
+%% Que cambia respecto de la version anterior
+%%   - Interruptores por capitulo (\capOrdenUnotrue, etc.) en lugar de comentar
+%%     y descomentar bloques. La numeracion es fija: capitulos 1, 2 y 3, aunque
+%%     los anteriores esten apagados.
+%%   - Capitulo "Sistemas lineales" completo: sistemas_1_v2 + sistemas_defectuosos
+%%     + practica_sistemas_1 dentro de una misma \section. Antes, los \subsection
+%%     de sistemas_defectuosos quedaban sin \section (numeracion "x.0.y") y sus
+%%     \ref a sistemas_1_v2 salian como "??".
+%%   - Correccion de \ref en cajas numeradas movida al preambulo (vale para todos
+%%     los capitulos, no solo desde sistemas_defectuosos).
+%%   - Portada con la paleta de la clase (colores bbe*) en vez de azules propios;
+%%     logo con ruta flexible; version y semestre como datos en un solo lugar.
+%%   - Guia de lectura con la leyenda de cajas y de niveles de ejercicio.
+%%   - Indice en numeracion romana (\frontmatter); paginas arabigas desde el
+%%     capitulo 1 (\mainmatter).
+%% ============================================================================
+
+%% Clase: se usa la primera que exista en el proyecto (bb2_v2, bbe2 o bb2).
+\IfFileExists{bb2_v2.cls}%
+  {\documentclass[12pt,a4paper,blue]{bb2_v2}}%
+  {\IfFileExists{bbe2.cls}%
+    {\documentclass[12pt,a4paper,blue]{bbe2}}%
+    {\documentclass[12pt,a4paper,blue]{bb2}}}
+
+%% Si se carga una clase anterior a bb2_v2, este color no existe: se define aqui.
+\providecolor{bbeamberdark}{HTML}{8D6115}
+
+%% Solo "spanish": la opcion es-nodecimaldot no existe en versiones antiguas de
+%% babel y detiene la compilacion. \decimalpoint (si existe) deja el punto decimal.
+\usepackage[spanish]{babel}
+\ifdefined\decimalpoint\decimalpoint\fi
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{mathrsfs}
+\usepackage[many]{tcolorbox}
+\usepackage{graphicx}
+
+% --- Graficos con TikZ y PGFPlots ---
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% --- Librerias de TikZ (la clase ya carga la mayoria; repetirlas no molesta) ---
+\usetikzlibrary{
+    patterns,                  % patron de la pared (north east lines)
+    decorations.pathmorphing,  % resorte: decoration={coil,...}
+    decorations.markings,      % marcas en las flechas de los retratos de fase
+    arrows.meta,               % flechas modernas
+    positioning,               % nodos relativos
+    calc                       % calculos de coordenadas
+}
+
+% --- Subfiguras (retratos de fase de sistemas_defectuosos) ---
+\usepackage{subcaption}
+
+%% ----------------------------------------------------------------------------
+%% Datos del apunte: se cambian aqui y se actualizan portada, PDF y pie de pagina
+%% ----------------------------------------------------------------------------
+\newcommand{\apunteautor}{Jose David Torres-Riffo}
+\newcommand{\apuntesemestre}{2026-II}
+\newcommand{\apunteversion}{Versi\'on 2 \textbullet\ octubre de 2026}
+\providecommand{\cursoactual}{}
+\renewcommand{\cursoactual}{Apuntes EDO \textbullet\ \apuntesemestre}
+
+\hypersetup{
+  pdftitle={Apuntes de Ecuaciones Diferenciales},
+  pdfauthor={\apunteautor},
+  pdfsubject={Ecuaciones diferenciales y problemas aplicados}
+}
+
+%% ----------------------------------------------------------------------------
+%% Colores: la portada usa los de la clase, para que coincida con capitulos y cajas
+%% ----------------------------------------------------------------------------
+\colorlet{primary}{bbe}
+\colorlet{softblue}{bbe!8!white}
+
+\newcommand{\deri}{\dfrac{dy}{dx}}
+
+%% Niveles de ejercicio (identico a practica_sistemas_1.tex; \providecommand
+%% evita el choque con la definicion de ese archivo).
+\providecommand{\est}[1]{\textcolor{bbeamberdark}{\ifcase#1\or\ding{72}\or\ding{72}\ding{72}\or\ding{72}\ding{72}\ding{72}\fi}}
+
+%% --- Correccion de \ref a cajas numeradas ----------------------------------
+%% Con 'auto counter' de tcolorbox, \label dentro de Ejemplo/Teorema/Definicion
+%% devuelve el numero de la subseccion en vez del de la caja. Este bloque fija
+%% \@currentlabel dentro de cada caja. sistemas_defectuosos.tex trae el mismo
+%% bloque con la misma guarda, asi que no se duplica (aqui prevalece esta
+%% version). Las cajas definidas con \newtcolorbox sin contador dejan
+%% \thetcbcounter vacio; una caja anonima (\begin{tcolorbox}, como la de la
+%% portada) lo deja sin definir, por eso se comprueba \ifdefined primero.
+\makeatletter
+\ifdefined\bbereffixdone\else
+  \def\bbereffixdone{}
+  \tcbset{before upper={%
+    \ifdefined\thetcbcounter
+      \ifx\thetcbcounter\@empty\else
+        \protected@edef\@currentlabel{\thetcbcounter}%
+        \ifdefined\phantomsection\phantomsection\fi
+      \fi
+    \fi}}
+\fi
+\makeatother
+
+%% Paginas en blanco (las que inserta \cleardoublepage antes de cada capitulo):
+%% sin pie de pagina ni numero, como en un libro impreso.
+\makeatletter
+\def\cleardoublepage{\clearpage
+  \if@twoside\ifodd\c@page\else
+    \hbox{}\thispagestyle{empty}\newpage
+    \if@twocolumn\hbox{}\thispagestyle{empty}\newpage\fi
+  \fi\fi}
+\makeatother
+
+%% ----------------------------------------------------------------------------
+%% Leyenda de cajas: una pastilla del color de la caja con su nombre
+%% ----------------------------------------------------------------------------
+\newcommand{\pastilla}[2]{%
+  \tikz[baseline=(pastilla.base)]\node[draw=#1,fill=#1!10!white,text=#1!70!black,%
+    inner xsep=5pt,inner ysep=2.5pt,line width=.8pt,font=\sffamily\bfseries\small](pastilla){#2};}
+
+%% ----------------------------------------------------------------------------
+%% Interruptores de capitulos: true = incluir, false = omitir
+%% ----------------------------------------------------------------------------
+\newif\ifcapOrdenUno      \capOrdenUnofalse      % requiere los .tex de primer orden
+\newif\ifcapOrdenDos      \capOrdenDosfalse      % requiere la carpeta Capitulo_2/
+\newif\ifcapSistemas      \capSistemastrue
+\newif\ifincluirpractica  \incluirpracticatrue   % practica y respuestas de sistemas
+
+\setcounter{tocdepth}{2}
+
+%% Logo: se busca junto al documento y, si no esta, en Capitulo_2/
+\newcommand{\logoapunte}[1]{%
+  \IfFileExists{logo_edo.png}%
+    {\includegraphics[width=#1]{logo_edo.png}}%
+    {\IfFileExists{Capitulo_2/logo_edo.png}%
+      {\includegraphics[width=#1]{Capitulo_2/logo_edo.png}}%
+      {}}}
+
+%% \entrada{archivo}: incluye el archivo desde Capitulo_3/ o, si no esta ahi,
+%% desde la carpeta principal. Si no existe, avisa en el PDF en vez de detener
+%% la compilacion. Usar minusculas/mayusculas EXACTAS (TeXPage distingue).
+\newcommand{\entrada}[1]{%
+  \IfFileExists{Capitulo_3/#1}{\input{Capitulo_3/#1}}%
+  {\IfFileExists{#1}{\input{#1}}%
+    {\PackageWarning{apunte}{No se encuentra #1.tex}%
+     \par\noindent\textbf{[Falta el archivo #1.tex]}\par}}}
+
+\begin{document}
+
+\frontmatter
+%% En el preliminar los capitulos sin numero (guia e indice) siguen sin forzar
+%% pagina derecha: portada | guia, indice | ..., sin paginas en blanco de por medio.
+\makeatletter\@openrightfalse\makeatother
+
+% ==================================================
+% PORTADA
+% ==================================================
+\begin{titlepage}
+\centering
+\sffamily
+
+\vspace*{0.3cm}
+
+% --- Linea superior decorativa ---
+{\color{primary}\rule{0.6\textwidth}{2pt}}\par
+\vspace{0.3cm}
+{\color{primary!60}\rule{0.4\textwidth}{1pt}}\par
+
+\vspace{1.2cm}
+
+{\color{primary}\fontsize{30}{36}\selectfont\bfseries Apuntes de\par Ecuaciones Diferenciales\par}
+
+\vspace{0.4cm}
+
+{\color{primary!80}\Large Ecuaciones diferenciales y problemas aplicados\par}
+
+\vspace{1cm}
+
+{\color{primary}\rule{0.7\textwidth}{1.2pt}}\par
+
+\vspace{0.8cm}
+
+\logoapunte{0.45\textwidth}\par
+
+\vspace{1cm}
+
+% --- Cuadro de informacion ---
+\begin{tcolorbox}[
+    enhanced,
+    rounded corners,
+    arc=8pt,
+    no shadow,
+    colback=softblue!70,
+    colframe=primary!40,
+    boxrule=1pt,
+    width=0.7\textwidth,
+    halign=center,
+    before skip=0pt,
+    after skip=0pt
+]
+{\color{primary}\large\bfseries \apunteautor}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+
+{\color{primary}\large \apuntesemestre\par}
+\vspace{0.1cm}
+{\color{primary!70}\small \apunteversion\par}
+
+\vfill
+
+% --- Linea inferior decorativa ---
+{\color{primary!60}\rule{0.4\textwidth}{1pt}}\par
+\vspace{0.3cm}
+{\color{primary}\rule{0.6\textwidth}{2pt}}\par
+
+\end{titlepage}
+
+% ==================================================
+% GUIA DE LECTURA
+% ==================================================
+\chapter*{C\'omo usar este apunte}
+
+Este apunte est\'a pensado para trabajarse con l\'apiz en mano. Los temas se desarrollan con ejemplos resueltos paso a paso y se acompa\~nan de secciones de problemas. Antes de leer la soluci\'on de un ejemplo, intenta resolverlo por tu cuenta; despu\'es compara tu camino con el del texto.
+
+\subsubsection*{Las cajas}
+
+Cada tipo de caja tiene un color y un nombre. El nombre siempre est\'a escrito, de modo que el apunte se entiende igual en una impresi\'on en blanco y negro.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.9}
+\begin{tabular}{@{}r p{.64\linewidth}@{}}
+\pastilla{bbeblue}{Definici\'on} & Fija el significado de un t\'ermino o de una notaci\'on. \\
+\pastilla{bbeblue}{Teorema}      & Resultado que se usa para resolver; su enunciado va en cursiva. \\
+\pastilla{bbegreen}{Ejemplo}     & Problema resuelto paso a paso. \\
+\pastilla{bbered}{Ejercicio}     & Problema para que lo resuelvas t\'u. \\
+\pastilla{bbeamber}{Observaci\'on} & Comentario que conecta ideas o advierte un detalle. \\
+\pastilla{bbeamber}{Obs.}        & Nota breve: una verificaci\'on o una elecci\'on alternativa. \\
+\end{tabular}
+\end{center}
+
+\subsubsection*{Los niveles de los ejercicios}
+
+Cada ejercicio de las secciones de pr\'actica indica su dificultad con estrellas. Cuando una pr\'actica trae respuestas, est\'an al final de la misma secci\'on: intenta cada ejercicio antes de consultarlas.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{@{}l l p{.55\linewidth}@{}}
+\est{1} & \textbf{Directo}     & Aplicaci\'on inmediata de una definici\'on, un teorema o un procedimiento visto. \\
+\est{2} & \textbf{Intermedio}  & Combina varios pasos o exige elegir el m\'etodo y justificar. \\
+\est{3} & \textbf{Avanzado}    & Demostraciones, casos con estructura especial o problemas de modelaci\'on. \\
+\end{tabular}
+\end{center}
+
+\tableofcontents
+
+%% Desde aqui, cada capitulo vuelve a abrir en pagina derecha.
+\makeatletter\@openrighttrue\makeatother
+\mainmatter
+
+% ==================================================
+% CAPITULO 1 -- Ecuaciones de primer orden
+% ==================================================
+%\ifcapOrdenUno
+%\setcounter{chapter}{0}
+%\chapter{Ecuaciones de primer orden}
+
+%\section{El origen de las ecuaciones diferenciales}
+%\begin{definition}
+%    Primeros acercamientos
+%\end{definition}
+
+%\section{Terminolog\'ia e ideas b\'asicas}
+%\input{basicos}
+
+%\section{Ecuaciones separables}
+%\input{separable}
+%\newpage
+
+%\section{Ecuaciones lineales de primer orden}
+%\input{lineales}
+%\newpage
+
+%\section{Cambio de variables}
+%\input{cambio_variables}
+%\newpage
+
+%\section{Ecuaciones Exactas}
+%\input{exactas}
+%\newpage
+
+%\section{Aplicaciones}
+%\input{aplicaciones}
+%\newpage
+
+%\section{Otros acercamientos, cualitativos}
+%\input{cualitativo}
+%\newpage
+
+%\section{Otros acercamientos, num\'ericos}
+%\input{numerico}
+%\newpage
+
+%\section{Problemas}
+%\input{EDO 2025/evaluaciones/ejercicios}
+%\newpage
+
+%\section{Problemas 2}
+%\input{EDO 2025/Ejercicios_2}
+%\fi
+
+% ==================================================
+% CAPITULO 2 -- Ecuaciones de segundo orden
+% ==================================================
+%\ifcapOrdenDos
+%\setcounter{chapter}{1}
+%\chapter{Ecuaciones de segundo orden}
+
+%\section{Ecuaciones homog\'eneas}
+%\input{Capitulo_2/orden_2_general_V2}
+%\newpage
+
+%\section{Coeficientes indeterminados}
+%\input{Capitulo_2/orden_2_coeficientes_V2}
+%\newpage
+
+%\section{Variaci\'on de par\'ametros}
+%\input{Capitulo_2/orden_2_variacion_V2}
+%\newpage
+
+%\section{F\'ormula de Abel, reducci\'on de orden}
+%\input{Capitulo_2/orden_2_reduccion_V2}
+%\newpage
+
+%\section{Ecuaci\'on de Cauchy-Euler}
+%\input{Capitulo_2/Cauchy_euler_V2}
+%\newpage
+
+%\section{Pr\'actica}
+%\input{Capitulo_2/orden_2_problemas_V2}
+%\fi
+
+% ==================================================
+% CAPITULO 3 -- Sistemas lineales
+% ==================================================
+\ifcapSistemas
+\setcounter{chapter}{2}
+\chapter{Sistemas lineales}
+
+\section{Sistemas de primer orden}
+\input{sistemas_1_v2}
+%\input{Capitulo_3/Sistemas_defectuosos}
+
+\fi
+
+\end{document}

@@ -1,0 +1,714 @@
+%% sistemas_2.tex -- version con correcciones de forma, tablas y graficos.
+%% Requiere en el preambulo del documento principal:
+%%   \usepackage{pgfplots}  \pgfplotsset{compat=1.18}
+%% y el paquete caption/float que ya carga bb2.cls.
+
+A continuaci\'on nos enfocaremos en la resoluci\'on de \textbf{sistemas lineales de ecuaciones}. Para ello, en primer lugar formularemos una estructura apropiada y luego desarrollaremos los respectivos m\'etodos de resoluci\'on.
+
+\begin{definition}
+Un sistema de ecuaciones diferenciales de la forma
+\begin{equation}\label{eq:sistema-general}
+\begin{aligned}
+\frac{dx_1}{dt} &= a_{11}(t)x_1(t) + a_{12}(t)x_2(t) + \dots + a_{1n}(t)x_n(t) + b_1(t), \\
+\frac{dx_2}{dt} &= a_{21}(t)x_1(t) + a_{22}(t)x_2(t) + \dots + a_{2n}(t)x_n(t) + b_2(t), \\
+&\;\;\vdots \\
+\frac{dx_n}{dt} &= a_{n1}(t)x_1(t) + a_{n2}(t)x_2(t) + \dots + a_{nn}(t)x_n(t) + b_n(t),
+\end{aligned}
+\end{equation}
+donde las $a_{ij}(t)$ y $b_i(t)$ son funciones definidas en un intervalo $I$, se denomina \textbf{sistema lineal de primer orden}. Si $b_1 = b_2 = \dots = b_n = 0$, entonces el sistema se denomina \textbf{homog\'eneo}. De lo contrario, se denomina \textbf{no homog\'eneo}.
+\end{definition}
+
+\begin{remark}
+Es importante notar que en la estructura de un sistema lineal lo fundamental es que las derivadas que aparecen son a lo m\'as de grado $1$, y que los t\'erminos de la derecha no involucran derivadas y son lineales en las variables $x_1,x_2,\dots,x_n$.
+\end{remark}
+
+La siguiente tabla resume las clasificaciones que usaremos a lo largo del cap\'itulo.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{>{\bfseries}l l l}
+\rowcolor{bbe!15}
+\textcolor{bbe}{Tipo} & \textcolor{bbe}{Condici\'on} & \textcolor{bbe}{Ejemplo} \\
+Homog\'eneo & $b_i(t)=0$ para todo $i$ & $x_1'=x_1+2x_2,\; x_2'=2x_1-2x_2$ \\
+No homog\'eneo & alg\'un $b_i(t)\neq 0$ & $x_1'=x_1+\sin t,\; x_2'=x_2$ \\
+Coeficientes constantes & $a_{ij}(t)=a_{ij}\in\mathbb R$ & $x_1'=2x_1+x_2,\; x_2'=-3x_1-2x_2$ \\
+Coeficientes variables & alg\'un $a_{ij}(t)$ no constante & $x_1'=e^tx_1+t^2x_2,\; x_2'=tx_1+3x_2$ \\
+\end{tabular}
+\caption{Clasificaci\'on de sistemas lineales de primer orden.}
+\end{table}
+
+\begin{example}
+Un ejemplo de un sistema lineal no homog\'eneo de primer orden es
+\[
+\begin{cases}
+x_1' = e^t x_1 + t^2 x_2 + \sin t, \\
+x_2' = t x_1 + 3x_2 - \cos t.
+\end{cases}
+\]
+El sistema homog\'eneo asociado es
+\[
+\begin{cases}
+x_1' = e^t x_1 + t^2 x_2, \\
+x_2' = t x_1 + 3x_2.
+\end{cases}
+\]
+\end{example}
+
+\begin{definition}
+Por una soluci\'on de un sistema de $n$ ecuaciones en un intervalo $I$ nos referimos a una $n$-tupla ordenada de funciones $x_1(t),x_2(t),\dots,x_n(t)$ que satisface el sistema en cuesti\'on.
+\end{definition}
+
+\begin{example}
+Verifique que
+\[
+x_1(t) = -2e^{5t} + 4e^{-t}, \qquad x_2(t) = e^{5t} + e^{-t}
+\]
+es una soluci\'on del sistema lineal de ecuaciones diferenciales
+\[
+\begin{cases}
+x_1' = x_1 - 8x_2, \\
+x_2' = -x_1 + 3x_2,
+\end{cases}
+\]
+en $(-\infty, \infty)$.
+
+\textbf{Soluci\'on:} A partir del sistema se sigue que el lado izquierdo de la primera ecuaci\'on es
+\[
+x_1'(t) = -10e^{5t} - 4e^{-t},
+\]
+mientras que el lado derecho es
+\[
+x_1(t) - 8x_2(t) = (-2e^{5t} + 4e^{-t}) - 8(e^{5t} + e^{-t}) = -10e^{5t} - 4e^{-t}.
+\]
+Por consiguiente, $x_1' = x_1 - 8x_2$ se satisface para todo $t \in (-\infty, \infty)$. De manera similar se puede demostrar que la segunda ecuaci\'on tambi\'en se satisface. Se concluye que $x_1$ y $x_2$ definen una soluci\'on del sistema dado en $(-\infty, \infty)$.
+\end{example}
+
+Cuando el sistema posee coeficientes constantes existe una manera bastante simple de proceder: consiste en transformar el sistema en una ecuaci\'on de coeficientes constantes de orden igual a la cantidad de ecuaciones del sistema. \\
+
+Por simplicidad consideraremos solo $n = 2$. Bajo el supuesto de que todos los $a_{ij}$ son constantes, el sistema \eqref{eq:sistema-general} se reduce a
+\[
+\begin{cases}
+x_1' = a_{11}x_1 + a_{12}x_2 + b_1(t), \\
+x_2' = a_{21}x_1 + a_{22}x_2 + b_2(t).
+\end{cases}
+\]
+Este sistema puede escribirse en la forma equivalente
+\begin{align}
+(D - a_{11})x_1 - a_{12}x_2 &= b_1(t), \label{eq:op1}\\
+- a_{21}x_1 + (D - a_{22})x_2 &= b_2(t), \label{eq:op2}
+\end{align}
+donde $D$ es el operador diferencial $d/dt$. La idea detr\'as de la t\'ecnica es que ahora podemos eliminar $x_2$: operamos sobre \eqref{eq:op1} con $D - a_{22}$, multiplicamos \eqref{eq:op2} por $a_{12}$ y sumamos las ecuaciones resultantes. Se obtiene una ecuaci\'on diferencial lineal de segundo orden con coeficientes constantes solo para $x_1$, que puede resolverse con las t\'ecnicas del cap\'itulo anterior. Sustituyendo la expresi\'on obtenida para $x_1$ en \eqref{eq:op1} se obtiene $x_2$. El m\'etodo se resume en la siguiente tabla y se ilustra luego con un ejemplo.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{>{\bfseries\color{bbe}}c p{.38\linewidth} p{.38\linewidth}}
+\rowcolor{bbe!15}
+\textcolor{bbe}{Paso} & \textcolor{bbe}{Acci\'on} & \textcolor{bbe}{En el ejemplo siguiente} \\
+1 & Escribir el sistema con el operador $D=d/dt$. & $(D-1)x_1-2x_2=0$, \; $-2x_1+(D+2)x_2=0$ \\
+2 & Eliminar una inc\'ognita operando y sumando. & $(D^2+D-6)x_1=0$ \\
+3 & Resolver la EDO de orden $2$ resultante. & $x_1=c_1e^{-3t}+c_2e^{2t}$ \\
+4 & Despejar la otra inc\'ognita de una ecuaci\'on original. & $x_2=\tfrac12(D-1)x_1$ \\
+\end{tabular}
+\caption{M\'etodo de eliminaci\'on con operadores para $n=2$.}
+\end{table}
+
+\begin{example}
+Resuelva el sistema
+\begin{equation}\label{eq:ej-elim}
+\begin{cases}
+x_1' = x_1 + 2x_2, \\
+x_2' = 2x_1 - 2x_2.
+\end{cases}
+\end{equation}
+
+\textbf{Soluci\'on:} Comenzamos reescribiendo el sistema en forma de operador como
+\begin{align}
+(D - 1)x_1 - 2x_2 &= 0, \label{eq:e1}\\
+-2x_1 + (D + 2)x_2 &= 0. \label{eq:e2}
+\end{align}
+Para eliminar $x_2$, primero operamos sobre \eqref{eq:e1} con $D + 2$ para obtener
+\[
+(D + 2)(D - 1)x_1 - 2(D + 2)x_2 = 0.
+\]
+Sumando dos veces la ecuaci\'on \eqref{eq:e2} a esta ecuaci\'on se elimina $x_2$ y se obtiene
+\[
+(D + 2)(D - 1)x_1 - 4x_1 = 0,
+\]
+es decir,
+\[
+(D^2 + D - 6)x_1 = 0.
+\]
+Esta ecuaci\'on tiene como polinomio auxiliar
+\[
+P(r) = r^2 + r - 6 = (r + 3)(r - 2).
+\]
+Por consiguiente,
+\begin{equation}\label{eq:x1-sol}
+x_1(t) = c_1 e^{-3t} + c_2 e^{2t}.
+\end{equation}
+Ahora determinamos $x_2$. De la ecuaci\'on \eqref{eq:e1} tenemos
+\[
+x_2(t) = \frac{1}{2}(D - 1)x_1.
+\]
+Insertando la expresi\'on de $x_1$ dada en \eqref{eq:x1-sol} resulta
+\[
+x_2(t) = \frac{1}{2}(Dx_1 - x_1) = \frac{1}{2}(-4c_1e^{-3t} + c_2e^{2t}).
+\]
+Por lo tanto, la soluci\'on del sistema \eqref{eq:ej-elim} es
+\[
+x_1(t) = c_1e^{-3t} + c_2e^{2t}, \quad x_2(t) = \frac{1}{2}(-4c_1e^{-3t} + c_2e^{2t}),
+\]
+donde $c_1$ y $c_2$ son constantes arbitrarias.
+\end{example}
+
+Tal como en el caso de las ecuaciones diferenciales de orden $n$, para determinar el valor de las constantes que aparecen en la soluci\'on general es necesario conocer condiciones iniciales; en ese caso el sistema se convierte en un PVI.
+
+\begin{definition}
+Para resolver un sistema de $n$ ecuaciones diferenciales en un punto son necesarias $n$ condiciones iniciales. En este caso diremos que el sistema es un \textbf{sistema de valores iniciales}, en el cual es necesario conocer
+\[
+x_1(t_0)=\alpha_1,\quad x_2(t_0)=\alpha_2,\dots,x_n(t_0)=\alpha_n,
+\]
+donde $\alpha_1,\alpha_2,\dots,\alpha_n$ son constantes.
+\end{definition}
+
+\begin{example}\label{ex:pvi}
+Resuelva el problema de valor inicial
+\[
+x_1' = x_1 + 2x_2, \quad x_2' = 2x_1 - 2x_2, \qquad
+x_1(0) = 1, \quad x_2(0) = 0.
+\]
+
+\textbf{Soluci\'on:} Ya vimos en el ejemplo anterior que la soluci\'on general es
+\begin{equation}\label{eq:sol-gen-pvi}
+x_1(t) = c_1e^{-3t} + c_2e^{2t}, \quad x_2(t) = \frac{1}{2}(-4c_1e^{-3t} + c_2e^{2t}),
+\end{equation}
+donde $c_1$ y $c_2$ son constantes arbitrarias. Imponiendo las dos condiciones iniciales se obtiene
+\begin{align*}
+    c_1 + c_2 &= 1, \\
+    -4c_1 + c_2 &= 0,
+\end{align*}
+de donde
+\[
+c_1 = \frac{1}{5} \quad \text{y} \quad c_2 = \frac{4}{5}.
+\]
+Sustituyendo en \eqref{eq:sol-gen-pvi} resulta la soluci\'on \'unica
+\[
+x_1(t) = \frac{1}{5}(e^{-3t} + 4e^{2t}), \quad x_2(t) = \frac{2}{5}(e^{2t} - e^{-3t}). \quad \square
+\]
+\end{example}
+
+La Figura~\ref{fig:pvi-curvas} muestra esta soluci\'on: para $t$ grande domina el t\'ermino $e^{2t}$, por lo que ambas componentes crecen con $x_2\approx x_1/2$; para $t<0$ domina $e^{-3t}$ y las componentes tienen signos opuestos.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.8\linewidth, height=6.2cm, xlabel=$t$, ylabel=$x(t)$,
+  domain=-0.4:1, samples=100, axis lines=left, legend pos=north west,
+  legend style={font=\small}, every axis plot/.append style={thick}]
+\addplot[bbeblue]{(exp(-3*x)+4*exp(2*x))/5};
+\addplot[bbered]{2*(exp(2*x)-exp(-3*x))/5};
+\legend{$x_1(t)$, $x_2(t)$}
+\end{axis}
+\end{tikzpicture}
+\caption{Componentes de la soluci\'on del PVI del Ejemplo~\ref{ex:pvi}.}
+\label{fig:pvi-curvas}
+\end{figure}
+
+El proceso de resolver un sistema de $n$ ecuaciones asoci\'andole una ecuaci\'on de orden $n$ es perfectamente reversible, como mostramos a continuaci\'on.
+
+\begin{example}
+Escriba la siguiente ecuaci\'on diferencial como un sistema equivalente de primer orden:
+\[
+\frac{d^2y}{dt^2} + 4e^t \frac{dy}{dt} - 9t^2y = 7t^2.
+\]
+
+\textbf{Soluci\'on:} Introducimos nuevas variables $x_1$ y $x_2$ definidas por
+\[
+x_1 = y, \quad x_2 = \frac{dy}{dt}.
+\]
+Entonces la ecuaci\'on dada puede ser reemplazada por el sistema de primer orden
+\[
+\frac{dx_1}{dt} = x_2, \quad \frac{dx_2}{dt} = 9t^2x_1 - 4e^t x_2 + 7t^2.
+\]
+\end{example}
+
+El mismo procedimiento funciona para cualquier ecuaci\'on lineal de orden $n$, como resume la siguiente tabla.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{>{\bfseries}l l l}
+\rowcolor{bbe!15}
+ & \textcolor{bbe}{Orden $2$} & \textcolor{bbe}{Orden $n$} \\
+Ecuaci\'on & $y''+p(t)y'+q(t)y=g(t)$ & $y^{(n)}+a_{n-1}(t)y^{(n-1)}+\dots+a_0(t)y=g(t)$ \\
+Variables & $x_1=y,\; x_2=y'$ & $x_k=y^{(k-1)},\; k=1,\dots,n$ \\
+Sistema & $x_1'=x_2,\; x_2'=-qx_1-px_2+g$ & $x_k'=x_{k+1}\;(k<n),\; x_n'=-\sum_{k=1}^{n}a_{k-1}x_k+g$ \\
+Matriz $A(t)$ & $\begin{bmatrix}0&1\\-q&-p\end{bmatrix}$ & $\begin{bmatrix}0&1&&\\&\ddots&\ddots&\\&&0&1\\-a_0&\cdots&-a_{n-2}&-a_{n-1}\end{bmatrix}$ \\
+\end{tabular}
+\caption{Correspondencia entre una EDO lineal de orden $n$ y un sistema de primer orden.}
+\end{table}
+
+A continuaci\'on introduciremos la estructura algebraica que se requiere para avanzar de manera m\'as general en la resoluci\'on de problemas.
+
+\begin{remark}
+El primer paso en el desarrollo de la teor\'ia general para sistemas lineales de primer orden es formular el problema como un problema de espacio vectorial. La clave es notar que el sistema escalar
+\begin{align}
+    x_1' &= a_{11}(t)x_1(t) + a_{12}(t)x_2(t) + \dots + a_{1n}(t)x_n(t), \notag \\
+    x_2' &= a_{21}(t)x_1(t) + a_{22}(t)x_2(t) + \dots + a_{2n}(t)x_n(t), \notag \\
+    &\;\;\vdots \notag \\
+    x_n' &= a_{n1}(t)x_1(t) + a_{n2}(t)x_2(t) + \dots + a_{nn}(t)x_n(t), \notag
+\end{align}
+puede escribirse como la ecuaci\'on vectorial equivalente
+\begin{equation}\label{eq:vectorial}
+    \boxed{\mathbf{x}'(t) = A(t)\mathbf{x}(t) + \mathbf{b}(t),}
+\end{equation}
+donde
+\[
+\mathbf{x}(t) = \begin{bmatrix} x_1(t) \\ x_2(t) \\ \vdots \\ x_n(t) \end{bmatrix}, \quad
+\mathbf{x}'(t) = \begin{bmatrix} x_1'(t) \\ x_2'(t) \\ \vdots \\ x_n'(t) \end{bmatrix}
+\]
+y
+\[
+A(t) = \begin{bmatrix}
+a_{11}(t) & a_{12}(t) & \dots & a_{1n}(t) \\
+a_{21}(t) & a_{22}(t) & \dots & a_{2n}(t) \\
+\vdots & \vdots & & \vdots \\
+a_{n1}(t) & a_{n2}(t) & \dots & a_{nn}(t)
+\end{bmatrix}, \quad
+\mathbf{b}(t) = \begin{bmatrix} b_1(t) \\ b_2(t) \\ \vdots \\ b_n(t) \end{bmatrix}.
+\]
+\end{remark}
+
+Note que $\mathbf{x}$, $\mathbf{x}'$ y $\mathbf{b}$ en \eqref{eq:vectorial} son funciones con valores en vectores columna de $n$ componentes. Sea $V_n(I)$ el conjunto de todas las funciones de $n$-vectores columna definidas en un intervalo $I$, con la adici\'on y la multiplicaci\'on escalar definidas de la misma manera que para los vectores columna. Con esta notaci\'on podemos definir el Wronskiano de funciones vectoriales.
+
+\begin{definition}
+Sean $\mathbf{x}_1(t),\mathbf{x}_2(t),\dots,\mathbf{x}_n(t)$ vectores en $V_n(I)$. El \textbf{Wronskiano} de estas funciones, denotado por $W[\mathbf{x}_1,\mathbf{x}_2,\dots,\mathbf{x}_n]$, se define como
+\[
+W[\mathbf{x}_1,\mathbf{x}_2,\dots,\mathbf{x}_n](t)=\det\big([\mathbf{x}_1(t),\mathbf{x}_2(t),\dots,\mathbf{x}_n(t)]\big).
+\]
+\end{definition}
+
+\begin{example}
+Determine el Wronskiano de las funciones de vector columna
+\[
+\mathbf{x}_1(t) = \begin{bmatrix} e^t \\ 2e^t \end{bmatrix}, \quad \mathbf{x}_2(t) = \begin{bmatrix} 3 \sin t \\ \cos t \end{bmatrix}.
+\]
+
+\textbf{Soluci\'on:} De la definici\'on anterior tenemos
+\[
+W[\mathbf{x}_1, \mathbf{x}_2](t) = \begin{vmatrix} e^t & 3 \sin t \\ 2e^t & \cos t \end{vmatrix} = e^t (\cos t - 6 \sin t). \quad \square
+\]
+\end{example}
+
+\begin{theorem}\label{thm:wronskiano}
+Sean $\mathbf{x}_1(t), \mathbf{x}_2(t), \dots, \mathbf{x}_n(t)$ vectores en $V_n(I)$. Si $W[\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n](t_0)$ es \textit{diferente de cero} en alg\'un punto $t_0$ en $I$, entonces $\{\mathbf{x}_1(t), \mathbf{x}_2(t), \dots, \mathbf{x}_n(t)\}$ es linealmente independiente en $I$.
+\end{theorem}
+
+\begin{example}\label{ex:vectorial}
+Considere el sistema lineal homog\'eneo
+\begin{align*}
+    x_1' &= x_1 + 2x_2, \\
+    x_2' &= 2x_1 - 2x_2.
+\end{align*}
+En la secci\'on anterior derivamos la soluci\'on
+\[
+x_1(t) = c_1e^{-3t} + c_2e^{2t}, \quad x_2(t) = \frac{1}{2}(-4c_1e^{-3t} + c_2e^{2t}).
+\]
+Podemos reformular este problema como la ecuaci\'on diferencial vectorial equivalente
+\begin{equation}\label{eq:vect-ej}
+    \mathbf{x}' = A\mathbf{x}, \quad A = \begin{bmatrix} 1 & 2 \\ 2 & -2 \end{bmatrix}.
+\end{equation}
+El vector soluci\'on es
+\[
+\mathbf{x}(t) = \begin{bmatrix} c_1e^{-3t} + c_2e^{2t} \\ \frac{1}{2}(-4c_1e^{-3t} + c_2e^{2t}) \end{bmatrix},
+\]
+que puede escribirse en la forma equivalente
+\[
+\mathbf{x}(t) = c_1 \begin{bmatrix} e^{-3t} \\ -2e^{-3t} \end{bmatrix} + c_2 \begin{bmatrix} e^{2t} \\ \frac{1}{2}e^{2t} \end{bmatrix}.
+\]
+Consecuentemente, el conjunto de todas las soluciones es el subespacio bidimensional de $V_2(I)$ generado por las funciones de vector columna linealmente independientes
+\[
+\mathbf{x}_1(t) = \begin{bmatrix} e^{-3t} \\ -2e^{-3t} \end{bmatrix}, \quad \mathbf{x}_2(t) = \begin{bmatrix} e^{2t} \\ \frac{1}{2}e^{2t} \end{bmatrix}. \quad \square
+\]
+\end{example}
+
+Esquem\'aticamente, las tres formulaciones que hemos visto son equivalentes y se pueden recorrer en ambos sentidos:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.6cm and 1.4cm,
+  box/.style={draw=bbe, fill=bbe!8!white, text=bbe, rounded corners=2pt,
+              minimum height=1.1cm, text width=3.4cm, align=center, font=\small\sffamily},
+  every path/.style={draw=bbe}]
+\node[box] (esc) {Sistema escalar\\ $x_i'=\sum_j a_{ij}x_j+b_i$};
+\node[box, right=of esc] (vec) {Ecuaci\'on vectorial\\ $\mathbf x'=A\mathbf x+\mathbf b$};
+\node[box, right=of vec] (edo) {EDO de orden $n$\\ (caso $A$ constante)};
+\draw[<->] (esc) -- node[above, font=\scriptsize, text=bbe]{matrices} (vec);
+\draw[<->] (vec) -- node[above, font=\scriptsize, text=bbe]{eliminaci\'on} (edo);
+\end{tikzpicture}
+\caption{Formulaciones equivalentes de un sistema lineal de primer orden.}
+\label{fig:formulaciones}
+\end{figure}
+
+\subsection{Resultados generales}
+Ahora mostramos c\'omo la formulaci\'on de un sistema lineal como una sola ecuaci\'on diferencial vectorial nos permite derivar la teor\'ia subyacente como una aplicaci\'on de los resultados de espacios vectoriales del Cap\'itulo~4. Aunque la derivaci\'on se basa en la formulaci\'on vectorial, los resultados se aplican a cualquier sistema lineal de primer orden, ya que tal sistema siempre puede formularse como una ecuaci\'on diferencial vectorial.
+
+El resultado fundamental para esta teor\'ia es el siguiente teorema de existencia y unicidad.
+
+\begin{theorem}\label{thm:exist-unic}
+El problema de valor inicial
+\[
+\mathbf{x}'(t) = A(t)\mathbf{x}(t) + \mathbf{b}(t), \quad \mathbf{x}(t_0) = \mathbf{x}_0,
+\]
+donde $A(t)$ y $\mathbf{b}(t)$ son continuas en un intervalo $I$, tiene una soluci\'on \'unica en $I$.
+\end{theorem}
+
+Al igual que para una sola ecuaci\'on lineal de orden $n$, la soluci\'on de un sistema no homog\'eneo puede, en teor\'ia, obtenerse una vez resuelto el sistema homog\'eneo asociado. Comenzamos entonces con las ecuaciones vectoriales homog\'eneas
+\begin{equation}\label{eq:homog}
+    \mathbf{x}'(t) = A(t)\mathbf{x}(t),
+\end{equation}
+donde $A$ es una funci\'on matricial de $n \times n$. Primero mostramos que el conjunto de todas las soluciones de \eqref{eq:homog} es un subespacio de dimensi\'on $n$ del espacio de funciones de vector columna de $n$ componentes.
+
+\begin{theorem}\label{thm:dim}
+El conjunto de todas las soluciones de $\mathbf{x}'(t) = A(t)\mathbf{x}(t)$, donde $A(t)$ es continua en un intervalo $I$, es un espacio vectorial de dimensi\'on $n$.
+\end{theorem}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[every path/.style={draw=bbe}]
+\draw[fill=bbe!6!white, rounded corners=6pt] (0,0) rectangle (9,4.2);
+\node[anchor=north west, text=bbe, font=\small\sffamily] at (0.2,4.1) {$V_n(I)$: funciones $I\to\mathbb R^n$};
+\draw[fill=bbegreen!12!white, draw=bbegreen, rounded corners=6pt] (1.2,0.4) rectangle (7.8,3.0);
+\node[anchor=north west, text=bbegreen, font=\small\sffamily] at (1.4,2.9) {Soluciones de $\mathbf x'=A\mathbf x$ \; ($\dim=n$)};
+\node[text=bbeblue, font=\small] at (2.6,1.3) {$\mathbf x_1$};
+\node[text=bbeblue, font=\small] at (4.2,1.3) {$\mathbf x_2$};
+\node[text=bbeblue, font=\small] at (5.4,1.3) {$\cdots$};
+\node[text=bbeblue, font=\small] at (6.6,1.3) {$\mathbf x_n$};
+\node[text=bbe, font=\footnotesize\sffamily] at (4.6,0.75) {conjunto fundamental = base};
+\end{tikzpicture}
+\caption{El espacio de soluciones es un subespacio de $V_n(I)$ de dimensi\'on $n$ y cada conjunto fundamental es una base.}
+\label{fig:subespacio}
+\end{figure}
+
+Del Teorema~\ref{thm:dim} se sigue que si $\{\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n\}$ es \textit{cualquier} conjunto de $n$ soluciones linealmente independientes, entonces cada soluci\'on puede escribirse como
+\begin{equation}\label{eq:sol-gen}
+    \mathbf{x}(t) = c_1\mathbf{x}_1(t) + c_2\mathbf{x}_2(t) + \dots + c_n\mathbf{x}_n(t)
+\end{equation}
+para constantes apropiadas $c_1, c_2, \dots, c_n$. Nos referiremos a \eqref{eq:sol-gen} como la \textbf{soluci\'on general} de la ecuaci\'on vectorial \eqref{eq:homog}.
+
+\begin{definition}
+Sea $A(t)$ una funci\'on matricial de $n \times n$ continua en un intervalo $I$. Cualquier conjunto de $n$ soluciones $\{\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n\}$ de $\mathbf{x}' = A\mathbf{x}$ que sea linealmente independiente en $I$ se llama un \textbf{conjunto fundamental de soluciones} en $I$. La matriz correspondiente
+\[
+X(t) = [\mathbf{x}_1, \mathbf{x}_2, \dots, \mathbf{x}_n]
+\]
+se llama una \textbf{matriz fundamental} para $\mathbf{x}' = A\mathbf{x}$.
+\end{definition}
+
+\begin{remark}
+Dado que el espacio de soluciones de $\mathbf{x}' = A\mathbf{x}$ tiene dimensi\'on $n$ (Teorema~\ref{thm:dim}), un conjunto fundamental de soluciones es una \textit{base} de dicho espacio.
+\end{remark}
+
+\begin{example}\label{ex:espiral}
+Considere $\mathbf{x}' = A\mathbf{x}$, donde
+\[
+A = \begin{bmatrix} 1 & 2 \\ -2 & 1 \end{bmatrix},
+\]
+y sean
+\[
+\mathbf{x}_1(t) = \begin{bmatrix} -e^t \cos 2t \\ e^t \sin 2t \end{bmatrix}, \quad \mathbf{x}_2(t) = \begin{bmatrix} e^t \sin 2t \\ e^t \cos 2t \end{bmatrix}.
+\]
+\begin{itemize}
+    \item[\textbf{(a)}] Verifique que $\{\mathbf{x}_1, \mathbf{x}_2\}$ es un conjunto fundamental de soluciones en cualquier intervalo y escriba la soluci\'on general.
+    \item[\textbf{(b)}] Resuelva el problema de valor inicial
+    \[
+    \mathbf{x}' = A\mathbf{x}, \quad \mathbf{x}(0) = \begin{bmatrix} 3 \\ 2 \end{bmatrix},
+    \]
+    y escriba las soluciones escalares correspondientes.
+\end{itemize}
+
+\textbf{Soluci\'on:}
+
+\textbf{(a)} Derivando las funciones vectoriales dadas resulta, respectivamente,
+\[
+\mathbf{x}_1' = \begin{bmatrix} e^t(-\cos 2t + 2\sin 2t) \\ e^t(\sin 2t + 2\cos 2t) \end{bmatrix}, \quad \mathbf{x}_2' = \begin{bmatrix} e^t(\sin 2t + 2\cos 2t) \\ e^t(\cos 2t - 2\sin 2t) \end{bmatrix},
+\]
+mientras que
+\[
+A\mathbf{x}_1 = \begin{bmatrix} 1 & 2 \\ -2 & 1 \end{bmatrix}\begin{bmatrix} -e^t\cos 2t \\ e^t\sin 2t \end{bmatrix} = \begin{bmatrix} e^t(-\cos 2t + 2\sin 2t) \\ e^t(\sin 2t + 2\cos 2t) \end{bmatrix},
+\]
+y
+\[
+A\mathbf{x}_2 = \begin{bmatrix} 1 & 2 \\ -2 & 1 \end{bmatrix}\begin{bmatrix} e^t\sin 2t \\ e^t\cos 2t \end{bmatrix} = \begin{bmatrix} e^t(\sin 2t + 2\cos 2t) \\ e^t(\cos 2t - 2\sin 2t) \end{bmatrix}.
+\]
+Por lo tanto $\mathbf{x}_1' = A\mathbf{x}_1$ y $\mathbf{x}_2' = A\mathbf{x}_2$, de modo que ambas son soluciones. Adem\'as, su Wronskiano es
+\[
+W[\mathbf{x}_1, \mathbf{x}_2](t) = \begin{vmatrix} -e^t \cos 2t & e^t \sin 2t \\ e^t \sin 2t & e^t \cos 2t \end{vmatrix} = -e^{2t}.
+\]
+Como el Wronskiano nunca es cero, por el Teorema~\ref{thm:wronskiano} el conjunto $\{\mathbf{x}_1, \mathbf{x}_2\}$ es linealmente independiente en cualquier intervalo, y es un conjunto fundamental de soluciones. La soluci\'on general es
+\[
+\mathbf{x}(t) = c_1\mathbf{x}_1(t) + c_2\mathbf{x}_2(t) = \begin{bmatrix} e^t(-c_1 \cos 2t + c_2 \sin 2t) \\ e^t(c_1 \sin 2t + c_2 \cos 2t) \end{bmatrix}.
+\]
+
+\textbf{(b)} Imponiendo la condici\'on inicial en la soluci\'on general se requiere que
+\[
+\begin{bmatrix} -c_1 \\ c_2 \end{bmatrix} = \begin{bmatrix} 3 \\ 2 \end{bmatrix},
+\]
+de modo que $c_1 = -3$ y $c_2 = 2$. Por lo tanto,
+\[
+\mathbf{x}(t) = \begin{bmatrix} e^t(3 \cos 2t + 2 \sin 2t) \\ e^t(-3 \sin 2t + 2 \cos 2t) \end{bmatrix},
+\]
+y las soluciones escalares son
+\[
+x_1(t) = e^t(3 \cos 2t + 2 \sin 2t), \quad x_2(t) = e^t(-3 \sin 2t + 2 \cos 2t). \quad \square
+\]
+\end{example}
+
+La Figura~\ref{fig:espiral} muestra la trayectoria del inciso (b) en el plano $(x_1,x_2)$: el factor $e^t$ aleja la soluci\'on del origen y los factores $\cos 2t,\sin 2t$ la hacen girar. Esta es la huella geom\'etrica de los valores propios complejos $1\pm 2i$ de $A$.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.62\linewidth, axis equal image, axis lines=middle,
+  xlabel=$x_1$, ylabel=$x_2$, xmin=-12, xmax=12, ymin=-12, ymax=12,
+  ticks=none, clip=true, every axis plot/.append style={thick}]
+\addplot[bbeblue, domain=-3:2.1, samples=250, smooth]
+  ({exp(x)*(3*cos(deg(2*x))+2*sin(deg(2*x)))},
+   {exp(x)*(-3*sin(deg(2*x))+2*cos(deg(2*x)))});
+\addplot[bbeteal, domain=-3:2.3, samples=250, smooth]
+  ({exp(x)*(1.2*cos(deg(2*x))-1.6*sin(deg(2*x)))},
+   {exp(x)*(1.2*sin(deg(2*x))+1.6*cos(deg(2*x)))});
+\addplot[only marks, mark=*, mark size=2pt, bbered] coordinates {(3,2)};
+\node[text=bbered, font=\small, anchor=south west] at (axis cs:3,2) {$\mathbf x(0)$};
+\end{axis}
+\end{tikzpicture}
+\caption{Trayectorias en espiral para $A=\begin{bmatrix}1&2\\-2&1\end{bmatrix}$ (autovalores $1\pm2i$); el punto rojo es la condici\'on inicial del inciso (b).}
+\label{fig:espiral}
+\end{figure}
+
+\begin{example}\label{ex:defectuosa}
+Verifique que
+\[
+\mathbf X_1(t)=\begin{pmatrix} e^{2t}\\ -e^{2t} \end{pmatrix},\qquad
+\mathbf X_2(t)=\begin{pmatrix} e^{2t}(1+t)\\ -te^{2t} \end{pmatrix}
+\]
+son soluciones de la ecuaci\'on $\mathbf X'=A\mathbf X$ para
+\[
+A=\begin{pmatrix} 3 & 1 \\ -1 & 1 \end{pmatrix}.
+\]
+\end{example}
+
+\begin{note}
+Aqu\'i $A$ tiene el valor propio $\lambda=2$ con multiplicidad $2$ pero un \'unico vector propio independiente, $(1,-1)$. La soluci\'on $\mathbf X_2$ no es de la forma $e^{\lambda t}\mathbf v$: aparece un factor $t$. Este es el caso de \emph{matriz defectuosa}, que trataremos m\'as adelante; la Figura~\ref{fig:nodo} muestra su geometr\'ia.
+\end{note}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.62\linewidth, axis equal image, axis lines=middle,
+  xlabel=$x_1$, ylabel=$x_2$, xmin=-6, xmax=6, ymin=-6, ymax=6,
+  ticks=none, clip=true, every axis plot/.append style={thick}]
+\addplot[bbegreen, very thick, domain=-6:6]({x},{-x});
+\foreach \a/\b in {1/0.5, -1/-0.5, 0/1, 0/-1, 2/-0.5, -2/0.5} {
+  \addplot[bbeblue, domain=-3:1.6, samples=200, smooth]
+    ({exp(2*x)*(\a+\b*(1+x))},{exp(2*x)*(-\a-\b*x)});
+}
+\end{axis}
+\end{tikzpicture}
+\caption{Nodo impropio para $A=\begin{pmatrix}3&1\\-1&1\end{pmatrix}$: la recta verde es el \'unico autoespacio (valor propio $2$).}
+\label{fig:nodo}
+\end{figure}
+
+\subsection{Caso 1, matriz no defectuosa}
+
+\textbf{Una idea para motivar.} La teor\'ia de la secci\'on anterior es v\'alida para cualquier sistema lineal de primer orden. Sin embargo, en la pr\'actica obtener un conjunto fundamental de soluciones para $\mathbf{x}' = A\mathbf{x}$ puede ser dif\'icil, por lo que haremos una suposici\'on simplificadora: la matriz de coeficientes es constante. En las siguientes secciones consideraremos \'unicamente sistemas lineales homog\'eneos
+\[
+\mathbf{x}' = A\mathbf{x},
+\]
+donde $A$ es una matriz $n \times n$ de constantes reales.
+
+Para motivar la t\'ecnica, recordamos del Ejemplo~\ref{ex:vectorial} que dos soluciones linealmente independientes de $\mathbf{x}' = A\mathbf{x}$ con $A = \begin{bmatrix} 1 & 2 \\ 2 & -2 \end{bmatrix}$ son
+\[
+\mathbf{x}_1(t) = e^{-3t}\begin{bmatrix} 1 \\ -2 \end{bmatrix},
+\qquad
+\mathbf{x}_2(t) = e^{2t}\begin{bmatrix} 1 \\ \frac{1}{2} \end{bmatrix}.
+\]
+El punto clave es que ambas son de la forma
+\begin{equation}\label{eq:forma-exp}
+\mathbf{x}(t) = e^{\lambda t}\mathbf{v},
+\end{equation}
+donde $\lambda$ es un escalar y $\mathbf{v}$ es un vector constante. Esto sugiere que la ecuaci\'on general $\mathbf{x}' = A\mathbf{x}$ tambi\'en puede tener soluciones de la forma \eqref{eq:forma-exp}. Derivando se obtiene $\mathbf{x}' = \lambda e^{\lambda t}\mathbf{v}$, de modo que $\mathbf{x}(t) = e^{\lambda t}\mathbf{v}$ es soluci\'on si y solo si
+\[
+\lambda e^{\lambda t}\mathbf{v} = e^{\lambda t}A\mathbf{v},
+\quad\text{es decir, si y solo si}\quad
+A\mathbf{v} = \lambda \mathbf{v}.
+\]
+Esto es precisamente la afirmaci\'on de que $\lambda$ y $\mathbf{v}$ forman un par valor propio/vector propio de $A$. En consecuencia:
+
+\begin{theorem}\label{thm:autopar}
+Sea $A$ una matriz $n \times n$ de constantes reales y sea $\lambda$ un valor propio de $A$ con vector propio correspondiente $\mathbf{v}$. Entonces
+\[
+\mathbf{x}(t) = e^{\lambda t}\mathbf{v}
+\]
+es una soluci\'on de $\mathbf{x}' = A\mathbf{x}$ en cualquier intervalo.
+\end{theorem}
+
+\begin{example}\label{ex:silla}
+Encuentre la soluci\'on general de
+\begin{equation}\label{eq:silla-esc}
+\begin{cases}
+x_1' = 2x_1 + x_2, \\
+x_2' = -3x_1 - 2x_2.
+\end{cases}
+\end{equation}
+
+\textbf{Soluci\'on:} La ecuaci\'on vectorial correspondiente es
+\begin{equation}\label{eq:silla-vec}
+\mathbf{x}' = A\mathbf{x}, \qquad A = \begin{bmatrix} 2 & 1 \\ -3 & -2 \end{bmatrix}.
+\end{equation}
+Un c\'alculo directo da
+\[
+\det(A - \lambda I) =
+\begin{vmatrix} 2 - \lambda & 1 \\ -3 & -2 - \lambda \end{vmatrix}
+= \lambda^2 - 1,
+\]
+por lo que $A$ tiene valores propios $\lambda = \pm 1$.
+
+\textbf{Valor propio $\lambda_1 = 1$:} el sistema $(A - \lambda_1 I)\mathbf{v} = 0$ es
+\[
+\begin{cases} v_1 + v_2 = 0, \\ -3v_1 - 3v_2 = 0, \end{cases}
+\]
+con soluci\'on $\mathbf{v} = r(1, -1)$. Por lo tanto $\mathbf{x}_1(t) = e^{t}\begin{bmatrix} 1 \\ -1 \end{bmatrix}$ es soluci\'on de \eqref{eq:silla-vec}.
+
+\textbf{Valor propio $\lambda_2 = -1$:} el sistema $(A - \lambda_2 I)\mathbf{v} = 0$ es
+\[
+\begin{cases} 3v_1 + v_2 = 0, \\ -3v_1 - v_2 = 0, \end{cases}
+\]
+con soluci\'on $\mathbf{v} = s(1, -3)$. Por lo tanto $\mathbf{x}_2(t) = e^{-t}\begin{bmatrix} 1 \\ -3 \end{bmatrix}$ tambi\'en es soluci\'on de \eqref{eq:silla-vec}.
+
+El Wronskiano de $\mathbf{x}_1$ y $\mathbf{x}_2$ es
+\[
+W[\mathbf{x}_1, \mathbf{x}_2](t) =
+\begin{vmatrix} e^{t} & e^{-t} \\ - e^{t} & -3e^{-t} \end{vmatrix}
+= -2 \neq 0,
+\]
+por lo que $\{\mathbf{x}_1, \mathbf{x}_2\}$ es linealmente independiente en cualquier intervalo (Teorema~\ref{thm:wronskiano}). La soluci\'on general de \eqref{eq:silla-vec} es
+\[
+\mathbf{x}(t) = c_1 e^{t}\begin{bmatrix} 1 \\ -1 \end{bmatrix}
++ c_2 e^{-t}\begin{bmatrix} 1 \\ -3 \end{bmatrix}
+= \begin{bmatrix} c_1 e^{t} + c_2 e^{-t} \\ -(c_1 e^{t} + 3c_2 e^{-t}) \end{bmatrix}.
+\]
+Por lo tanto, la soluci\'on del sistema \eqref{eq:silla-esc} es
+\[
+x_1(t) = c_1 e^{t} + c_2 e^{-t}, \qquad
+x_2(t) = -(c_1 e^{t} + 3c_2 e^{-t}).
+\]
+\end{example}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c c c c}
+\rowcolor{bbe!15}
+\textcolor{bbe}{$\lambda$} & \textcolor{bbe}{Vector propio $\mathbf v$} & \textcolor{bbe}{Soluci\'on $e^{\lambda t}\mathbf v$} & \textcolor{bbe}{Comportamiento}\\
+$1$ & $(1,-1)$ & $e^{t}\begin{bmatrix}1\\-1\end{bmatrix}$ & se aleja del origen \\
+$-1$ & $(1,-3)$ & $e^{-t}\begin{bmatrix}1\\-3\end{bmatrix}$ & tiende al origen \\
+\end{tabular}
+\caption{Valores propios, vectores propios y soluciones del Ejemplo~\ref{ex:silla}.}
+\end{table}
+
+El signo de $\lambda$ determina la geometr\'ia: a lo largo de cada autoespacio la soluci\'on se mueve sobre una recta, alej\'andose del origen si $\lambda>0$ y acerc\'andose si $\lambda<0$. Cuando hay un valor propio de cada signo, el origen es un \textbf{punto silla}, como muestra la Figura~\ref{fig:silla} para la matriz del Ejemplo~\ref{ex:vectorial}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=.62\linewidth, axis equal image, axis lines=middle,
+  xlabel=$x_1$, ylabel=$x_2$, xmin=-3, xmax=3, ymin=-3, ymax=3,
+  ticks=none, clip=true]
+\addplot[bbegreen, very thick, domain=-3:3]({x},{-2*x});
+\addplot[bbered, very thick, domain=-3:3]({x},{x/2});
+\foreach \a/\b in {0.3/0.3, 0.3/-0.3, -0.3/0.3, -0.3/-0.3, 0.1/0.4, -0.1/-0.4, 0.4/0.1, -0.4/-0.1} {
+  \addplot[bbeblue, domain=-1.5:1.5, samples=120, smooth, thick]
+    ({\a*exp(-3*x)+\b*exp(2*x)},{-2*\a*exp(-3*x)+0.5*\b*exp(2*x)});
+}
+\end{axis}
+\end{tikzpicture}
+\caption{Retrato de fase de $\mathbf x'=A\mathbf x$, $A=\begin{bmatrix}1&2\\2&-2\end{bmatrix}$. Las rectas son los autoespacios de $\lambda=-3$ (verde) y $\lambda=2$ (roja); las trayectorias se acercan al origen a lo largo de la verde y se alejan a lo largo de la roja.}
+\label{fig:silla}
+\end{figure}
+
+\begin{theorem}\label{thm:n-indep}
+Sea $A$ una matriz $n \times n$ de constantes reales. Si $A$ tiene $n$ vectores propios linealmente independientes $\mathbf{v}_1, \mathbf{v}_2, \ldots, \mathbf{v}_n$, con valores propios reales correspondientes $\lambda_1, \lambda_2, \ldots, \lambda_n$ (no necesariamente distintos), entonces las funciones vectoriales
+\[
+\mathbf{x}_k(t) = e^{\lambda_k t}\mathbf{v}_k, \qquad k = 1, 2, \ldots, n,
+\]
+son soluciones linealmente independientes de $\mathbf{x}' = A\mathbf{x}$ en cualquier intervalo. La soluci\'on general es
+\[
+\mathbf{x}(t) = c_1 \mathbf{x}_1 + c_2 \mathbf{x}_2 + \cdots + c_n \mathbf{x}_n.
+\]
+\end{theorem}
+
+\begin{example}
+Encuentre la soluci\'on general de $\mathbf{x}' = A\mathbf{x}$ si
+\[
+A = \begin{bmatrix} 0 & 2 & -3 \\ -2 & 4 & -3 \\ -2 & 2 & -1 \end{bmatrix}.
+\]
+
+\noindent\textbf{Soluci\'on:} Primero determinamos los valores y vectores propios de $A$. Tenemos
+\[
+\det(A - \lambda I) = \begin{vmatrix} -\lambda & 2 & -3 \\ -2 & 4 - \lambda & -3 \\ -2 & 2 & -1 - \lambda \end{vmatrix} = -(\lambda + 1)(\lambda - 2)^2,
+\]
+de modo que los valores propios son
+\[
+\lambda_1 = -1 \text{ (multiplicidad 1)}, \qquad \lambda_2 = 2 \text{ (multiplicidad 2)}.
+\]
+
+\medskip
+\noindent \underline{Valor propio $\lambda_1 = -1$:} se puede mostrar f\'acilmente que todos los vectores propios correspondientes son de la forma $\mathbf{v} = r(1, 1, 1)$, de modo que podemos tomar $\mathbf{v}_1 = (1, 1, 1)$.
+
+\medskip
+\noindent \underline{Valor propio $\lambda_2 = 2$:} el sistema para los vectores propios se reduce a la \'unica ecuaci\'on
+\[
+2v_1 - 2v_2 + 3v_3 = 0,
+\]
+con soluci\'on $\mathbf{v} = r(1, 1, 0) + s(-3, 0, 2)$. Por lo tanto, dos vectores propios linealmente independientes son $\mathbf{v}_2 = (1, 1, 0)$ y $\mathbf{v}_3 = (-3, 0, 2)$.
+
+\medskip
+\noindent Del Teorema~\ref{thm:n-indep}, tres soluciones linealmente independientes son
+\[
+\mathbf{x}_1(t) = e^{-t} \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}, \qquad \mathbf{x}_2(t) = e^{2t} \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix}, \qquad \mathbf{x}_3(t) = e^{2t} \begin{bmatrix} -3 \\ 0 \\ 2 \end{bmatrix}.
+\]
+En consecuencia, la soluci\'on general es
+\[
+\mathbf{x}(t) = c_1 e^{-t} \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix} + c_2 e^{2t} \begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} + c_3 e^{2t} \begin{bmatrix} -3 \\ 0 \\ 2 \end{bmatrix}
+= \begin{bmatrix} c_1 e^{-t} + c_2 e^{2t} - 3c_3 e^{2t} \\ c_1 e^{-t} + c_2 e^{2t} \\ c_1 e^{-t} + 2c_3 e^{2t} \end{bmatrix}.
+\]
+\end{example}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{c c c c}
+\rowcolor{bbe!15}
+\textcolor{bbe}{$\lambda$} & \textcolor{bbe}{Mult. alg.} & \textcolor{bbe}{Mult. geom.} & \textcolor{bbe}{Vectores propios}\\
+$-1$ & $1$ & $1$ & $(1,1,1)$ \\
+$2$ & $2$ & $2$ & $(1,1,0),\;(-3,0,2)$ \\
+\end{tabular}
+\caption{Como la multiplicidad geom\'etrica iguala a la algebraica en cada valor propio, $A$ es no defectuosa y el Teorema~\ref{thm:n-indep} aplica.}
+\end{table}
+
+Para cerrar la secci\'on, resumimos la clasificaci\'on seg\'un la matriz $A$ (de coeficientes constantes) y la forma de las soluciones.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{>{\bfseries}l l l c}
+\rowcolor{bbe!15}
+\textcolor{bbe}{Caso} & \textcolor{bbe}{Valores propios} & \textcolor{bbe}{Forma de las soluciones} & \textcolor{bbe}{Figura}\\
+No defectuosa, reales & $n$ vectores propios independientes & $e^{\lambda_k t}\mathbf v_k$ & \ref{fig:silla} \\
+Complejos & $\alpha\pm i\beta$ & $e^{\alpha t}(\cos\beta t,\ \sin\beta t)$ & \ref{fig:espiral} \\
+Defectuosa & $\lambda$ repetido, faltan vectores propios & aparece un factor $t\,e^{\lambda t}$ & \ref{fig:nodo} \\
+\end{tabular}
+\caption{Casos para $\mathbf x'=A\mathbf x$ con $A$ constante. Las dos \'ultimas filas se desarrollar\'an en las pr\'oximas secciones.}
+\end{table}
